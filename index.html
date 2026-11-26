@@ -2,348 +2,404 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💡 Hirntraining 🧠</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 Hirntraining 🧠</title>
 
-<style>
-:root {
-    --forest: #315d49;
-    --deep: #244b3b;
-    --sage: #8caf98;
-    --mint: #dcefe0;
-    --pastel: #f1f7ef;
-    --cream: #ffffff;
-    --text: #345344;
-    --shadow: rgba(49, 93, 73, 0.10);
-}
+    <style>
+        :root {
+            --forest: #52796f;
+            --deep: #354f52;
+            --sage: #84a98c;
+            --mint: #cadfd3;
+            --pastel: #e8f3ec;
+            --cream: #f8f8ef;
+            --text: #354f52;
+        }
 
-* {
-    box-sizing: border-box;
-}
+        * {
+            box-sizing: border-box;
+        }
 
-body {
-    margin: 0;
-    font-family: "Courier New", Courier, monospace;
-    background: linear-gradient(135deg, #f3f8ef, #eaf4eb);
-    color: var(--text);
-    overflow-x: hidden;
-}
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Courier New", Courier, monospace;
+            background: var(--cream);
+            color: var(--text);
+        }
 
-/* KOPFBEREICH */
+        header {
+            max-width: 1400px;
+            margin: 0 auto 24px;
+            padding: 18px;
+            text-align: center;
+            background: var(--pastel);
+            border: 2px solid var(--mint);
+            border-radius: 18px;
+            position: relative;
+        }
 
-header {
-    background: linear-gradient(135deg, #315d49, #83ad8c);
-    color: white;
-    text-align: center;
-    padding: 35px 15px 42px;
-    border-radius: 0 0 28px 28px;
-    box-shadow: 0 5px 20px var(--shadow);
-}
+        header h1 {
+            margin: 5px 0;
+            color: var(--deep);
+            font-size: clamp(1.7rem, 4vw, 2.6rem);
+        }
 
-header h1 {
-    font-size: clamp(25px, 4vw, 38px);
-    margin: 0 0 10px;
-}
+        header p {
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
 
-header p {
-    font-size: 15px;
-    color: #f0f8ec;
-    margin: 0;
-}
+        .lehrer-button {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 9px 15px;
+            border: 2px solid var(--forest);
+            border-radius: 12px;
+            background: var(--forest);
+            color: white;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-/* ZIEGEN */
+        .lehrer-button:hover {
+            background: var(--deep);
+            transform: translateY(-2px);
+        }
 
-.goat {
-    position: fixed;
-    z-index: 10;
-    top: 120px;
-    font-size: 48px;
-    pointer-events: none;
-    opacity: 0;
-}
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-.goat-left {
-    left: 0;
-    transform: scaleX(-1) translateX(110%);
-    animation: peek-left 10s infinite;
-}
+        .bereich {
+            margin-bottom: 26px;
+        }
 
-.goat-right {
-    right: 0;
-    transform: translateX(110%);
-    animation: peek-right 12s infinite;
-    animation-delay: 3s;
-}
+        .bereich h2 {
+            margin: 0 0 12px;
+            padding: 9px 13px;
+            border-radius: 12px;
+            background: var(--mint);
+            color: var(--deep);
+            font-size: 1.15rem;
+        }
 
-@keyframes peek-left {
-    0%, 10% {
-        opacity: 0;
-        transform: scaleX(-1) translateX(110%);
-    }
-    15%, 27% {
-        opacity: 1;
-        transform: scaleX(-1) translateX(12%);
-    }
-    32%, 100% {
-        opacity: 0;
-        transform: scaleX(-1) translateX(110%);
-    }
-}
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(10, minmax(0, 1fr));
+            gap: 9px;
+        }
 
-@keyframes peek-right {
-    0%, 12% {
-        opacity: 0;
-        transform: translateX(110%);
-    }
-    17%, 29% {
-        opacity: 1;
-        transform: translateX(12%);
-    }
-    34%, 100% {
-        opacity: 0;
-        transform: translateX(110%);
-    }
-}
+        .app-card {
+            min-width: 0;
+            padding: 10px 5px;
+            text-align: center;
+            background: white;
+            border: 2px solid var(--mint);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text);
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 7px;
+        }
 
-/* INHALT */
+        .app-card:hover {
+            background: var(--pastel);
+            border-color: var(--forest);
+            transform: translateY(-3px);
+        }
 
-main {
-    width: 98%;
-    max-width: 1800px;
-    margin: 28px auto;
-    padding: 8px;
-}
+        .app-icon {
+            font-size: 1.7rem;
+            line-height: 1.2;
+        }
 
-.bereich {
-    margin-bottom: 35px;
-}
+        .app-card h3 {
+            margin: 0;
+            font-size: 0.75rem;
+            line-height: 1.25;
+            overflow-wrap: anywhere;
+        }
 
-.bereich-titel {
-    text-align: center;
-    color: var(--forest);
-    font-size: clamp(17px, 2vw, 23px);
-    margin-bottom: 17px;
-    padding-bottom: 9px;
-    border-bottom: 2px solid #cfe3d1;
-}
+        .app-card span {
+            font-size: 0.65rem;
+            line-height: 1.2;
+        }
 
-/* APP-RASTER */
+        footer {
+            max-width: 1400px;
+            margin: 30px auto 0;
+            padding: 14px;
+            text-align: center;
+            color: var(--forest);
+            font-size: 0.85rem;
+        }
 
-.karten {
-    display: grid;
-    grid-template-columns: repeat(10, minmax(0, 1fr));
-    gap: 10px;
-}
+        /* Dekorative Ziegen */
+        .ziege {
+            position: fixed;
+            z-index: -1;
+            font-size: 2rem;
+            animation: ziegenWackeln 3s ease-in-out infinite;
+            pointer-events: none;
+        }
 
-/* APP-KACHELN */
+        .ziege-links {
+            left: 5px;
+            top: 45%;
+        }
 
-.karte {
-    background: rgba(255,255,255,0.88);
-    padding: 12px 7px;
-    border-radius: 15px;
-    text-align: center;
-    border: 1px solid #dceadd;
-    box-shadow: 0 3px 10px var(--shadow);
-    transition: transform 0.2s, box-shadow 0.2s;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+        .ziege-rechts {
+            right: 5px;
+            top: 65%;
+            animation-delay: 1s;
+        }
 
-.karte:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 18px rgba(49,93,73,0.17);
-    background: #ffffff;
-}
+        @keyframes ziegenWackeln {
+            0%, 100% {
+                transform: rotate(-8deg) translateY(0);
+            }
+            50% {
+                transform: rotate(8deg) translateY(-8px);
+            }
+        }
 
-.symbol {
-    font-size: 27px;
-    margin-bottom: 5px;
-}
+        /* Login-Fenster */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            background: rgba(30, 50, 45, 0.6);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-.karte h3 {
-    color: var(--forest);
-    font-size: 11px;
-    line-height: 1.4;
-    margin: 4px 0;
-    overflow-wrap: anywhere;
-}
+        .modal-inhalt {
+            width: 100%;
+            max-width: 380px;
+            padding: 25px;
+            text-align: center;
+            background: var(--cream);
+            border: 3px solid var(--sage);
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
 
-.karte p {
-    font-size: 9px;
-    line-height: 1.4;
-    color: #718578;
-    margin: 4px 0 8px;
-    flex-grow: 1;
-}
+        .modal-inhalt h2 {
+            margin-top: 0;
+            color: var(--deep);
+            font-size: 1.3rem;
+        }
 
-.button {
-    display: inline-block;
-    background: #8caf98;
-    color: white;
-    padding: 7px 8px;
-    border-radius: 9px;
-    text-decoration: none;
-    font-size: 9px;
-    font-weight: bold;
-    margin-top: auto;
-    transition: background 0.2s, transform 0.2s;
-}
+        .modal-inhalt p {
+            font-size: 0.9rem;
+        }
 
-.button:hover {
-    background: var(--forest);
-    transform: scale(1.04);
-}
+        .modal-inhalt input {
+            width: 100%;
+            padding: 11px;
+            margin: 10px 0;
+            border: 2px solid var(--mint);
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
 
-/* FUSSZEILE */
+        .modal-inhalt input:focus {
+            outline: 2px solid var(--sage);
+        }
 
-footer {
-    background: #e1eee0;
-    text-align: center;
-    padding: 22px 10px;
-    margin-top: 35px;
-    color: var(--forest);
-    border-radius: 25px 25px 0 0;
-    font-size: 12px;
-}
+        .modal-inhalt button {
+            margin: 5px;
+            padding: 9px 14px;
+            border: none;
+            border-radius: 9px;
+            background: var(--forest);
+            color: white;
+            font-family: inherit;
+            cursor: pointer;
+        }
 
-footer p {
-    margin: 5px;
-}
+        .modal-inhalt button:hover {
+            background: var(--deep);
+        }
 
-/* RESPONSIVE DESIGN */
+        #fehler {
+            min-height: 20px;
+            color: #b33a3a;
+            font-weight: bold;
+        }
 
-/* Kleinere Bildschirme */
-@media (max-width: 1100px) {
-    .karten {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-    }
-}
+        @media (max-width: 1100px) {
+            .app-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+            }
+        }
 
-/* Tablets */
-@media (max-width: 650px) {
-    .karten {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 9px;
-    }
+        @media (max-width: 650px) {
+            body {
+                padding: 12px;
+            }
 
-    .karte {
-        padding: 12px 5px;
-    }
+            .app-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
 
-    .symbol {
-        font-size: 25px;
-    }
+            .ziege {
+                font-size: 1.5rem;
+            }
+        }
 
-    .karte h3 {
-        font-size: 10px;
-    }
-
-    .karte p {
-        font-size: 9px;
-    }
-}
-
-/* Smartphones */
-@media (max-width: 380px) {
-    .karten {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .goat {
-        animation: none;
-        display: none;
-    }
-
-    .karte {
-        transition: none;
-    }
-}
-</style>
+        @media (max-width: 380px) {
+            .app-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="goat goat-left" aria-hidden="true">🐐</div>
-<div class="goat goat-right" aria-hidden="true">🐐</div>
+    <div class="ziege ziege-links">🐐</div>
+    <div class="ziege ziege-rechts">🐐</div>
 
-<header>
-    <h1>💡 Hirntraining 🧠</h1>
-    <p>Entdecken, üben, knobeln und besser werden! 🌷</p>
-</header>
+    <header>
+        <h1>💡 Hirntraining 🧠</h1>
+        <p>Denken, entdecken, üben und wachsen! 🌱</p>
 
-<main>
+        <button class="lehrer-button" onclick="oeffneLehrerLogin()">
+            🔐 Für Lehrpersonen
+        </button>
+    </header>
 
-    <!-- MATHE -->
-    <section class="bereich">
-        <h2 class="bereich-titel">🔢 Mathe</h2>
+    <main>
 
-        <div class="karten">
+        <section class="bereich">
+            <h2>➗ Mathe</h2>
 
-            <div class="karte">
-                <div class="symbol">🏆</div>
-                <h3>Mathe-Master-Challenge</h3>
-                <p>Stelle dein mathematisches Können unter Beweis!</p>
-                <a class="button" href="Mathe-Master-Challenge-3.html">Starten →</a>
+            <div class="app-grid">
+
+                <a class="app-card" href="Mathe-Master-Challenge-3.html">
+                    <div class="app-icon">🧠</div>
+                    <h3>Mathe Master</h3>
+                    <span>Knifflige Aufgaben</span>
+                </a>
+
+                <a class="app-card" href="alpenlift-pythagoras.html">
+                    <div class="app-icon">🏔️</div>
+                    <h3>Alpenlift</h3>
+                    <span>Pythagoras</span>
+                </a>
+
+                <a class="app-card" href="multiplikations_duell.html">
+                    <div class="app-icon">✖️</div>
+                    <h3>Multiplikations-Duell</h3>
+                    <span>Einmaleins trainieren</span>
+                </a>
+
+                <a class="app-card" href="Detailhandel_Kassentrainer_Schweiz.html">
+                    <div class="app-icon">🛒</div>
+                    <h3>Kassentrainer</h3>
+                    <span>Rechnen mit Geld</span>
+                </a>
+
             </div>
+        </section>
 
-            <div class="karte">
-                <div class="symbol">🏔️</div>
-                <h3>Alpenlift – Pythagoras</h3>
-                <p>Entdecke den Satz des Pythagoras!</p>
-                <a class="button" href="alpenlift-pythagoras.html">Starten →</a>
+        <section class="bereich">
+            <h2>🌍 RZG</h2>
+
+            <div class="app-grid">
+
+                <a class="app-card" href="Mondphasen-Atlas.html">
+                    <div class="app-icon">🌙</div>
+                    <h3>Mondphasen-Atlas</h3>
+                    <span>Den Mond entdecken</span>
+                </a>
+
+                <a class="app-card" href="Jahreszeiten_in_der_Schweiz.html">
+                    <div class="app-icon">🍂</div>
+                    <h3>Jahreszeiten</h3>
+                    <span>Die Schweiz im Wandel</span>
+                </a>
+
             </div>
+        </section>
 
-            <div class="karte">
-                <div class="symbol">✖️</div>
-                <h3>Multiplikations-Duell</h3>
-                <p>Trainiere das Einmaleins!</p>
-                <a class="button" href="multiplikations_duell.html">Starten →</a>
-            </div>
+    </main>
 
-            <div class="karte">
-                <div class="symbol">🛒</div>
-                <h3>Detailhandel-Kassentrainer</h3>
-                <p>Trainiere Kassieren und Rückgeld mit Schweizer Franken!</p>
-                <a class="button" href="Detailhandel_Kassentrainer_Schweiz.html">Starten →</a>
-            </div>
+    <footer>
+        🌱 Denken. Üben. Lernen. Wachsen. 🌱
+    </footer>
 
+    <!-- Login-Fenster für Lehrpersonen -->
+    <div class="modal" id="lehrerModal">
+        <div class="modal-inhalt">
+            <h2>🔐 Lehrpersonenbereich</h2>
+            <p>Bitte Passwort eingeben:</p>
+
+            <input
+                type="password"
+                id="lehrerPasswort"
+                placeholder="Passwort"
+                autocomplete="off"
+                onkeydown="if(event.key === 'Enter') pruefePasswort()"
+            >
+
+            <p id="fehler"></p>
+
+            <button onclick="pruefePasswort()">
+                Anmelden →
+            </button>
+
+            <button onclick="schliesseLehrerLogin()">
+                Abbrechen
+            </button>
         </div>
-    </section>
+    </div>
 
-    <!-- RZG -->
-    <section class="bereich">
-        <h2 class="bereich-titel">🌍 RZG – Räume, Zeiten, Gesellschaften</h2>
+    <script>
+        function oeffneLehrerLogin() {
+            document.getElementById("lehrerModal").style.display = "flex";
+            document.getElementById("lehrerPasswort").focus();
+        }
 
-        <div class="karten">
+        function schliesseLehrerLogin() {
+            document.getElementById("lehrerModal").style.display = "none";
+            document.getElementById("lehrerPasswort").value = "";
+            document.getElementById("fehler").textContent = "";
+        }
 
-            <div class="karte">
-                <div class="symbol">🌙</div>
-                <h3>Mondphasen-Atlas</h3>
-                <p>Entdecke die Mondphasen!</p>
-                <a class="button" href="Mondphasen-Atlas.html">Starten →</a>
-            </div>
+        function pruefePasswort() {
+            const passwort =
+                document.getElementById("lehrerPasswort").value;
 
-            <div class="karte">
-                <div class="symbol">🌷</div>
-                <h3>Jahreszeiten in der Schweiz</h3>
-                <p>Erfahre mehr über Frühling, Sommer, Herbst und Winter!</p>
-                <a class="button" href="Jahreszeiten_in_der_Schweiz.html">Starten →</a>
-            </div>
+            if (passwort === "fedpol") {
+                window.location.href = "index_lp.html";
+            } else {
+                document.getElementById("fehler").textContent =
+                    "❌ Falsches Passwort. Bitte nochmals versuchen!";
+            }
+        }
 
-        </div>
-    </section>
-
-</main>
-
-<footer>
-    <p>🌲 Denken. Üben. Lernen. Wachsen. 🌲</p>
-    <p>Viel Erfolg beim Hirntraining! 🐐</p>
-</footer>
+        // Login-Fenster schliessen, wenn ausserhalb geklickt wird
+        document.getElementById("lehrerModal").addEventListener("click", function(event) {
+            if (event.target === this) {
+                schliesseLehrerLogin();
+            }
+        });
+    </script>
 
 </body>
 </html>
