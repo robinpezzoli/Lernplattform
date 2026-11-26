@@ -4,7 +4,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>💡 Hirntraining 🧠</title>
 
 <style>
@@ -30,8 +29,6 @@ body {
     overflow-x: hidden;
 }
 
-/* KOPFBEREICH */
-
 header {
     background: linear-gradient(135deg, #244b3b, #527b60);
     color: white;
@@ -51,8 +48,7 @@ header p {
     color: #e4f1df;
 }
 
-/* GEISSLEIN */
-
+/* ZIEGEN */
 .goat {
     position: fixed;
     z-index: 10;
@@ -64,7 +60,7 @@ header p {
 
 .goat-left {
     left: 0;
-    transform: translateX(-110%);
+    transform: scaleX(-1) translateX(110%);
     animation: peek-left 10s infinite;
 }
 
@@ -78,15 +74,15 @@ header p {
 @keyframes peek-left {
     0%, 10% {
         opacity: 0;
-        transform: translateX(-110%);
+        transform: scaleX(-1) translateX(110%);
     }
     15%, 27% {
         opacity: 1;
-        transform: translateX(-12%);
+        transform: scaleX(-1) translateX(12%);
     }
     32%, 100% {
         opacity: 0;
-        transform: translateX(-110%);
+        transform: scaleX(-1) translateX(110%);
     }
 }
 
@@ -106,26 +102,28 @@ header p {
 }
 
 /* INHALT */
-
 main {
     max-width: 1100px;
     margin: 45px auto;
     padding: 20px;
 }
 
-main > h2 {
-    text-align: center;
-    color: var(--forest);
-    font-size: 27px;
-    margin-bottom: 35px;
+.bereich {
+    margin-bottom: 55px;
 }
 
-/* LERNKARTEN */
+.bereich-titel {
+    text-align: center;
+    color: var(--forest);
+    font-size: 30px;
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--mint);
+}
 
 .karten {
     display: grid;
-    grid-template-columns:
-        repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 25px;
 }
 
@@ -149,7 +147,7 @@ main > h2 {
     margin-bottom: 10px;
 }
 
-.karte h2 {
+.karte h3 {
     color: var(--forest);
     font-size: 21px;
     min-height: 48px;
@@ -178,7 +176,6 @@ main > h2 {
 }
 
 /* FUSSZEILE */
-
 footer {
     background: #e1ecdf;
     text-align: center;
@@ -191,8 +188,6 @@ footer {
 footer p {
     margin: 5px;
 }
-
-/* ANIMATION AUF KLEINEN GERÄTEN REDUZIEREN */
 
 @media (prefers-reduced-motion: reduce) {
     .goat {
@@ -210,70 +205,89 @@ footer p {
 <body>
 
 <!-- Neugierige Geisslein -->
-
 <div class="goat goat-left" aria-hidden="true">🐐</div>
 <div class="goat goat-right" aria-hidden="true">🐐</div>
-
-<!-- KOPFBEREICH -->
 
 <header>
     <h1>💡 Hirntraining 🧠</h1>
     <p>Entdecken, üben, knobeln und besser werden!</p>
 </header>
 
-<!-- LERNPROGRAMME -->
-
 <main>
 
-    <h2>🌿 Wähle dein Trainingsprogramm 🌿</h2>
+    <!-- MATHE -->
+    <section class="bereich">
+        <h2 class="bereich-titel">🔢 Mathe</h2>
 
-    <div class="karten">
+        <div class="karten">
 
-        <div class="karte">
-            <div class="symbol">🏆</div>
-            <h2>Mathe-Master-Challenge</h2>
-            <p>Stelle dein mathematisches Können unter Beweis!</p>
-            <a class="button"
-               href="Mathe-Master-Challenge-3.html">
-               Jetzt starten →
-            </a>
+            <div class="karte">
+                <div class="symbol">🏆</div>
+                <h3>Mathe-Master-Challenge</h3>
+                <p>Stelle dein mathematisches Können unter Beweis!</p>
+                <a class="button" href="Mathe-Master-Challenge-3.html">
+                    Jetzt starten →
+                </a>
+            </div>
+
+            <div class="karte">
+                <div class="symbol">🏔️</div>
+                <h3>Alpenlift – Pythagoras</h3>
+                <p>Entdecke den Satz des Pythagoras auf spielerische Weise!</p>
+                <a class="button" href="alpenlift-pythagoras.html">
+                    Jetzt starten →
+                </a>
+            </div>
+
+            <div class="karte">
+                <div class="symbol">✖️</div>
+                <h3>Multiplikations-Duell</h3>
+                <p>Trainiere das Einmaleins und verbessere deine Geschwindigkeit!</p>
+                <a class="button" href="multiplikations_duell.html">
+                    Jetzt starten →
+                </a>
+            </div>
+
+            <div class="karte">
+                <div class="symbol">🛒</div>
+                <h3>Detailhandel-Kassentrainer Schweiz</h3>
+                <p>Trainiere Kassieren, Rückgeld und den Umgang mit Schweizer Franken!</p>
+                <a class="button" href="Detailhandel_Kassentrainer_Schweiz.html">
+                    Jetzt starten →
+                </a>
+            </div>
+
         </div>
+    </section>
 
-        <div class="karte">
-            <div class="symbol">🏔️</div>
-            <h2>Alpenlift – Pythagoras</h2>
-            <p>Entdecke den Satz des Pythagoras auf spielerische Weise!</p>
-            <a class="button"
-               href="alpenlift-pythagoras.html">
-               Jetzt starten →
-            </a>
+    <!-- RZG -->
+    <section class="bereich">
+        <h2 class="bereich-titel">🌍 RZG – Räume, Zeiten, Gesellschaften</h2>
+
+        <div class="karten">
+
+            <div class="karte">
+                <div class="symbol">🌙</div>
+                <h3>Mondphasen-Atlas</h3>
+                <p>Entdecke die Mondphasen und beobachte den Mond im Verlauf eines Monats!</p>
+                <a class="button" href="Mondphasen-Atlas.html">
+                    Jetzt starten →
+                </a>
+            </div>
+
+            <div class="karte">
+                <div class="symbol">🌷</div>
+                <h3>Jahreszeiten in der Schweiz</h3>
+                <p>Erfahre mehr über Frühling, Sommer, Herbst und Winter in der Schweiz!</p>
+                <a class="button" href="Jahreszeiten_in_der_Schweiz.html">
+                    Jetzt starten →
+                </a>
+            </div>
+
         </div>
-
-        <div class="karte">
-            <div class="symbol">✖️</div>
-            <h2>Multiplikations-Duell</h2>
-            <p>Trainiere das Einmaleins und verbessere deine Geschwindigkeit!</p>
-            <a class="button"
-               href="multiplikations_duell.html">
-               Jetzt starten →
-            </a>
-        </div>
-
-        <div class="karte">
-            <div class="symbol">🛒</div>
-            <h2>Detailhandel-Kassentrainer Schweiz</h2>
-            <p>Trainiere Kassieren, Rückgeld und den Umgang mit Schweizer Franken!</p>
-            <a class="button"
-               href="Detailhandel_Kassentrainer_Schweiz.html">
-               Jetzt starten →
-            </a>
-        </div>
-
-    </div>
+    </section>
 
 </main>
-
-<!-- FUSSZEILE -->
 
 <footer>
     <p>🌲 Denken. Üben. Lernen. Wachsen. 🌲</p>
