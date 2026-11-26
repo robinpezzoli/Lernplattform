@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jahreszeiten in der Schweiz</title>
+<style>
+:root{--bg:#0a1222;--panel:#111c33;--ink:#e8eefb;--mute:#93a3c4;--line:#24365c;--sun:#ffb938;--red:#e03a2c;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+body{display:grid;grid-template-rows:auto minmax(0,1fr)}
+.app{min-height:0;overflow:auto;display:grid;grid-template-rows:minmax(280px,1fr) auto}
+.app[hidden]{display:none}
+#stage{position:relative;min-height:0;cursor:grab;touch-action:none}
+#stage:active{cursor:grabbing}
+canvas#gl{display:block;width:100%;height:100%}
+.hint{position:absolute;left:14px;top:12px;font-size:13px;color:var(--mute);pointer-events:none}
+.hint b{display:block;font-size:20px;color:var(--ink);font-weight:600;letter-spacing:-.01em}
+.panel{background:var(--panel);border-top:1px solid var(--line);padding:14px 16px 16px;display:grid;gap:14px;grid-template-columns:1fr}
+.ctrl{display:flex;align-items:center;gap:12px}
+button{background:var(--sun);color:#1a1200;border:0;border-radius:8px;padding:9px 16px;font:600 14px inherit;font-family:inherit;cursor:pointer;min-width:84px}
+button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2px}
+input[type=range]{flex:1;accent-color:var(--sun)}
+.date{min-width:92px;text-align:right;font-variant-numeric:tabular-nums;font-size:14px}
+.info{display:grid;gap:12px;grid-template-columns:1fr}
+.season{font-size:26px;font-weight:600;letter-spacing:-.02em;margin:0}
+.txt{margin:4px 0 0;font-size:14px;line-height:1.5;color:var(--mute);max-width:60ch}
+.stats{display:flex;gap:22px;margin-top:10px;font-size:13px;color:var(--mute)}
+.stats strong{display:block;font-size:20px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+canvas#sky,canvas#top{display:block;width:100%;max-width:360px;height:auto;border-radius:10px;border:1px solid var(--line)}
+@media(min-width:820px){
+ .app{grid-template-columns:1fr 400px;grid-template-rows:100%}
+ .panel{border-top:0;border-left:1px solid var(--line);align-content:start;overflow:auto}
+}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+.tabs{display:flex;gap:6px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+.tab{background:transparent;color:var(--mute);border:1px solid var(--line);min-width:0}
+.tab[aria-selected=true]{background:var(--sun);color:#1a1200;border-color:var(--sun)}
+.legend{position:absolute;left:14px;bottom:12px;font-size:12px;color:var(--mute);display:grid;gap:4px;pointer-events:none}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+.ctrl label{font-size:13px;color:var(--mute)}
+#spdv{min-width:64px;font-size:13px;font-variant-numeric:tabular-nums}
+#theory{overflow:auto;padding:22px 18px 48px}
+#theory[hidden]{display:none}
+.wrap{max-width:720px;margin:0 auto}
+.wrap h2{font-size:22px;letter-spacing:-.01em;margin:30px 0 8px}
+.wrap h1{font-size:30px;letter-spacing:-.02em;margin:0 0 10px}
+.wrap p{line-height:1.6;color:#c4d0e8;margin:8px 0}
+.wrap table{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0}
+.wrap th,.wrap td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+.wrap th{color:var(--mute);font-weight:500}
+.wrap .tw{overflow-x:auto}
+.sb{border-left:4px solid var(--c);padding:2px 0 2px 16px;margin:26px 0}
+.sb h2{margin-top:0}
+.sb ul{margin:8px 0;padding-left:20px;line-height:1.6;color:#c4d0e8}
+.go{margin-top:6px;background:transparent;color:var(--ink);border:1px solid var(--c)}
+</style>
+</head>
+<body>
+<nav class="tabs" aria-label="Seiten"><button class="tab" type="button" data-v="sim" aria-selected="true">Simulation</button><button class="tab" type="button" data-v="th" aria-selected="false">Theorie</button></nav>
+<div class="app" id="simv">
+ <div id="stage">
+  <canvas id="gl" aria-label="3D-Modell: Erde umkreist die Sonne"></canvas>
+  <div class="hint"><b>Warum gibt es Jahreszeiten?</b>Ziehen: drehen · Mausrad: zoomen</div>
+  <div class="legend"><span><i style="background:#e03a2c"></i>Schweiz</span><span><i style="background:#fff"></i>Erdachse (geneigt)</span><span><i style="background:#ffc244"></i>Sonne und Sonnenlicht</span></div>
+ </div>
+ <div class="panel">
+  <div class="ctrl">
+   <button id="play" type="button">Pause</button>
+   <input id="day" type="range" min="0" max="364" step="1" value="79" aria-label="Tag im Jahr">
+   <div class="date" id="date"></div>
+  </div>
+  <div class="ctrl"><label for="spd">Tempo</label><input id="spd" type="range" min="0" max="60" step="1" value="12"><span id="spdv">12 Tage/s</span></div>
+  <div class="info">
+   <div>
+    <h1 class="season" id="season"></h1>
+    <p class="txt" id="why"></p>
+    <div class="stats">
+     <div><strong id="elev"></strong>Sonnenhöhe mittags</div>
+     <div><strong id="len"></strong>Tageslänge</div>
+    </div>
+   </div>
+   <div><canvas id="top" width="360" height="270" aria-label="Ansicht von oben auf den Nordpol mit Tag und Nacht"></canvas><p class="txt">Blick von oben auf den Nordpol: Die Erde dreht sich gegen den Uhrzeigersinn, die Sonne steht rechts. Der Breitenkreis der Schweiz ist am Tag gelb und in der Nacht blau. Im Winter ist der blaue Bogen deutlich länger.</p></div>
+   <canvas id="sky" width="360" height="150" aria-label="Sonnenstand über den Schweizer Alpen"></canvas>
+   <p class="txt">Die Erdachse ist um 23,4° geneigt und zeigt immer in dieselbe Richtung. Nicht der Abstand zur Sonne, sondern dieser Neigungswinkel bestimmt die Jahreszeiten. Im Januar ist die Erde der Sonne sogar am nächsten.</p>
+  </div>
+ </div>
+</div>
+<section id="theory" hidden><div class="wrap">
+<h1>Theorie: Wie entstehen die Jahreszeiten?</h1>
+<p>Die Jahreszeiten entstehen, weil die Erdachse gegenüber der Bahnebene um die Sonne um 23,4° geneigt ist. Die Achse zeigt dabei das ganze Jahr in dieselbe Richtung (zum Polarstern). Je nach Position auf der Umlaufbahn ist deshalb mal die Nord-, mal die Südhalbkugel der Sonne zugeneigt.</p>
+<h2>Ein verbreiteter Irrtum: der Abstand</h2>
+<p>Viele denken, im Sommer sei die Erde näher bei der Sonne. Das stimmt nicht. Die Erde ist am 3. Januar am nächsten (rund 147 Mio. km) und Anfang Juli am weitesten entfernt (rund 152 Mio. km). Der Unterschied ist zu klein, um die Jahreszeiten zu erklären. Zudem herrscht auf der Südhalbkugel gleichzeitig die gegensätzliche Jahreszeit.</p>
+<h2>Was die Neigung bewirkt</h2>
+<p><strong>Einstrahlwinkel:</strong> Ist die Schweiz der Sonne zugeneigt, treffen die Strahlen steiler auf. Dieselbe Energie verteilt sich auf eine kleinere Fläche, es wird wärmer. Im Winter fallen sie flach ein und verteilen sich auf eine grössere Fläche.</p>
+<p><strong>Tageslänge:</strong> Bei Zuneigung ist die Sonne länger über dem Horizont. Der Boden kann sich länger erwärmen und kühlt in der kurzen Nacht weniger aus.</p>
+<p><strong>Sonnenhöhe in der Schweiz (46,8° Nord):</strong> Mittags gilt: Höhe = 90° − 46,8° + Deklination. Die Deklination ist der Breitengrad, an dem die Sonne senkrecht steht. Sie schwankt zwischen −23,4° und +23,4°.</p>
+<h2>Die vier Jahreszeiten im Überblick</h2>
+<div class="tw"><table>
+<tr><th>Beginn</th><th>Datum</th><th>Sonnenhöhe mittags</th><th>Tageslänge</th></tr>
+<tr><td>Frühling</td><td>ca. 20. März</td><td>ca. 43°</td><td>ca. 12 h</td></tr>
+<tr><td>Sommer</td><td>ca. 21. Juni</td><td>ca. 67°</td><td>ca. 15 h 40 min</td></tr>
+<tr><td>Herbst</td><td>ca. 22. September</td><td>ca. 43°</td><td>ca. 12 h</td></tr>
+<tr><td>Winter</td><td>ca. 21. Dezember</td><td>ca. 20°</td><td>ca. 8 h 20 min</td></tr>
+</table></div>
+<div class="sb" style="--c:#7ccf6a"><h2>Frühling</h2>
+<p>Bei der Tag-und-Nacht-Gleiche (Äquinoktium) zeigt die Erdachse seitlich zur Sonne. Beide Halbkugeln werden gleich stark beleuchtet, Tag und Nacht sind überall etwa gleich lang. Danach neigt sich die Nordhalbkugel der Sonne zu.</p>
+<ul><li>Die Sonne steigt täglich höher, die Tage werden schnell länger.</li><li>Schneeschmelze in den Alpen, Obstbäume blühen, der Föhn bringt milde Luft.</li><li>Das Wetter ist wechselhaft, weil sich Land und Luft erst erwärmen.</li></ul>
+<button class="go" type="button" data-day="79">In der Simulation ansehen</button></div>
+<div class="sb" style="--c:#ffb938"><h2>Sommer</h2>
+<p>Bei der Sommersonnenwende ist die Nordhalbkugel am stärksten der Sonne zugeneigt. Die Sonne erreicht ihre grösste Mittagshöhe, der Tag ist am längsten. Nördlich des Polarkreises geht sie gar nicht unter.</p>
+<ul><li>Steile Strahlung und lange Tage bringen Wärme und Hitzeperioden.</li><li>Warme, feuchte Luft führt zu Gewittern, besonders am Alpennordhang.</li><li>Gletscher und Schneefelder schmelzen, die Alpweiden sind bestossen.</li></ul>
+<button class="go" type="button" data-day="172">In der Simulation ansehen</button></div>
+<div class="sb" style="--c:#e2763a"><h2>Herbst</h2>
+<p>Zur zweiten Tag-und-Nacht-Gleiche steht die Achse wieder seitlich zur Sonne. Nun neigt sich die Nordhalbkugel von der Sonne weg, die Sonne sinkt und die Tage werden kürzer.</p>
+<ul><li>Die Blätter verlieren ihr Chlorophyll und färben sich gelb und rot.</li><li>Im Mittelland bilden sich häufig Nebel und später Hochnebel.</li><li>Der Alpabzug beginnt, die Tiere kehren ins Tal zurück.</li></ul>
+<button class="go" type="button" data-day="265">In der Simulation ansehen</button></div>
+<div class="sb" style="--c:#8fc4f5"><h2>Winter</h2>
+<p>Bei der Wintersonnenwende ist die Nordhalbkugel am stärksten von der Sonne weggeneigt. Die Sonne steht mittags nur etwa 20° über dem Horizont, der Tag ist am kürzesten.</p>
+<ul><li>Flaches Sonnenlicht erwärmt den Boden kaum, die Nächte sind lang und kalt.</li><li>In den Alpen fällt Schnee, im Mittelland liegt oft Hochnebel.</li><li>Täler und Nordhänge bekommen teils wochenlang kaum direkte Sonne.</li></ul>
+<button class="go" type="button" data-day="355">In der Simulation ansehen</button></div>
+<h2>Astronomisch und meteorologisch</h2>
+<p>Astronomisch beginnen die Jahreszeiten mit den Sonnenwenden und Tag-und-Nacht-Gleichen. Meteorologen rechnen für Statistiken einfacher in ganzen Monaten: Frühling ab 1. März, Sommer ab 1. Juni, Herbst ab 1. September, Winter ab 1. Dezember.</p>
+<h2>Warum der Sommer erst nach dem längsten Tag am heissesten ist</h2>
+<p>Boden, Seen und Meere speichern Wärme und geben sie verzögert ab. Deshalb sind Juli und August meist wärmer als Juni, und der Januar ist kälter als der Dezember. Die Temperatur hinkt der Sonne um etwa einen Monat hinterher.</p>
+<h2>Und auf der Südhalbkugel?</h2>
+<p>Dort ist es genau umgekehrt: Wenn bei uns Sommer ist, ist die Südhalbkugel von der Sonne weggeneigt und hat Winter. Am Äquator ändern sich Einstrahlwinkel und Tageslänge kaum, dort gibt es keine ausgeprägten Jahreszeiten.</p>
+</div></section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+const EPS=23.44*Math.PI/180, LAT=46.8, LON=8.2, R=8;
+const $=id=>document.getElementById(id);
+const stage=$('stage'), cv=$('gl');
+const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(42,1,.1,200);
+
+// Sonne
+const sun=new THREE.Mesh(new THREE.SphereGeometry(1.5,48,32),new THREE.MeshBasicMaterial({color:0xffc244}));
+scene.add(sun);
+const glow=new THREE.Mesh(new THREE.SphereGeometry(2.2,32,24),new THREE.MeshBasicMaterial({color:0xff9a1f,transparent:true,opacity:.18}));
+scene.add(glow);
+scene.add(new THREE.PointLight(0xffffff,2.2,0,0));
+scene.add(new THREE.AmbientLight(0x9fb2dc,.55));
+
+// Landmassen (Länge, Breite), grob nachgezeichnet
+const LAND=[
+[-166,65,-162,70,-156,71.3,-141,69.6,-128,70,-115,68,-108,68,-95,68,-90,69,-85,66,-88,64,-94,60,-93,57,-85,55,-82,52,-79,52,-78,57,-77,62,-72,61,-65,60,-62,57,-56,52,-60,50,-66,49,-64,46,-61,45.5,-66,44,-70,43,-70,41.7,-74,40.5,-76,37,-76,35,-81,31,-80,27,-80.5,25.2,-82.5,27.5,-84,30,-89,30,-93,29.5,-97,27,-97.5,22,-96,19,-91,18.5,-90.5,21,-87,21.5,-88,16,-83.5,15,-83.5,11,-80,9,-77.5,8.5,-80,7.5,-83,8.5,-86,11,-88,13,-92,14.5,-96,15.8,-101,17.5,-105.5,20,-105.5,23,-109,26,-112,29,-114.7,31.7,-110.5,23,-114,27.5,-117,32.5,-120.5,34.5,-122.5,37.5,-124,40.5,-124,46,-124.7,48.4,-128,51,-131,54,-135,58,-140,59.8,-148,60,-152,58.5,-158,56.5,-163,54.7,-158,58.5,-162,60,-165,62],
+[-73,78,-60,82,-30,83.5,-18,80,-20,74,-22,70,-30,68,-40,65,-43,60,-50,62,-53,67,-55,70,-60,75],
+[-80,73,-70,72,-62,67,-66,62.5,-72,63,-78,64.5,-73,68],
+[-77.5,8.5,-72,12,-64,10.5,-60,8.5,-52,5,-50,0,-44,-2.5,-35,-5,-35,-9,-39,-14,-39,-18,-41,-22,-45,-23.5,-48.5,-26,-48.5,-28,-53,-34,-57,-35,-57,-38,-62,-39,-65,-41,-64,-45,-67.5,-46.5,-66,-48,-69,-51,-68.5,-53,-71,-54,-74,-52,-75,-47,-73.5,-40,-73.5,-37,-71.5,-30,-70.5,-20,-70,-18,-76,-14,-79,-8,-81,-5,-80,-2,-80,1,-78,2.5,-77.5,7],
+[-9,37,-9,43,-2,43.5,-1.5,46,-4.5,48.5,-1.5,49.5,2,51,4,52,8,54,8.5,57,10.5,57.5,10,54.5,14,54,19,54.5,21,57,24,57.5,24,59.5,30,60,22,60.5,21,63,25,65.5,22,65.8,17,62,19,60,16.5,57,13,55.5,11,59,8,58,5,59,5,62,11,65,15,68.5,20,70,26,71,31,70,41,67,33,66,41,66,44,68,53,68.5,60,69,68,68.5,73,72.5,80,73,87,75,100,77,105,77.5,113,74,130,71,140,72.5,150,71,160,69.5,170,70,180,69,180,65,177,64.5,179,62.5,170,60,163,59.8,163,56,160,53,156,51,155.5,57,160,61,154,59.5,142,59,136,54.5,141,53,140,48,135,43.5,131,42.5,129.5,41,128,38.5,129.5,35.5,126.5,34.5,126,37.5,125,39.5,121.5,39,121,41,118,39,119,37,122.5,37,120,35,121.8,31,122,29.5,119,25.5,116,22.8,110,21,108,21.5,106.5,18.5,109,15,109,12,105,9,104.8,10.5,100.5,13.5,99.5,10,100.5,7,103.5,1.5,101,3,98,8,98.5,13.5,94.5,16,94,19,91.5,22.5,87,21.5,84,19,80.2,15,80,10,77.5,8,76,10.5,73,17,72.8,21,69,22.5,67,24.8,62,25,57,26,56.3,27,51,28.5,48.5,30,48,29,50,26.5,51.5,24.5,54,24,56.5,26,56.5,24.5,59.5,22.5,57,19,52,16.5,45,12.8,43,13,42.5,16,39,21.5,35,28,34.5,29.5,34.5,31.5,35,34,36,36.5,32,36.2,28,36.7,26.5,38.5,26.5,40,29,41,31,41,36,41.5,41,41,41.5,42.5,37.5,45,38,47,35,45.5,33,46,31,46.5,29.5,45.2,28.7,43.5,28,41.8,26,40.8,24,40.6,22.8,40,23.5,38,22.5,36.5,21,38,19.5,41.5,18,42.5,13.6,45.5,12.5,44.5,16.5,41.5,18.5,40.2,16,38,15.7,40,12,42,10,44,8,44,6,43,3,43.3,3,42,0,40,-0.5,38.5,-2,36.7,-5.5,36],
+[-5.5,36,-2,35.2,3,36.8,10,37.2,11,35,10,33.5,15,32.3,20,32.2,20,30.8,25,31.8,32,31.3,32.8,29.5,34,27,37,21,38.5,18,40,15.5,43,12.5,44,10.5,51,11.8,51,10,48,4.5,44,1,41,-2,39,-6,40.5,-11,40.5,-15.5,35,-20,35.5,-24,32.5,-26,32.5,-28.5,28,-33,25,-34,20,-34.8,18.3,-34,17.8,-31,15,-27,14.5,-22.5,12,-17,13.5,-11,12.3,-6,9.7,-2.5,9.5,1,9.8,3.8,6.5,4.3,4,6.3,1,5.8,-2,4.8,-7.5,4.4,-12,7.5,-13.5,9.5,-16.7,12.5,-17.5,14.7,-16,18.5,-16.5,22,-13,27.5,-9.5,30,-9.8,32,-6.5,34],
+[114,-22,122,-18,126,-14,129.5,-14.8,132,-11.5,136.8,-12,136,-15,140.5,-17.5,142.5,-10.7,145,-15,146,-19,150,-22.5,153,-26,153.5,-29,150.5,-37,146,-39,141,-38,138,-35.5,135.5,-35,132,-32,124,-33.5,118,-35,115,-34,115.5,-31,113.5,-26],
+[-5,50,1.5,51,1.7,53,-0.5,54,-2,57.5,-3,58.6,-5.5,58.5,-6,56,-4.5,54.7,-3,53.3,-5,52],
+[-10,52,-6,52,-6,54.5,-8,55,-10,54],
+[-24,65.5,-22,66.4,-15,66.3,-14,64.8,-18,63.4,-22.5,63.8],
+[130,31.5,132,34,135,33.6,140,35,141,38.5,142,40,141.5,41.5,140,40,138,37,135,35.5,131,34.8],
+[140,42,143,42,145.5,43.3,142,45.5,140,43.5],
+[44,-25,47,-25,50,-15.5,49.5,-12,47,-15,44,-17,43.5,-22],
+[95,5.5,98,4,104,-1,106,-3,105,-6,102,-4,98,0],
+[109,1.5,113,3.5,117,7,119,5,117.5,1,116,-4,111,-3,109,-1],
+[105.5,-6.5,114.5,-7.8,114,-8.7,106,-7.5],
+[131,-1,138,-1.8,145,-4,150,-10,147,-10.3,141,-9,138,-8,133,-4],
+[172.5,-34.5,178,-37.7,175,-41.5,174.5,-39],
+[172.5,-40.5,174,-41.5,171,-44.5,169,-46.7,166.5,-46,168,-43.5],
+[-85,22,-80,23,-74,20,-77,19.8,-82,22],
+[-59,47.5,-53,47,-52.7,49.5,-56,51.5]
+];
+const ANT=[-180,-78,-150,-77,-100,-73,-70,-70,-60,-64.5,-55,-72,-30,-78,0,-70,30,-69,60,-67,90,-66,120,-66,150,-69,170,-72,180,-76,180,-90,-180,-90];
+const GREEN='#58a04a';
+const NAMES=[['NORDAMERIKA',-102,47,24],['SÜD-',-60,-8,20],['AMERIKA',-60,-17,20],['EUROPA',17,53,13],['ASIEN',92,52,28],['AFRIKA',20,4,26],['AUSTRALIEN',134,-25,17],['ANTARKTIS',0,-80,22]];
+// Erdtextur (selbst gezeichnet)
+function earthTex(){
+ const c=document.createElement('canvas');c.width=2048;c.height=1024;const g=c.getContext('2d');g.scale(2,2);
+ const oc=g.createLinearGradient(0,0,0,512);oc.addColorStop(0,'#0c2f66');oc.addColorStop(.5,'#0f4287');oc.addColorStop(1,'#0c2f66');
+ g.fillStyle=oc;g.fillRect(0,0,1024,512);
+ const X=l=>(l+180)/360*1024, Y=l=>(90-l)/180*512;
+ const path=p=>{g.beginPath();for(let i=0;i<p.length;i+=2){const x=X(p[i]),y=Y(p[i+1]);i?g.lineTo(x,y):g.moveTo(x,y);}g.closePath();};
+ g.lineJoin='round';
+ // helle Küstenzone im Wasser
+ g.strokeStyle='rgba(130,200,255,.45)';g.lineWidth=7;
+ path(ANT);g.stroke();LAND.forEach(p=>{path(p);g.stroke();});
+ // Antarktis
+ g.fillStyle='#eef3f8';path(ANT);g.fill();
+ // Grundfarbe Land
+ g.fillStyle=GREEN;LAND.forEach(p=>{path(p);g.fill();});
+ // Landschaften (weich, nur innerhalb der Landmassen)
+ g.save();g.beginPath();LAND.forEach(p=>{for(let i=0;i<p.length;i+=2){const x=X(p[i]),y=Y(p[i+1]);i?g.lineTo(x,y):g.moveTo(x,y);}g.closePath();});g.clip();
+ const rgb=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16)).join(',');
+ const blob=(lo,la,rx,ry,col,al)=>{g.save();g.translate(X(lo),Y(la));g.scale(rx/360*1024,ry/180*512);const r=g.createRadialGradient(0,0,0,0,0,1);r.addColorStop(0,'rgba('+rgb(col)+','+al+')');r.addColorStop(.55,'rgba('+rgb(col)+','+al*.7+')');r.addColorStop(1,'rgba('+rgb(col)+',0)');g.fillStyle=r;g.beginPath();g.arc(0,0,1,0,7);g.fill();g.restore();};
+ // Wälder und Tropen
+ [[-100,56,26,8,'#2f6b3a',.9],[95,60,48,9,'#2f6b3a',.9],[18,63,10,6,'#2f6b3a',.9],[-62,-5,16,9,'#1f6b2f',.95],[22,0,12,7,'#1f6b2f',.95],[105,14,9,9,'#2a7a38',.9],[112,0,14,5,'#1f6b2f',.9],[140,-5,9,3,'#1f6b2f',.9],[-85,37,11,8,'#3f8f3f',.7],[10,48,14,6,'#4a9a45',.6],[78,22,8,7,'#79a343',.7],[120,32,8,8,'#4f9a45',.7],[150,-30,3,10,'#4f9a45',.6]].forEach(a=>blob(...a));
+ // Savanne und Steppe
+ [[12,12,24,3.5,'#b4b062',.85],[36,-6,7,11,'#a9aa55',.8],[-50,-18,8,8,'#8fb050',.7],[-98,45,10,8,'#9bb060',.6],[70,50,20,5,'#a8b068',.7]].forEach(a=>blob(...a));
+ // Wüsten
+ [[8,24,26,8,'#dcbb7a',.95],[28,25,12,6,'#dcbb7a',.95],[46,24,10,7,'#d8b772',.95],[55,32,9,5,'#c4a96c',.9],[103,43,18,6,'#cab37c',.9],[134,-26,19,9,'#d2a265',.95],[22,-23,8,5,'#cdb374',.9],[-112,34,8,5,'#d0b27c',.85],[-69,-25,3,6,'#c9ae7e',.9],[-68,-44,6,6,'#b0b472',.7],[67,38,7,4,'#cdb680',.8]].forEach(a=>blob(...a));
+ // Gebirge
+ [[88,32,11,4,'#a89a82',.9],[-115,47,4,14,'#8c7e5e',.6],[-72,-22,2.6,28,'#8b7a58',.65],[10,46.5,4,1.5,'#9a9a90',.8],[68,38,5,3,'#9a8d78',.7],[60,60,2,10,'#7d7a62',.5]].forEach(a=>blob(...a));
+ // Tundra im hohen Norden
+ [[-100,68,30,5,'#8aa079',.9],[100,72,55,4,'#8aa079',.9],[-95,76,14,4,'#c9d4cc',.8]].forEach(a=>blob(...a));
+ // Grönland
+ g.fillStyle='#f1f6fa';path(LAND[1]);g.fill();
+ g.restore();
+ // Küstenlinie
+ LAND.forEach(p=>{path(p);g.strokeStyle='rgba(240,252,230,.85)';g.lineWidth=1.1;g.stroke();});
+ g.fillStyle='#e8f0f8';g.fillRect(0,0,1024,8);
+ // Namen
+ g.textAlign='center';g.textBaseline='middle';g.lineJoin='round';
+ NAMES.forEach(([t,lo,la,fs])=>{g.font='800 '+fs+'px Helvetica,Arial,sans-serif';g.lineWidth=4;g.strokeStyle='rgba(10,18,34,.85)';g.strokeText(t,X(lo),Y(la));g.fillStyle='#ffffff';g.fillText(t,X(lo),Y(la));});
+ const tx=new THREE.CanvasTexture(c);tx.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());return tx;
+}
+const orbitPos=d=>{const f=2*Math.PI*(d-172)/365;return new THREE.Vector3(-R*Math.cos(f),0,R*Math.sin(f));};
+const earth=new THREE.Group(), tilt=new THREE.Group(), spin=new THREE.Group();
+tilt.rotation.z=-EPS; earth.add(tilt); tilt.add(spin); earth.scale.setScalar(1.8); scene.add(earth);
+const eTex=earthTex();
+spin.add(new THREE.Mesh(new THREE.SphereGeometry(1,64,48),new THREE.MeshStandardMaterial({map:eTex,emissive:0xffffff,emissiveMap:eTex,emissiveIntensity:.32,roughness:.95})));
+// Achse
+tilt.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,-1.8,0),new THREE.Vector3(0,1.8,0)]),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.7})));
+// Breitenkreis + Schweiz
+const la=LAT*Math.PI/180, lo=LON*Math.PI/180;
+const ring=[];for(let i=0;i<=64;i++){const a=i/64*2*Math.PI;ring.push(new THREE.Vector3(Math.cos(la)*Math.cos(a)*1.004,Math.sin(la)*1.004,-Math.cos(la)*Math.sin(a)*1.004));}
+spin.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.35})));
+const pin=new THREE.Mesh(new THREE.SphereGeometry(.055,16,12),new THREE.MeshBasicMaterial({color:0xe03a2c}));
+pin.position.set(Math.cos(la)*Math.cos(lo),Math.sin(la),-Math.cos(la)*Math.sin(lo)).multiplyScalar(1.02);
+spin.add(pin);
+
+// Bahn und Beschriftungen
+const ray=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3(R,0,0)]),new THREE.LineBasicMaterial({color:0xffc244,transparent:true,opacity:.45}));scene.add(ray);
+const op=[];for(let i=0;i<=180;i++){const f=i/180*2*Math.PI;op.push(new THREE.Vector3(R*Math.cos(f),0,R*Math.sin(f)));}
+scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(op),new THREE.LineBasicMaterial({color:0x4a63a0,transparent:true,opacity:.7})));
+const labels=[];
+function label(t,sub,pos){
+ const c=document.createElement('canvas');c.width=512;c.height=160;const g=c.getContext('2d');
+ g.textAlign='center';g.fillStyle='#e8eefb';g.font='600 64px Helvetica,Arial,sans-serif';g.fillText(t,256,78);
+ g.fillStyle='#93a3c4';g.font='36px Helvetica,Arial,sans-serif';g.fillText(sub,256,130);
+ const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));
+ s.scale.set(3.6,1.13,1);s.position.copy(pos);scene.add(s);labels.push(s);
+}
+[[79,'Frühling','20. März'],[172,'Sommer','21. Juni'],[265,'Herbst','22. September'],[355,'Winter','21. Dezember']].forEach(([d,t,s])=>{
+ const p=orbitPos(d);label(t,s,p.clone().multiplyScalar(1.22).add(new THREE.Vector3(0,1.2,0)));});
+
+// Kamera mit Ziehen
+let yaw=0.35,pitch=0.62,dist=24,drag=null;
+stage.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];stage.setPointerCapture(e.pointerId);});
+stage.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-drag[0])*.006;pitch=Math.max(.12,Math.min(1.45,pitch+(e.clientY-drag[1])*.006));drag=[e.clientX,e.clientY];});
+stage.addEventListener('pointerup',()=>drag=null);
+stage.addEventListener('wheel',e=>{e.preventDefault();dist=Math.max(12,Math.min(40,dist+e.deltaY*.02));},{passive:false});
+function size(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+new ResizeObserver(size).observe(stage);size();
+
+// Berechnungen
+function calc(d){
+ const dec=EPS*Math.sin(2*Math.PI*(d-80)/365);
+ const elev=90-LAT+dec*180/Math.PI;
+ const x=-Math.tan(la)*Math.tan(dec);
+ const len=24/Math.PI*Math.acos(Math.max(-1,Math.min(1,x)));
+ return {elev,len};
+}
+function season(d){
+ if(d>=79&&d<172)return 0; if(d>=172&&d<265)return 1; if(d>=265&&d<355)return 2; return 3;}
+const S=[
+ ['Frühling','Die Sonne steigt von Tag zu Tag höher. Rund um den 20. März sind Tag und Nacht gleich lang, der Schnee schmilzt, die Wiesen werden grün.'],
+ ['Sommer','Die Nordhalbkugel ist der Sonne zugeneigt. Die Strahlen treffen steil auf die Schweiz und die Tage sind lang. Am 21. Juni steht die Sonne am höchsten.'],
+ ['Herbst','Die Sonne sinkt wieder, die Tage werden kürzer. Um den 22. September herrscht erneut Tag-und-Nacht-Gleiche, die Wälder färben sich.'],
+ ['Winter','Die Nordhalbkugel ist von der Sonne weggeneigt. Die Strahlen fallen flach ein, die Tage sind kurz und in den Alpen liegt Schnee.']
+];
+const sky=$('sky').getContext('2d');
+function drawSky(e,s){
+ const W=360,H=150,g=sky;
+ const cols=[['#5b8fd0','#cfe3f5'],['#2a6fd1','#a9d2f7'],['#51709f','#d7c9b4'],['#7e90a8','#dfe6ee']][s];
+ const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,cols[0]);gr.addColorStop(1,cols[1]);
+ g.fillStyle=gr;g.fillRect(0,0,W,H);
+ const sy=H-24-(e/90)*(H-48), sx=W*.5;
+ g.fillStyle='rgba(255,200,70,.3)';g.beginPath();g.arc(sx,sy,24,0,7);g.fill();
+ g.fillStyle='#ffc93c';g.beginPath();g.arc(sx,sy,12,0,7);g.fill();
+ const snow=s===3?'#f2f6fa':s===0||s===2?'#9aa6a8':'#6d8f5a';
+ const pk=[[0,150],[0,100],[50,70],[85,100],[140,40],[200,105],[250,60],[300,95],[360,75],[360,150]];
+ g.fillStyle='#6f7f90';g.beginPath();pk.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.fill();
+ g.fillStyle=(s===1)?'#e9eef3':'#fff';
+ [[140,40,22],[250,60,17],[50,70,14]].forEach(([x,y,w])=>{g.beginPath();g.moveTo(x,y);g.lineTo(x-w*.7,y+w);g.lineTo(x+w*.8,y+w);g.fill();});
+ g.fillStyle=snow;g.fillRect(0,128,W,22);
+ g.fillStyle='#e8eefb';g.font='12px Helvetica,Arial,sans-serif';g.fillText('Blick nach Süden, Mittag',8,14);
+}
+
+const topc=$('top').getContext('2d');
+function hm(x){let h=Math.floor(x),m=Math.round((x-h)*60);if(m===60){h++;m=0;}return h+' h '+String(m).padStart(2,'0')+' min';}
+function drawTop(){
+ const g=topc,W=360,H=270,cx=180,cy=140,Rr=100;
+ const c=calc(d),dec=EPS*Math.sin(2*Math.PI*(d-80)/365),half=c.len/24*Math.PI;
+ g.fillStyle='#0d1830';g.fillRect(0,0,W,H);
+ // Sonne und Strahlen von rechts
+ g.fillStyle='rgba(255,185,56,.25)';g.beginPath();g.arc(W+4,cy,44,0,7);g.fill();
+ g.fillStyle='#ffc244';g.beginPath();g.arc(W+4,cy,26,0,7);g.fill();
+ g.strokeStyle='rgba(255,194,68,.55)';g.lineWidth=1.5;
+ for(let i=-4;i<=4;i++){const o=i*Rr/4.5,x0=cx+Math.sqrt(Math.max(0,Rr*Rr-o*o))+8;if(x0<W-32){g.beginPath();g.moveTo(x0,cy+o);g.lineTo(W-34,cy+o);g.stroke();}}
+ // Erdscheibe
+ g.fillStyle='#0f4287';g.beginPath();g.arc(cx,cy,Rr,0,7);g.fill();
+ // Land (Polarprojektion, nur Nordhalbkugel sichtbar)
+ g.save();g.beginPath();g.arc(cx,cy,Rr,0,7);g.clip();
+ g.strokeStyle='#ffffff';g.lineWidth=1.4;g.lineJoin='round';
+ LAND.forEach((p,pi)=>{g.fillStyle=pi===1?'#f1f6fa':GREEN;g.beginPath();for(let i=0;i<p.length;i+=2){const lt=p[i+1],ang=spinA+(p[i]-LON)*Math.PI/180,r=lt>=0?Math.cos(lt*Math.PI/180)*Rr:Rr*2.2;const x=cx+r*Math.cos(ang),y=cy-r*Math.sin(ang);i?g.lineTo(x,y):g.moveTo(x,y);}g.closePath();g.fill();g.stroke();});
+ g.restore();
+ // Nachtseite
+ g.fillStyle='rgba(4,8,22,.55)';g.beginPath();g.arc(cx,cy,Rr,Math.PI/2,Math.PI*1.5);
+ for(let i=0;i<=40;i++){const t=i/40*Math.PI;g.lineTo(cx-Math.sin(t)*Math.sin(dec)*Rr,cy-Math.cos(t)*Rr);}
+ g.closePath();g.fill();
+ g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1.5;g.beginPath();g.arc(cx,cy,Rr,0,7);g.stroke();
+ // Breitenkreis Schweiz: Tag gelb, Nacht blau
+ const rl=Math.cos(la)*Rr;g.lineWidth=7;g.lineCap='butt';
+ g.strokeStyle='#ffc244';g.beginPath();g.arc(cx,cy,rl,-half,half);g.stroke();
+ g.strokeStyle='#7b8cff';g.beginPath();g.arc(cx,cy,rl,half,2*Math.PI-half);g.stroke();
+ // Pol und Schweiz
+ g.fillStyle='#fff';g.beginPath();g.arc(cx,cy,3,0,7);g.fill();g.font='12px Helvetica,Arial,sans-serif';g.fillText('N',cx+6,cy-6);
+ const a=spinA;g.fillStyle='#e03a2c';g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.arc(cx+rl*Math.cos(a),cy-rl*Math.sin(a),7,0,7);g.fill();g.stroke();
+ // Beschriftung
+ g.font='600 13px Helvetica,Arial,sans-serif';
+ g.fillStyle='#ffc244';g.fillText('Tag '+hm(c.len),10,22);
+ g.fillStyle='#9fadff';g.fillText('Nacht '+hm(24-c.len),10,42);
+ g.fillStyle='#93a3c4';g.font='12px Helvetica,Arial,sans-serif';g.fillText('Sonne',W-52,cy+54);
+}
+// Zeit
+let d=79,playing=true,last=performance.now(),spinA=0,speed=12;
+const slider=$('day'),btn=$('play');
+btn.onclick=()=>{playing=!playing;btn.textContent=playing?'Pause':'Abspielen';};
+slider.oninput=()=>{d=+slider.value;};
+$('spd').oninput=e=>{speed=+e.target.value;$('spdv').textContent=speed===0?'Stopp':speed+' Tage/s';};
+const tabs=document.querySelectorAll('.tab');
+function show(v){$('simv').hidden=v!=='sim';$('theory').hidden=v!=='th';tabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.v===v)));if(v==='sim')size();}
+tabs.forEach(t=>t.onclick=()=>show(t.dataset.v));
+document.querySelectorAll('.go').forEach(b=>b.onclick=()=>{d=+b.dataset.day;slider.value=d;playing=false;btn.textContent='Abspielen';lastUi=-1;show('sim');});
+const fmt=new Intl.DateTimeFormat('de-CH',{day:'numeric',month:'long'});
+function ui(){
+ const s=season(d),c=calc(d);
+ $('season').textContent=S[s][0];$('why').textContent=S[s][1];
+ $('elev').textContent=c.elev.toFixed(0)+'°';
+ const h=Math.floor(c.len),m=Math.round((c.len-h)*60);
+ $('len').textContent=h+' h '+String(m).padStart(2,'0')+' min';
+ $('date').textContent=fmt.format(new Date(2026,0,1+Math.round(d)));
+ labels.forEach((l,i)=>l.material.opacity=i===s?1:.4);
+ drawSky(c.elev,s);
+}
+let lastUi=-1;
+function frame(t){
+ const dt=Math.min(.05,(t-last)/1000);last=t;
+ if(playing){d=(d+dt*speed)%365;slider.value=Math.floor(d);}
+ if(playing)spinA+=dt*2.2;
+ earth.position.copy(orbitPos(d));ray.rotation.y=-Math.atan2(earth.position.z,earth.position.x);spin.rotation.y=spinA;
+ sun.scale.setScalar(1+.015*Math.sin(t/400));
+ camera.position.set(dist*Math.cos(pitch)*Math.sin(yaw),dist*Math.sin(pitch),dist*Math.cos(pitch)*Math.cos(yaw));
+ camera.lookAt(0,0,0);
+ const k=Math.round(d*2);if(k!==lastUi){lastUi=k;ui();}
+ if(!$('simv').hidden)drawTop();
+ renderer.render(scene,camera);
+ requestAnimationFrame(frame);
+}
+ui();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
