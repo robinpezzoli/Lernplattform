@@ -1,1199 +1,154 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lernplattform Pezzoli</title>
-  <meta name="description" content="Zentrale Übersicht für Unterrichtseinheiten, Arbeitsblätter und weiterführende Unterlagen von Pezzoli." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #FAF9F7;
-      --surface: #FFFFFF;
-      --surface-muted: #EFECE7;
-      --border: #E5E1DA;
-      --border-strong: #D0C9BE;
-      --text: #1E2430;
-      --text-secondary: #4B5565;
-      --text-muted: #667085;
-      --accent: #2B4C7E;
-      --accent-hover: #1F3A63;
-
-      --pastel-blue-bg: #F0F5FB;
-      --pastel-blue-border: #D7E3F3;
-      --pastel-blue-text: #2B4C7E;
-
-      --pastel-sage-bg: #F0F7F4;
-      --pastel-sage-border: #D2E5DC;
-      --pastel-sage-text: #275D49;
-
-      --pastel-peach-bg: #FDF5EE;
-      --pastel-peach-border: #F0DBC7;
-      --pastel-peach-text: #8D4E22;
-
-      --pastel-lilac-bg: #F6F2FA;
-      --pastel-lilac-border: #E3D8EE;
-      --pastel-lilac-text: #5C3E78;
-
-      --radius: 10px;
-      --container: 1120px;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background-color: var(--bg);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    body {
-      margin: 0;
-    }
-
-    h1, h2, h3, .brand {
-      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      letter-spacing: -0.02em;
-      margin: 0;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    :focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: var(--container);
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(250, 249, 247, 0.92);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 32px;
-      height: 64px;
-    }
-
-    .brand {
-      font-size: 1.0625rem;
-      font-weight: 700;
-      text-decoration: none;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    .nav a {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-decoration: none;
-      white-space: nowrap;
-      transition: color 150ms ease;
-    }
-
-    .nav a:hover {
-      color: var(--accent);
-      text-decoration: underline;
-      text-underline-offset: 5px;
-    }
-
-    .header-cta {
-      display: inline-flex;
-      align-items: center;
-      padding: 8px 16px;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      color: #FFFFFF;
-      background-color: var(--accent);
-      border-radius: 7px;
-      text-decoration: none;
-      white-space: nowrap;
-      flex-shrink: 0;
-      transition: background-color 150ms ease;
-    }
-
-    .header-cta:hover {
-      background-color: var(--accent-hover);
-    }
-
-    .hero {
-      padding: 64px 0 56px;
-      background: linear-gradient(135deg, #EEF4FB 0%, #FAF9F7 52%, #EFF7F3 100%);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.3fr 0.7fr;
-      gap: 48px;
-      align-items: center;
-    }
-
-    .kicker {
-      font-size: 0.8125rem;
-      font-weight: 500;
-      color: var(--pastel-blue-text);
-      margin: 0 0 12px;
-    }
-
-    .hero h1 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      line-height: 1.12;
-      font-weight: 700;
-      max-width: 18ch;
-      text-wrap: balance;
-    }
-
-    .hero-subtitle {
-      margin: 18px 0 28px;
-      font-size: 1.0625rem;
-      color: var(--text-secondary);
-      max-width: 56ch;
-    }
-
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      padding: 10px 20px;
-      background: var(--accent);
-      color: #FFFFFF;
-      border-radius: 7px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: background-color 150ms ease;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-    }
-
-    .btn-text {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-decoration: none;
-    }
-
-    .btn-text:hover {
-      color: var(--text);
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
-
-    .hero-diagram {
-      background: var(--surface);
-      border: 1px solid var(--pastel-blue-border);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: 0 2px 10px rgba(30, 36, 48, 0.03);
-    }
-
-    .hero-diagram-caption {
-      margin-top: 12px;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .section {
-      padding: 56px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-head {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-    }
-
-    .section-head h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .section-lead {
-      margin: 6px 0 0;
-      font-size: 0.9375rem;
-      color: var(--text-secondary);
-    }
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-
-    .filter-group {
-      display: inline-flex;
-      gap: 4px;
-      padding: 4px;
-      background: var(--surface-muted);
-      border-radius: 8px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      appearance: none;
-      border: 0;
-      background: transparent;
-      color: var(--text-secondary);
-      font-family: inherit;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      padding: 7px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background-color 150ms ease, color 150ms ease;
-    }
-
-    .filter-btn:hover {
-      color: var(--text);
-    }
-
-    .filter-btn.is-active {
-      background: var(--surface);
-      color: var(--accent);
-      font-weight: 600;
-      box-shadow: 0 1px 2px rgba(30, 36, 48, 0.06);
-    }
-
-    .search-input {
-      min-width: 250px;
-      padding: 8px 12px;
-      font-family: inherit;
-      font-size: 0.875rem;
-      color: var(--text);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-    }
-
-    .search-input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .module-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .card.theme-informatik {
-      background: var(--pastel-blue-bg);
-      border-color: var(--pastel-blue-border);
-      --card-accent: var(--pastel-blue-text);
-      --card-divider: var(--pastel-blue-border);
-    }
-
-    .card.theme-mathematik {
-      background: var(--pastel-sage-bg);
-      border-color: var(--pastel-sage-border);
-      --card-accent: var(--pastel-sage-text);
-      --card-divider: var(--pastel-sage-border);
-    }
-
-    .card.theme-natur {
-      background: var(--pastel-peach-bg);
-      border-color: var(--pastel-peach-border);
-      --card-accent: var(--pastel-peach-text);
-      --card-divider: var(--pastel-peach-border);
-    }
-
-    .card.theme-methodik {
-      background: var(--pastel-lilac-bg);
-      border-color: var(--pastel-lilac-border);
-      --card-accent: var(--pastel-lilac-text);
-      --card-divider: var(--pastel-lilac-border);
-    }
-
-    .card-top {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .card-index {
-      font-family: "IBM Plex Mono", monospace;
-      font-variant-numeric: tabular-nums;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      color: var(--card-accent, var(--accent));
-    }
-
-    .card-meta {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-    }
-
-    .card-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-      line-height: 1.35;
-    }
-
-    .card-desc {
-      margin: 0;
-      font-size: 0.9375rem;
-      color: var(--text-secondary);
-    }
-
-    .unit-details {
-      margin-top: auto;
-      padding-top: 12px;
-      border-top: 1px solid var(--card-divider, var(--border));
-    }
-
-    .unit-summary {
-      list-style: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      color: var(--card-accent, var(--accent));
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .unit-summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .unit-list {
-      list-style: none;
-      margin: 12px 0 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .unit-link {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 9px 12px;
-      border-radius: 7px;
-      background: rgba(255, 255, 255, 0.8);
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: background-color 150ms ease;
-    }
-
-    .unit-link:hover {
-      background: #FFFFFF;
-    }
-
-    .unit-meta {
-      font-family: "IBM Plex Mono", monospace;
-      font-variant-numeric: tabular-nums;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      flex-shrink: 0;
-    }
-
-    .table-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.875rem;
-    }
-
-    th {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      background: #F4F2EE;
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-    }
-
-    tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .table-link {
-      font-weight: 600;
-      color: var(--text);
-      text-decoration: none;
-    }
-
-    .table-link:hover {
-      color: var(--accent);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .table-note {
-      margin-top: 3px;
-      font-size: 0.8125rem;
-      color: var(--text-secondary);
-    }
-
-    .col-cat {
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .cat-informatik { color: var(--pastel-blue-text); }
-    .cat-mathematik { color: var(--pastel-sage-text); }
-    .cat-natur { color: var(--pastel-peach-text); }
-    .cat-methodik { color: var(--pastel-lilac-text); }
-
-    .col-format {
-      color: var(--text-secondary);
-      white-space: nowrap;
-    }
-
-    .col-date {
-      font-family: "IBM Plex Mono", monospace;
-      font-variant-numeric: tabular-nums;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .action-link {
-      font-weight: 600;
-      color: var(--accent);
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .action-link:hover {
-      text-decoration: underline;
-    }
-
-    .checklist-box {
-      background: var(--surface);
-      border: 1px solid var(--pastel-sage-border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .progress-track {
-      height: 5px;
-      width: 100%;
-      background: var(--pastel-sage-bg);
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #5B8BB4 0%, #4E937A 100%);
-      transition: width 200ms ease;
-    }
-
-    .task-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-    }
-
-    .task-row:last-child {
-      border-bottom: 0;
-    }
-
-    .task-row:hover {
-      background: #FBF9F6;
-    }
-
-    .task-checkbox {
-      margin-top: 4px;
-      width: 16px;
-      height: 16px;
-      accent-color: var(--pastel-sage-text);
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .task-body {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .task-label {
-      font-size: 0.9375rem;
-      color: var(--text);
-    }
-
-    .task-checkbox:checked + .task-body .task-label {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
-
-    .task-meta {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .progress-summary {
-      font-family: "IBM Plex Mono", monospace;
-      font-variant-numeric: tabular-nums;
-      font-size: 0.8125rem;
-      color: var(--pastel-sage-text);
-      font-weight: 500;
-    }
-
-    .reset-btn {
-      appearance: none;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-secondary);
-      font-family: inherit;
-      font-size: 0.8125rem;
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .reset-btn:hover {
-      border-color: var(--border-strong);
-      color: var(--text);
-    }
-
-    .empty-state {
-      padding: 32px;
-      text-align: center;
-      color: var(--text-muted);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      display: none;
-    }
-
-    .site-footer {
-      padding: 32px 0 48px;
-      font-size: 0.8125rem;
-      color: var(--text-muted);
-    }
-
-    .footer-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      flex-wrap: wrap;
-    }
-
-    .footer-links {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .footer-links a {
-      text-decoration: none;
-    }
-
-    .footer-links a:hover {
-      color: var(--text);
-      text-decoration: underline;
-    }
-
-    @media (max-width: 840px) {
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
-      .module-grid {
-        grid-template-columns: 1fr;
-      }
-      .nav {
-        display: none;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meine Lernplattform</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+            color: white;
+            text-align: center;
+            padding: 55px 20px;
+        }
+
+        header h1 {
+            font-size: 36px;
+            margin: 0 0 15px;
+        }
+
+        header p {
+            font-size: 18px;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .karten {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .karte {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+
+        .karte:hover {
+            transform: translateY(-5px);
+        }
+
+        .symbol {
+            font-size: 48px;
+        }
+
+        .karte h2 {
+            color: #1d4ed8;
+        }
+
+        .karte p {
+            line-height: 1.6;
+            min-height: 50px;
+        }
+
+        .button {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .button:hover {
+            background: #1e40af;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+    </style>
 </head>
+
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a href="#top" class="brand">Lernplattform Pezzoli</a>
-      <nav class="nav" aria-label="Hauptnavigation">
-        <a href="#faecher">Fächer</a>
-        <a href="#materialien">Materialien</a>
-        <a href="#lernpfad">Lernpfad</a>
-      </nav>
-      <a href="#materialien" class="header-cta">Unterlagen öffnen</a>
+
+<header>
+    <h1>🎓 Meine Lernplattform</h1>
+    <p>Entdecken, üben und besser werden!</p>
+</header>
+
+<main>
+
+    <h2 style="text-align:center; margin-bottom:30px;">
+        Wähle deine Lernübung
+    </h2>
+
+    <div class="karten">
+
+        <div class="karte">
+            <div class="symbol">🏆</div>
+            <h2>Mathe-Master-Challenge</h2>
+            <p>Stelle dein mathematisches Können unter Beweis!</p>
+            <a class="button"
+               href="Mathe-Master-Challenge-3.html">
+               Jetzt starten
+            </a>
+        </div>
+
+        <div class="karte">
+            <div class="symbol">🏔️</div>
+            <h2>Alpenlift – Pythagoras</h2>
+            <p>Entdecke den Satz des Pythagoras auf spielerische Weise!</p>
+            <a class="button"
+               href="alpenlift-pythagoras.html">
+               Jetzt starten
+            </a>
+        </div>
+
+        <div class="karte">
+            <div class="symbol">✖️</div>
+            <h2>Multiplikations-Duell</h2>
+            <p>Trainiere das Einmaleins und verbessere deine Geschwindigkeit!</p>
+            <a class="button"
+               href="multiplikations_duell.html">
+               Jetzt starten
+            </a>
+        </div>
+
     </div>
-  </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <p class="kicker">Dokumentation · Unterrichtsmaterial · Selbststudium</p>
-          <h1>Strukturiertes Lernen ohne Ablenkung.</h1>
-          <p class="hero-subtitle">Zentrale Übersicht für Unterrichtseinheiten, Arbeitsblätter und weiterführende Unterlagen von Pezzoli.</p>
-          <div class="hero-actions">
-            <a href="#faecher" class="btn-primary">Lernmodule ansehen</a>
-            <a href="#materialien" class="btn-text">Arbeitsblätter &amp; Skripte</a>
-          </div>
-        </div>
-        <div class="hero-diagram" aria-hidden="true">
-          <svg viewBox="0 0 320 190" width="100%" height="auto" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="0.5" y="0.5" width="319" height="189" rx="6" fill="#FAF9F7" stroke="#E5E1DA"/>
-            <rect x="18" y="20" width="132" height="68" rx="6" fill="#F0F5FB" stroke="#D7E3F3"/>
-            <rect x="170" y="20" width="132" height="68" rx="6" fill="#F0F7F4" stroke="#D2E5DC"/>
-            <rect x="18" y="102" width="132" height="68" rx="6" fill="#FDF5EE" stroke="#F0DBC7"/>
-            <rect x="170" y="102" width="132" height="68" rx="6" fill="#F6F2FA" stroke="#E3D8EE"/>
-            <line x1="34" y1="44" x2="112" y2="44" stroke="#2B4C7E" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="34" y1="60" x2="94" y2="60" stroke="#9EB5D6" stroke-width="2" stroke-linecap="round"/>
-            <line x1="186" y1="44" x2="262" y2="44" stroke="#275D49" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="186" y1="60" x2="244" y2="60" stroke="#97C3B1" stroke-width="2" stroke-linecap="round"/>
-            <line x1="34" y1="126" x2="116" y2="126" stroke="#8D4E22" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="34" y1="142" x2="88" y2="142" stroke="#D7AE8D" stroke-width="2" stroke-linecap="round"/>
-            <line x1="186" y1="126" x2="268" y2="126" stroke="#5C3E78" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="186" y1="142" x2="240" y2="142" stroke="#BFA8D4" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="hero-diagram-caption">
-            <span>4 Fachbereiche</span>
-            <span>6 Module · 5 Dokumente</span>
-          </div>
-        </div>
-      </div>
-    </section>
+</main>
 
-    <!-- LERNMODULE HIER ANPASSEN -->
-    <section id="faecher" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Lernbereiche &amp; Module</h2>
-            <p class="section-lead">Thematisch gegliederte Einheiten mit dezenter Farbcodierung nach Fachbereich.</p>
-          </div>
-        </div>
+<footer>
+    <p>Viel Erfolg beim Lernen! 🚀</p>
+</footer>
 
-        <div class="toolbar">
-          <div class="filter-group" role="tablist" aria-label="Fächer filtern">
-            <button type="button" class="filter-btn is-active" data-filter="Alle">Alle</button>
-            <button type="button" class="filter-btn" data-filter="Informatik">Informatik</button>
-            <button type="button" class="filter-btn" data-filter="Mathematik">Mathematik</button>
-            <button type="button" class="filter-btn" data-filter="Naturwissenschaften">Naturwissenschaften</button>
-            <button type="button" class="filter-btn" data-filter="Methodik">Methodik</button>
-          </div>
-          <input id="searchInput" class="search-input" type="search" placeholder="Thema oder Dokument suchen..." aria-label="Lerninhalte durchsuchen" />
-        </div>
-
-        <div id="moduleGrid" class="module-grid">
-          <article class="card module-card theme-informatik" data-category="Informatik" data-search="algorithmen &amp; datenstrukturen informatik systematische einführung in such- und sortierverfahren, laufzeitanalyse und rekursive problemlösung mit nachvollziehbaren beispielen. binäre suche &amp; komplexität o(log n) sortierverfahren im vergleich listen, stapel und warteschlangen">
-            <div class="card-top">
-              <span class="card-index">01</span>
-              <span class="card-meta">Informatik · Grundlagen · Sek II · Nov 2026</span>
-            </div>
-            <h3 class="card-title">Algorithmen &amp; Datenstrukturen</h3>
-            <p class="card-desc">Systematische Einführung in Such- und Sortierverfahren, Laufzeitanalyse und rekursive Problemlösung mit nachvollziehbaren Beispielen.</p>
-            <details class="unit-details">
-              <summary class="unit-summary">
-                <span>3 Einheiten anzeigen</span>
-                <span aria-hidden="true">→</span>
-              </summary>
-              <ul class="unit-list">
-                <li class="unit-item">
-                  <a href="./informatik/binaere-suche.html" class="unit-link">
-                    <span class="unit-title">Binäre Suche &amp; Komplexität O(log n)</span>
-                    <span class="unit-meta">25 Min.</span>
-                  </a>
-                </li>
-                <li class="unit-item">
-                  <a href="./informatik/sortierverfahren.html" class="unit-link">
-                    <span class="unit-title">Sortierverfahren im Vergleich</span>
-                    <span class="unit-meta">35 Min.</span>
-                  </a>
-                </li>
-                <li class="unit-item">
-                  <a href="./informatik/datenstrukturen.html" class="unit-link">
-                    <span class="unit-title">Listen, Stapel und Warteschlangen</span>
-                    <span class="unit-meta">30 Min.</span>
-                  </a>
-                </li>
-              </ul>
-            </details>
-          </article>
-
-          <article class="card module-card theme-informatik" data-category="Informatik" data-search="webarchitektur mit html &amp; css informatik semantisches markup, saubere kaskaden, rasterlayouts mit css grid und barrierefreie navigation ohne unnötige abhängigkeiten. semantische dokumentstruktur layout-systeme: flexbox und grid">
-            <div class="card-top">
-              <span class="card-index">02</span>
-              <span class="card-meta">Informatik · Praxismodul · Einstieg · Nov 2026</span>
-            </div>
-            <h3 class="card-title">Webarchitektur mit HTML &amp; CSS</h3>
-            <p class="card-desc">Semantisches Markup, saubere Kaskaden, Rasterlayouts mit CSS Grid und barrierefreie Navigation ohne unnötige Abhängigkeiten.</p>
-            <details class="unit-details">
-              <summary class="unit-summary">
-                <span>2 Einheiten anzeigen</span>
-                <span aria-hidden="true">→</span>
-              </summary>
-              <ul class="unit-list">
-                <li class="unit-item">
-                  <a href="./web/semantik.html" class="unit-link">
-                    <span class="unit-title">Semantische Dokumentstruktur</span>
-                    <span class="unit-meta">20 Min.</span>
-                  </a>
-                </li>
-                <li class="unit-item">
-                  <a href="./web/grid-flexbox.html" class="unit-link">
-                    <span class="unit-title">Layout-Systeme: Flexbox und Grid</span>
-                    <span class="unit-meta">40 Min.</span>
-                  </a>
-                </li>
-              </ul>
-            </details>
-          </article>
-
-          <article class="card module-card theme-mathematik" data-category="Mathematik" data-search="differentialrechnung &amp; funktionen mathematik änderungsraten, ableitungsregeln, kurvendiskussion und extremwertaufgaben mit geometrischer anschauung. vom differenzen- zum differentialquotienten extremstellen und wendepunkte">
-            <div class="card-top">
-              <span class="card-index">03</span>
-              <span class="card-meta">Mathematik · Vertiefung · Gymnasium · Okt 2026</span>
-            </div>
-            <h3 class="card-title">Differentialrechnung &amp; Funktionen</h3>
-            <p class="card-desc">Änderungsraten, Ableitungsregeln, Kurvendiskussion und Extremwertaufgaben mit geometrischer Anschauung.</p>
-            <details class="unit-details">
-              <summary class="unit-summary">
-                <span>2 Einheiten anzeigen</span>
-                <span aria-hidden="true">→</span>
-              </summary>
-              <ul class="unit-list">
-                <li class="unit-item">
-                  <a href="./mathematik/ableitungsbegriff.html" class="unit-link">
-                    <span class="unit-title">Vom Differenzen- zum Differentialquotienten</span>
-                    <span class="unit-meta">30 Min.</span>
-                  </a>
-                </li>
-                <li class="unit-item">
-                  <a href="./mathematik/kurvendiskussion.html" class="unit-link">
-                    <span class="unit-title">Extremstellen und Wendepunkte</span>
-                    <span class="unit-meta">35 Min.</span>
-                  </a>
-                </li>
-              </ul>
-            </details>
-          </article>
-
-          <article class="card module-card theme-mathematik" data-category="Mathematik" data-search="stochastik &amp; kombinatorik mathematik mehrstufige zufallsexperimente, bedingte wahrscheinlichkeiten, baumdiagramme und binomialverteilung sicher anwenden. bedingte wahrscheinlichkeit &amp; satz von bayes bernoulli-ketten und erwartungswert">
-            <div class="card-top">
-              <span class="card-index">04</span>
-              <span class="card-meta">Mathematik · Grundlagen · Sek II · Okt 2026</span>
-            </div>
-            <h3 class="card-title">Stochastik &amp; Kombinatorik</h3>
-            <p class="card-desc">Mehrstufige Zufallsexperimente, bedingte Wahrscheinlichkeiten, Baumdiagramme und Binomialverteilung sicher anwenden.</p>
-            <details class="unit-details">
-              <summary class="unit-summary">
-                <span>2 Einheiten anzeigen</span>
-                <span aria-hidden="true">→</span>
-              </summary>
-              <ul class="unit-list">
-                <li class="unit-item">
-                  <a href="./mathematik/bayes.html" class="unit-link">
-                    <span class="unit-title">Bedingte Wahrscheinlichkeit &amp; Satz von Bayes</span>
-                    <span class="unit-meta">30 Min.</span>
-                  </a>
-                </li>
-                <li class="unit-item">
-                  <a href="./mathematik/binomialverteilung.html" class="unit-link">
-                    <span class="unit-title">Bernoulli-Ketten und Erwartungswert</span>
-                    <span class="unit-meta">25 Min.</span>
-                  </a>
-                </li>
-              </ul>
-            </details>
-          </article>
-
-          <article class="card module-card theme-natur" data-category="Naturwissenschaften" data-search="mechanik &amp; erhaltungssätze naturwissenschaften bewegungsgesetze, kraftzerlegung, mechanische arbeit sowie energie- und impulserhaltung in geschlossenen systemen. gleichmäßig beschleunigte bewegung energieerhaltung bei stößen">
-            <div class="card-top">
-              <span class="card-index">05</span>
-              <span class="card-meta">Naturwissenschaften · Grundlagen · Sek II · Sep 2026</span>
-            </div>
-            <h3 class="card-title">Mechanik &amp; Erhaltungssätze</h3>
-            <p class="card-desc">Bewegungsgesetze, Kraftzerlegung, mechanische Arbeit sowie Energie- und Impulserhaltung in geschlossenen Systemen.</p>
-            <details class="unit-details">
-              <summary class="unit-summary">
-                <span>2 Einheiten anzeigen</span>
-                <span aria-hidden="true">→</span>
-              </summary>
-              <ul class="unit-list">
-                <li class="unit-item">
-                  <a href="./physik/kinematik.html" class="unit-link">
-                    <span class="unit-title">Gleichmäßig beschleunigte Bewegung</span>
-                    <span class="unit-meta">25 Min.</span>
-                  </a>
-                </li>
-                <li class="unit-item">
-                  <a href="./physik/erhaltungssaetze.html" class="unit-link">
-                    <span class="unit-title">Energieerhaltung bei Stößen</span>
-                    <span class="unit-meta">35 Min.</span>
-                  </a>
-                </li>
-              </ul>
-            </details>
-          </article>
-
-          <article class="card module-card theme-methodik" data-category="Methodik" data-search="wissenschaftliches arbeiten &amp; dokumentation methodik strukturierte literaturrecherche, präzises zitieren, klare gliederung von projektarbeiten und versionskontrolle mit git. repositories auf github sauber strukturieren quellenkritik und zitierregeln">
-            <div class="card-top">
-              <span class="card-index">06</span>
-              <span class="card-meta">Methodik · Überfachlich · Alle Stufen · Nov 2026</span>
-            </div>
-            <h3 class="card-title">Wissenschaftliches Arbeiten &amp; Dokumentation</h3>
-            <p class="card-desc">Strukturierte Literaturrecherche, präzises Zitieren, klare Gliederung von Projektarbeiten und Versionskontrolle mit Git.</p>
-            <details class="unit-details">
-              <summary class="unit-summary">
-                <span>2 Einheiten anzeigen</span>
-                <span aria-hidden="true">→</span>
-              </summary>
-              <ul class="unit-list">
-                <li class="unit-item">
-                  <a href="./methodik/git-struktur.html" class="unit-link">
-                    <span class="unit-title">Repositories auf GitHub sauber strukturieren</span>
-                    <span class="unit-meta">20 Min.</span>
-                  </a>
-                </li>
-                <li class="unit-item">
-                  <a href="./methodik/zitieren.html" class="unit-link">
-                    <span class="unit-title">Quellenkritik und Zitierregeln</span>
-                    <span class="unit-meta">25 Min.</span>
-                  </a>
-                </li>
-              </ul>
-            </details>
-          </article>
-        </div>
-        <div id="emptyModules" class="empty-state">Keine passenden Lernmodule gefunden.</div>
-      </div>
-    </section>
-
-    <!-- ARBEITSBLÄTTER & MATERIALIEN HIER ANPASSEN -->
-    <section id="materialien" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Arbeitsblätter &amp; Skripte</h2>
-            <p class="section-lead">Direkt verlinkte PDFs, Übungsblätter und Checklisten aus dem Repository.</p>
-          </div>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Dokument</th>
-                <th>Bereich</th>
-                <th>Format</th>
-                <th>Stand</th>
-                <th>Zugriff</th>
-              </tr>
-            </thead>
-            <tbody id="materialsBody">
-              <tr data-search="aufgabenblatt 01: laufzeitanalyse &amp; o-notation informatik pdf · 4 seiten übungsaufgaben zur abschätzung von schleifenkomplexität mit lösungshinweisen.">
-                <td class="col-title">
-                  <a href="./materialien/ab-01-laufzeit.pdf" class="table-link">Aufgabenblatt 01: Laufzeitanalyse &amp; O-Notation</a>
-                  <div class="table-note">Übungsaufgaben zur Abschätzung von Schleifenkomplexität mit Lösungshinweisen.</div>
-                </td>
-                <td class="col-cat cat-informatik">Informatik</td>
-                <td class="col-format">PDF · 4 Seiten</td>
-                <td class="col-date">18.11.2026</td>
-                <td class="col-action"><a href="./materialien/ab-01-laufzeit.pdf" class="action-link">Öffnen</a></td>
-              </tr>
-              <tr data-search="formelsammlung analysis &amp; vektorgeometrie mathematik pdf · 6 seiten kompakte übersicht aller ableitungsregeln, integrale und skalarprodukte.">
-                <td class="col-title">
-                  <a href="./materialien/formelsammlung-analysis.pdf" class="table-link">Formelsammlung Analysis &amp; Vektorgeometrie</a>
-                  <div class="table-note">Kompakte Übersicht aller Ableitungsregeln, Integrale und Skalarprodukte.</div>
-                </td>
-                <td class="col-cat cat-mathematik">Mathematik</td>
-                <td class="col-format">PDF · 6 Seiten</td>
-                <td class="col-date">12.11.2026</td>
-                <td class="col-action"><a href="./materialien/formelsammlung-analysis.pdf" class="action-link">Öffnen</a></td>
-              </tr>
-              <tr data-search="checkliste: semantisches html5 &amp; barrierefreiheit informatik html · interaktiv prüfliste für kontraste, landmarken und tastaturnavigation.">
-                <td class="col-title">
-                  <a href="./materialien/checkliste-html5.html" class="table-link">Checkliste: Semantisches HTML5 &amp; Barrierefreiheit</a>
-                  <div class="table-note">Prüfliste für Kontraste, Landmarken und Tastaturnavigation.</div>
-                </td>
-                <td class="col-cat cat-informatik">Informatik</td>
-                <td class="col-format">HTML · Interaktiv</td>
-                <td class="col-date">04.11.2026</td>
-                <td class="col-action"><a href="./materialien/checkliste-html5.html" class="action-link">Öffnen</a></td>
-              </tr>
-              <tr data-search="versuchsprotokoll: freier fall &amp; messunsicherheit naturwissenschaften pdf · 3 seiten vorlage zur auswertung von messreihen inklusive fehlerfortpflanzung.">
-                <td class="col-title">
-                  <a href="./materialien/protokoll-freier-fall.pdf" class="table-link">Versuchsprotokoll: Freier Fall &amp; Messunsicherheit</a>
-                  <div class="table-note">Vorlage zur Auswertung von Messreihen inklusive Fehlerfortpflanzung.</div>
-                </td>
-                <td class="col-cat cat-natur">Naturwissenschaften</td>
-                <td class="col-format">PDF · 3 Seiten</td>
-                <td class="col-date">27.10.2026</td>
-                <td class="col-action"><a href="./materialien/protokoll-freier-fall.pdf" class="action-link">Öffnen</a></td>
-              </tr>
-              <tr data-search="leitfaden für projektarbeiten &amp; github-abgaben methodik markdown · readme hinweise zu commit-nachrichten, ordnerstruktur und veröffentlichung via pages.">
-                <td class="col-title">
-                  <a href="./materialien/leitfaden-github-abgabe.md" class="table-link">Leitfaden für Projektarbeiten &amp; GitHub-Abgaben</a>
-                  <div class="table-note">Hinweise zu Commit-Nachrichten, Ordnerstruktur und Veröffentlichung via Pages.</div>
-                </td>
-                <td class="col-cat cat-methodik">Methodik</td>
-                <td class="col-format">Markdown · README</td>
-                <td class="col-date">19.10.2026</td>
-                <td class="col-action"><a href="./materialien/leitfaden-github-abgabe.md" class="action-link">Öffnen</a></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- LERNPFAD CHECKLISTE -->
-    <section id="lernpfad" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Persönlicher Lernpfad</h2>
-            <p class="section-lead">Fortschritt wird lokal im Browser gespeichert.</p>
-          </div>
-          <div style="display:flex;align-items:center;gap:12px;">
-            <span id="progressSummary" class="progress-summary">0 von 6 erledigt</span>
-            <button type="button" id="resetTasks" class="reset-btn">Zurücksetzen</button>
-          </div>
-        </div>
-        <div class="checklist-box">
-          <div class="progress-track" aria-hidden="true">
-            <div id="progressFill" class="progress-fill"></div>
-          </div>
-          <label class="task-row">
-            <input type="checkbox" class="task-checkbox" data-task-id="task-1" />
-            <span class="task-body">
-              <span class="task-label">Skript zur binären Suche durcharbeiten und Grenzwerte prüfen</span>
-              <span class="task-meta">01 · Informatik · 25 Min.</span>
-            </span>
-          </label>
-          <label class="task-row">
-            <input type="checkbox" class="task-checkbox" data-task-id="task-2" />
-            <span class="task-body">
-              <span class="task-label">Aufgabenblatt 01 (Aufgaben 1–4) schriftlich lösen</span>
-              <span class="task-meta">01 · Informatik · 35 Min.</span>
-            </span>
-          </label>
-          <label class="task-row">
-            <input type="checkbox" class="task-checkbox" data-task-id="task-3" />
-            <span class="task-body">
-              <span class="task-label">Ableitungsregeln an drei Polynomfunktionen üben</span>
-              <span class="task-meta">03 · Mathematik · 30 Min.</span>
-            </span>
-          </label>
-          <label class="task-row">
-            <input type="checkbox" class="task-checkbox" data-task-id="task-4" />
-            <span class="task-body">
-              <span class="task-label">Vierfeldertafel für das Beispiel zur bedingten Wahrscheinlichkeit erstellen</span>
-              <span class="task-meta">04 · Mathematik · 20 Min.</span>
-            </span>
-          </label>
-          <label class="task-row">
-            <input type="checkbox" class="task-checkbox" data-task-id="task-5" />
-            <span class="task-body">
-              <span class="task-label">Messreihe aus dem Mechanik-Versuch tabellarisch auswerten</span>
-              <span class="task-meta">05 · Naturwissenschaften · 30 Min.</span>
-            </span>
-          </label>
-          <label class="task-row">
-            <input type="checkbox" class="task-checkbox" data-task-id="task-6" />
-            <span class="task-body">
-              <span class="task-label">GitHub-Repository anlegen und index.html über GitHub Pages aktivieren</span>
-              <span class="task-meta">06 · Methodik · 15 Min.</span>
-            </span>
-          </label>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <span>Lernplattform Pezzoli · 2026</span>
-      <div class="footer-links">
-        <a href="#faecher">Fächer</a>
-        <a href="#materialien">Materialien</a>
-        <a href="#lernpfad">Lernpfad</a>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    (function () {
-      var activeFilter = 'Alle';
-      var searchTerm = '';
-      var filterButtons = document.querySelectorAll('.filter-btn');
-      var moduleCards = document.querySelectorAll('.module-card');
-      var materialRows = document.querySelectorAll('#materialsBody tr');
-      var emptyModules = document.getElementById('emptyModules');
-      var searchInput = document.getElementById('searchInput');
-
-      function applyFilters() {
-        var visibleCount = 0;
-        moduleCards.forEach(function (card) {
-          var cat = card.getAttribute('data-category') || '';
-          var haystack = card.getAttribute('data-search') || '';
-          var matchesCat = activeFilter === 'Alle' || cat === activeFilter;
-          var matchesSearch = !searchTerm || haystack.indexOf(searchTerm) !== -1;
-          var show = matchesCat && matchesSearch;
-          card.style.display = show ? 'flex' : 'none';
-          if (show) visibleCount++;
-        });
-
-        if (emptyModules) {
-          emptyModules.style.display = visibleCount === 0 ? 'block' : 'none';
-        }
-
-        materialRows.forEach(function (row) {
-          var haystack = row.getAttribute('data-search') || '';
-          var matchesSearch = !searchTerm || haystack.indexOf(searchTerm) !== -1;
-          row.style.display = matchesSearch ? '' : 'none';
-        });
-      }
-
-      filterButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          activeFilter = btn.getAttribute('data-filter') || 'Alle';
-          filterButtons.forEach(function (b) { b.classList.remove('is-active'); });
-          btn.classList.add('is-active');
-          applyFilters();
-        });
-      });
-
-      if (searchInput) {
-        searchInput.addEventListener('input', function (e) {
-          searchTerm = (e.target.value || '').trim().toLowerCase();
-          applyFilters();
-        });
-      }
-
-      var storageKey = 'lernplattform_pezzoli_tasks_v1';
-      var checkboxes = document.querySelectorAll('.task-checkbox');
-      var summary = document.getElementById('progressSummary');
-      var progressFill = document.getElementById('progressFill');
-      var resetBtn = document.getElementById('resetTasks');
-
-      if (checkboxes.length > 0) {
-        var saved = {};
-        try {
-          saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
-        } catch (err) {
-          saved = {};
-        }
-
-        function updateSummary() {
-          var done = 0;
-          checkboxes.forEach(function (cb) {
-            if (cb.checked) done++;
-          });
-          if (summary) {
-            summary.textContent = done + ' von ' + checkboxes.length + ' erledigt';
-          }
-          if (progressFill) {
-            progressFill.style.width = Math.round((done / checkboxes.length) * 100) + '%';
-          }
-        }
-
-        checkboxes.forEach(function (cb) {
-          var id = cb.getAttribute('data-task-id');
-          if (id && saved[id]) cb.checked = true;
-          cb.addEventListener('change', function () {
-            if (id) saved[id] = cb.checked;
-            try {
-              localStorage.setItem(storageKey, JSON.stringify(saved));
-            } catch (err) {}
-            updateSummary();
-          });
-        });
-
-        if (resetBtn) {
-          resetBtn.addEventListener('click', function () {
-            saved = {};
-            checkboxes.forEach(function (cb) { cb.checked = false; });
-            try {
-              localStorage.removeItem(storageKey);
-            } catch (err) {}
-            updateSummary();
-          });
-        }
-
-        updateSummary();
-      }
-    })();
-  </script>
 </body>
 </html>
