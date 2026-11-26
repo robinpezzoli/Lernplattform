@@ -2,418 +2,816 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detailhandel Kassen-Trainer Schweiz (CHF) - Offline Version</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Migros Kasse">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#FF6600">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23FF6600'/%3E%3Ctext x='90' y='125' font-family='Arial Black, sans-serif' font-size='108' font-weight='900' text-anchor='middle' fill='%23ffffff'%3EM%3C/text%3E%3C/svg%3E">
+  <title>Migros Kassen-Trainer Schweiz (CHF) - iPad & Offline Edition</title>
   <style>
     :root {
-      --bg: #0b1120;
-      --card: #111827;
-      --card-sub: #1e293b;
-      --border: #334155;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --red: #dc2626;
-      --red-hover: #ef4444;
-      --gold: #f59e0b;
-      --green: #10b981;
-      --blue: #38bdf8;
+      --bg: #F7F7F5;
+      --card: #ffffff;
+      --card-sub: #f5f5f4;
+      --border: #e7e5e4;
+      --text: #1c1917;
+      --text-muted: #57534e;
+      --red: #FF6600;
+      --red-hover: #E65C00;
+      --red-ink: #CC4D00;
+      --orange-tint: #FFF3EB;
+      --orange-soft: #FFF8F3;
+      --gold: #CC4D00;
+      --green: #059669;
+      --green-dark: #065f46;
+      --blue: #0284c7;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-    header { background: #0f172a; border-bottom: 1px solid var(--border); padding: 12px 20px; position: sticky; top: 0; z-index: 100; }
-    .header-content { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+    html {
+      -webkit-text-size-adjust: 100%;
+      touch-action: manipulation;
+      overscroll-behavior-y: contain;
+    }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      -webkit-tap-highlight-color: transparent; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+    }
+    body { 
+      background-color: var(--bg); 
+      color: var(--text); 
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex; 
+      flex-direction: column; 
+      touch-action: manipulation;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+      padding-bottom: env(safe-area-inset-bottom);
+      font-variant-numeric: tabular-nums;
+    }
+    
+    header { 
+      background: rgba(255, 255, 255, 0.96);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); 
+      padding: calc(10px + env(safe-area-inset-top)) 16px 10px; 
+      position: sticky; 
+      top: 0; 
+      z-index: 100; 
+    }
+    .header-content { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: space-between; 
+      align-items: center; 
+      gap: 10px; 
+    }
     .brand { display: flex; align-items: center; gap: 12px; }
-    .flag { width: 36px; height: 36px; background: var(--red); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
-    .title-box h1 { font-size: 16px; font-weight: 700; color: #fff; }
+    .migros-sign { 
+      background: var(--red); 
+      color: #ffffff;
+      border-radius: 10px; 
+      padding: 8px 14px;
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 19px; 
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 2px 8px rgba(255, 102, 0, 0.25); 
+      user-select: none;
+      line-height: 1;
+    }
+    .title-box h1 { font-size: 16px; font-weight: 800; color: var(--text); }
     .title-box p { font-size: 12px; color: var(--text-muted); }
-    .header-actions { display: flex; align-items: center; gap: 8px; }
-    .badge-streak { background: rgba(245, 158, 11, 0.15); border: 1px solid var(--gold); color: var(--gold); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; }
-    .btn { background: var(--card-sub); color: #fff; border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
-    .btn:hover { background: #334155; }
-    .btn-red { background: var(--red); border-color: var(--red); }
+    
+    .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .badge-streak { background: var(--orange-tint); border: 1px solid rgba(255, 102, 0, 0.3); color: var(--red-ink); padding: 7px 12px; border-radius: 10px; font-size: 13px; font-weight: 800; }
+    .badge-rank { background: #f0f9ff; border: 1px solid #bae6fd; color: #0369a1; padding: 7px 12px; border-radius: 10px; font-size: 12px; font-weight: 700; }
+    
+    button {
+      appearance: none;
+      -webkit-appearance: none;
+      border: none;
+      background: none;
+      font: inherit;
+      cursor: pointer;
+      color: inherit;
+      touch-action: manipulation;
+      -webkit-touch-callout: none;
+    }
+
+    .btn { 
+      background: var(--card-sub); 
+      color: var(--text); 
+      border: 1px solid #d6d3d1; 
+      padding: 10px 14px; 
+      min-height: 44px;
+      border-radius: 12px; 
+      cursor: pointer; 
+      font-size: 13px; 
+      font-weight: 700; 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center;
+      gap: 6px; 
+      transition: transform 0.1s, background 0.15s; 
+      user-select: none; 
+      -webkit-user-select: none;
+    }
+    .btn:hover { background: #e7e5e4; }
+    .btn:active { transform: scale(0.96); }
+    .btn-red { background: var(--red); border-color: var(--red); color: #fff; }
     .btn-red:hover { background: var(--red-hover); }
-    .btn-green { background: var(--green); border-color: var(--green); }
+    .btn-green { background: var(--green); border-color: var(--green); color: #fff; }
+    .btn-green:hover { background: #047857; }
     
-    .nav-tabs { max-width: 1200px; margin: 0 auto; display: flex; gap: 6px; padding: 10px 20px 0; overflow-x: auto; }
-    .tab-btn { background: transparent; color: var(--text-muted); border: none; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap; }
-    .tab-btn.active { background: var(--red); color: #fff; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
+    /* Navigation Tabs */
+    .nav-tabs { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      display: flex; 
+      gap: 8px; 
+      padding: 12px 16px 2px; 
+      overflow-x: auto; 
+      -webkit-overflow-scrolling: touch; 
+      width: 100%; 
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn { 
+      background: #ffffff; 
+      color: var(--text-muted); 
+      border: 1px solid var(--border); 
+      padding: 10px 16px; 
+      min-height: 44px;
+      border-radius: 12px; 
+      font-weight: 700; 
+      font-size: 13px; 
+      cursor: pointer; 
+      white-space: nowrap; 
+      flex-shrink: 0;
+      transition: transform 0.1s, background 0.15s, border-color 0.15s; 
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .tab-btn:hover { border-color: #d6d3d1; color: var(--text); }
+    .tab-btn:active { transform: scale(0.96); }
+    .tab-btn.active { 
+      background: var(--red); 
+      color: #fff; 
+      border-color: var(--red); 
+      box-shadow: 0 3px 10px rgba(255, 102, 0, 0.25); 
+    }
     
-    main { max-width: 1200px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1.6fr; gap: 20px; }
-    @media(max-width: 850px) { .grid-2 { grid-template-columns: 1fr; } }
+    main { max-width: 1200px; margin: 0 auto; padding: 14px 16px 24px; flex: 1; width: 100%; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1.45fr; gap: 16px; align-items: start; }
+    @media(max-width: 740px) { .grid-2 { grid-template-columns: 1fr; } }
     
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-    .receipt { background: #f8fafc; color: #0f172a; border-radius: 12px; padding: 18px; font-family: "Courier New", monospace; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-    .receipt-header { text-align: center; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 12px; }
-    .receipt-item { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
-    .receipt-total { border-top: 2px solid #0f172a; margin-top: 10px; padding-top: 10px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; }
+    .card { 
+      background: var(--card); 
+      border: 1px solid var(--border); 
+      border-radius: 18px; 
+      padding: 18px; 
+      box-shadow: 0 2px 12px rgba(28, 25, 23, 0.05); 
+    }
     
-    .given-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 14px; margin-top: 14px; display: flex; justify-content: space-between; align-items: center; }
-    .big-num { font-size: 22px; font-weight: 800; color: var(--gold); font-family: monospace; }
+    /* Receipt Styles */
+    .receipt { 
+      background: #ffffff; 
+      color: #1c1917; 
+      border-radius: 14px; 
+      padding: 16px; 
+      font-family: "Courier New", Courier, monospace; 
+      border: 1px solid #d6d3d1;
+      border-top: 6px solid var(--red); 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .receipt-header { text-align: center; border-bottom: 1px dashed #a8a29e; padding-bottom: 10px; margin-bottom: 10px; }
+    .receipt-migros-mark { color: var(--red); font-weight: 900; font-size: 18px; letter-spacing: 0.14em; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .receipt-item { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; font-weight: 600; color: #292524; }
+    .receipt-discount { color: #047857; font-weight: 700; font-size: 12px; display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .receipt-total { border-top: 2px solid #1c1917; margin-top: 10px; padding-top: 10px; font-weight: 900; font-size: 17px; display: flex; justify-content: space-between; color: var(--red-ink); }
     
-    .drawer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 12px; }
-    .money-btn { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 12px 6px; text-align: center; cursor: pointer; transition: transform 0.1s, background 0.2s; color: #fff; user-select: none; }
-    .money-btn:active { transform: scale(0.95); }
-    .money-btn:hover { background: #2d3e56; }
-    .coin-gold { border-color: #f59e0b; color: #fbbf24; }
-    .coin-silver { border-color: #cbd5e1; color: #e2e8f0; }
-    .note-chf { border-left: 4px solid var(--red); }
+    .given-box { background: var(--orange-soft); border: 1px solid rgba(255, 102, 0, 0.25); border-radius: 14px; padding: 14px; margin-top: 14px; display: flex; justify-content: space-between; align-items: center; }
+    .big-num { font-size: 24px; font-weight: 900; color: var(--red-ink); font-family: monospace; }
     
-    .selected-tray { background: #0f172a; border: 2px dashed #334155; border-radius: 12px; padding: 16px; min-height: 90px; margin: 16px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-    .tray-chip { background: #1e293b; border: 1px solid #475569; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; }
-    .tray-chip:hover { border-color: var(--red); color: #f87171; }
+    .customer-bubble { background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 10px 12px; margin-top: 12px; font-size: 13px; color: #78350f; font-style: italic; }
     
-    .feedback { padding: 14px; border-radius: 12px; margin-top: 14px; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; }
-    .feedback-success { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--green); color: #34d399; }
-    .feedback-error { background: rgba(220, 38, 38, 0.15); border: 1px solid var(--red); color: #f87171; }
+    /* Cash Drawer */
+    .drawer-section-title { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin: 14px 0 8px; }
+    .drawer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; background: var(--card-sub); padding: 10px; border-radius: 14px; border: 1px solid var(--border); }
     
-    /* Speed Mode */
-    .speed-container { max-width: 600px; margin: 0 auto; text-align: center; }
-    .speed-math-display { font-size: 32px; font-weight: 800; font-family: monospace; margin: 24px 0; color: #fff; letter-spacing: 1px; }
-    .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 320px; margin: 0 auto; }
-    .numpad-btn { background: #1e293b; border: 1px solid #334155; border-radius: 12px; font-size: 20px; font-weight: 700; color: #fff; padding: 16px; cursor: pointer; }
-    .numpad-btn:hover { background: #334155; }
+    .money-btn { 
+      background: #ffffff; 
+      border: 1px solid #d6d3d1; 
+      border-radius: 12px; 
+      padding: 10px 6px; 
+      text-align: center; 
+      cursor: pointer; 
+      transition: transform 0.08s, background 0.15s, border-color 0.15s; 
+      color: var(--text); 
+      user-select: none; 
+      -webkit-user-select: none;
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 76px; 
+      width: 100%;
+    }
+    .money-btn:hover { border-color: rgba(255, 102, 0, 0.5); background: var(--orange-soft); }
+    .money-btn:active { transform: scale(0.93); background: var(--orange-tint); }
     
-    /* Rounding Mode */
-    .rounding-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
-    .rounding-table th, .rounding-table td { padding: 10px; text-align: left; border-bottom: 1px solid #1e293b; font-size: 13px; }
-    .rounding-table th { background: #0f172a; color: var(--text-muted); }
+    .coin-round { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; margin-bottom: 4px; border: 2px solid; }
+    .coin-gold { border-color: #d97706; background: #fef3c7; color: #92400e; }
+    .coin-silver { border-color: #94a3b8; background: #f1f5f9; color: #1e293b; }
     
-    footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-muted); border-top: 1px solid #1e293b; margin-top: auto; }
+    .note-rect { width: 56px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; margin-bottom: 4px; border: 1px solid rgba(0,0,0,0.15); color: #fff; }
+    
+    .note-10 { background: #eab308; color: #1c1917; }
+    .note-20 { background: #dc2626; }
+    .note-50 { background: #16a34a; }
+    .note-100 { background: #0284c7; }
+    .note-200 { background: #92400e; }
+    
+    /* Tray */
+    .selected-tray { background: #fafaf9; border: 2px dashed #d6d3d1; border-radius: 14px; padding: 12px; min-height: 76px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .tray-chip { 
+      background: #ffffff; 
+      border: 1px solid #d6d3d1; 
+      color: var(--text);
+      padding: 10px 14px;
+      min-height: 44px;
+      border-radius: 14px; 
+      font-size: 13px; 
+      font-weight: 800; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      cursor: pointer; 
+      user-select: none;
+      -webkit-user-select: none;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .tray-chip:active { transform: scale(0.95); }
+    .tray-chip:hover { border-color: #ef4444; color: #b91c1c; background: #fef2f2; }
+    
+    .feedback { padding: 14px; border-radius: 14px; margin-top: 14px; font-size: 14px; font-weight: 700; display: flex; flex-direction: column; gap: 8px; }
+    .feedback-success { background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; }
+    .feedback-error { background: #fff1f2; border: 1px solid #fda4af; color: #9f1239; }
+    
+    .counting-help-box { background: var(--orange-soft); border: 1px solid rgba(255, 102, 0, 0.22); border-radius: 12px; padding: 12px; margin-top: 12px; font-size: 12px; line-height: 1.5; color: #44403c; }
+    
+    .speed-box { max-width: 560px; margin: 0 auto; text-align: center; }
+    .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 360px; margin: 16px auto; }
+    .numpad-btn { 
+      background: #f5f5f4; 
+      border: 1px solid #d6d3d1; 
+      border-radius: 16px; 
+      font-size: 24px; 
+      font-weight: 800; 
+      color: var(--text); 
+      min-height: 60px;
+      padding: 14px; 
+      cursor: pointer; 
+      user-select: none; 
+      -webkit-user-select: none;
+    }
+    .numpad-btn:hover { background: #e7e5e4; }
+    .numpad-btn:active { background: #d6d3d1; transform: scale(0.95); }
+    
+    .option-btn { 
+      width: 100%; 
+      text-align: left; 
+      padding: 15px 16px;
+      min-height: 54px;
+      border-radius: 14px; 
+      border: 2px solid var(--border); 
+      background: #fafaf9; 
+      color: var(--text); 
+      font-size: 14px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      margin-bottom: 10px; 
+      display: flex; 
+      gap: 10px; 
+      align-items: flex-start; 
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .option-btn:hover { background: var(--orange-soft); border-color: rgba(255, 102, 0, 0.45); }
+    .option-btn:active { transform: scale(0.98); }
+    .option-correct { background: #ecfdf5 !important; border-color: var(--green) !important; color: #065f46 !important; }
+    .option-wrong { background: #fff1f2 !important; border-color: #e11d48 !important; color: #9f1239 !important; }
+    
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(28, 25, 23, 0.55);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      max-width: 480px;
+      width: 100%;
+      padding: 22px;
+      box-shadow: 0 24px 50px rgba(0,0,0,0.22);
+      max-height: 85dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      color: var(--text);
+    }
+
+    footer { background: #ffffff; text-align: center; padding: 14px 16px calc(14px + env(safe-area-inset-bottom)); font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: auto; }
   </style>
-</head>
+<script src="/_aistudio-iframe.js?v=29045eb3"></script></head>
 <body>
 
 <header>
   <div class="header-content">
     <div class="brand">
-      <div class="flag">🇨🇭</div>
+      <div class="migros-sign">MIGROS</div>
       <div class="title-box">
-        <h1>Detailhandel Kassen-Trainer Schweiz</h1>
-        <p>Offline Version (CHF & 5-Rappen Rundungsregel)</p>
+        <h1>Kassen-Trainer Schweiz (CHF)</h1>
+        <p>Offline & iPad Edition · Detailhandel Schweiz</p>
       </div>
     </div>
     
     <div class="header-actions">
       <div class="badge-streak" id="streakBadge">🔥 0x Serie</div>
-      <button class="btn" onclick="openTheory()">📖 Kassenregeln</button>
-      <button class="btn btn-red" onclick="resetStats()">🔄 Zurücksetzen</button>
+      <div class="badge-rank" id="rankBadge">Lehrling Stufe 1</div>
+      <button type="button" class="btn" onclick="toggleSound()" id="soundBtn">🔊 Ton An</button>
+      <button type="button" class="btn" onclick="openIpadHelp()">📱 iPad Tipps</button>
     </div>
   </div>
 </header>
 
 <div class="nav-tabs">
-  <button class="tab-btn active" onclick="switchTab('cashier')">🏪 Kassen-Praxis</button>
-  <button class="tab-btn" onclick="switchTab('speed')">⚡ Kopfrechnen-Blitz</button>
-  <button class="tab-btn" onclick="switchTab('rounding')">🎯 5-Rp. Rundung</button>
-  <button class="tab-btn" onclick="switchTab('theory')">📚 Theorie & Noten</button>
+  <button type="button" class="tab-btn active" data-tab="cashier" onclick="switchTab('cashier')">🏪 Kassen-Praxis</button>
+  <button type="button" class="tab-btn" data-tab="speed" onclick="switchTab('speed')">⚡ Kopfrechnen-Blitz</button>
+  <button type="button" class="tab-btn" data-tab="rounding" onclick="switchTab('rounding')">🎯 5-Rp. Rundung</button>
+  <button type="button" class="tab-btn" data-tab="scenarios" onclick="switchTab('scenarios')">🧠 Praxisfälle & Tricks</button>
+  <button type="button" class="tab-btn" data-tab="exam" onclick="switchTab('exam')">🎓 QV-Prüfung</button>
+  <button type="button" class="tab-btn" data-tab="theory" onclick="switchTab('theory')">📖 Spickzettel</button>
 </div>
 
 <main id="mainContainer">
-  <!-- Dynamic Content rendered by JavaScript below -->
+  <!-- Dynamic View rendered here -->
 </main>
 
+<div id="ipadHelpModal" class="modal-backdrop" onclick="if(event.target===this) closeIpadHelp()">
+  <div class="modal-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <h3 style="font-size:17px; font-weight:800; color:var(--text);">📱 iPad App-Installation</h3>
+      <button type="button" class="btn" onclick="closeIpadHelp()">✕</button>
+    </div>
+    <p style="font-size:13px; color:var(--text-muted); line-height:1.5; margin-bottom:12px;">
+      Speichere den Migros Kassen-Trainer direkt als Vollbild-App auf deinem iPad Startbildschirm:
+    </p>
+    <ol style="font-size:13px; color:#292524; line-height:1.7; padding-left:18px; margin-bottom:16px;">
+      <li>Tippe in Safari oben rechts auf das <strong>Teilen-Symbol</strong> (Viereck mit Pfeil nach oben 📤).</li>
+      <li>Wähle im Menü <strong>«Zum Home-Bildschirm»</strong>.</li>
+      <li>Tippe auf <strong>«Hinzufügen»</strong>.</li>
+    </ol>
+    <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:12px; font-size:12px; color:#065f46; margin-bottom:16px;">
+      ✓ Funktioniert im Hoch- und Querformat komplett offline – ohne Safari-Adressleiste!
+    </div>
+    <button type="button" class="btn btn-red" style="width:100%;" onclick="closeIpadHelp()">Verstanden</button>
+  </div>
+</div>
+
 <footer>
-  🇨🇭 Detailhandel Kassen-Trainer • Speziell für die Schweizer Lehre (DHA / DHF) • Funktioniert 100% Offline
+  <strong style="color:var(--red); font-weight:900; letter-spacing:0.06em;">MIGROS</strong> · Schweizer Franken (CHF) · 5-Rappen Rundung · Detailhandel Schweiz (DHA & DHF)
 </footer>
 
 <script>
-// --- AUDIO SYNTHESIZER (100% Offline Web Audio API) ---
-class SoundEffects {
+// --- AUDIO SYNTHESIZER (iOS Safari & iPad compatible) ---
+class AudioPlayer {
   constructor() {
     this.ctx = null;
+    this.enabled = true;
   }
-  init() {
+  ensureCtx() {
     if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) this.ctx = new AudioCtx();
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) {
+        this.ctx = new AudioContextClass();
+      }
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
     }
   }
-  coin() {
-    this.init();
+  playCoin() {
+    if (!this.enabled) return;
+    this.ensureCtx();
     if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(987.77, this.ctx.currentTime); // B5
-    osc.frequency.exponentialRampToValueAtTime(1318.51, this.ctx.currentTime + 0.08); // E6
-    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.18);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.2);
-  }
-  success() {
-    this.init();
-    if (!this.ctx) return;
-    const notes = [523.25, 659.25, 783.99, 1046.50];
-    notes.forEach((freq, i) => {
+    try {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.08);
-      gain.gain.setValueAtTime(0.2, this.ctx.currentTime + i * 0.08);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.08 + 0.15);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(987.77, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1318.51, this.ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
       osc.connect(gain);
       gain.connect(this.ctx.destination);
-      osc.start(this.ctx.currentTime + i * 0.08);
-      osc.stop(this.ctx.currentTime + i * 0.08 + 0.16);
-    });
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.16);
+    } catch(e) {}
   }
-  error() {
-    this.init();
+  playSuccess() {
+    if (!this.enabled) return;
+    this.ensureCtx();
     if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(160, this.ctx.currentTime);
-    osc.frequency.linearRampToValueAtTime(90, this.ctx.currentTime + 0.25);
-    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.28);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.3);
+    try {
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, i) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.07);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime + i * 0.07);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.07 + 0.14);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(this.ctx.currentTime + i * 0.07);
+        osc.stop(this.ctx.currentTime + i * 0.07 + 0.15);
+      });
+    } catch(e) {}
+  }
+  playError() {
+    if (!this.enabled) return;
+    this.ensureCtx();
+    if (!this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(160, this.ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(80, this.ctx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.28);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.3);
+    } catch(e) {}
   }
 }
-const sfx = new SoundEffects();
+const sfx = new AudioPlayer();
 
-// --- STATE MANAGEMENT ---
+// Unlock Web Audio on first user interaction for Safari iOS
+window.addEventListener('touchstart', () => sfx.ensureCtx(), { once: true, passive: true });
+window.addEventListener('click', () => sfx.ensureCtx(), { once: true });
+
+function toggleSound() {
+  sfx.enabled = !sfx.enabled;
+  const btn = document.getElementById('soundBtn');
+  if (btn) btn.innerText = sfx.enabled ? '🔊 Ton An' : '🔇 Ton Aus';
+  if (sfx.enabled) sfx.playCoin();
+}
+
+// --- PERSISTENCE & STATS ---
 let currentTab = 'cashier';
-let streak = parseInt(localStorage.getItem('chf_kasse_streak') || '0');
-let servedCount = parseInt(localStorage.getItem('chf_kasse_served') || '0');
+let streak = parseInt(localStorage.getItem('chf_apprentice_streak') || '0', 10);
+let servedTotal = parseInt(localStorage.getItem('chf_apprentice_served') || '0', 10);
+let correctTotal = parseInt(localStorage.getItem('chf_apprentice_correct') || '0', 10);
 
-function updateStreakDisplay() {
-  const el = document.getElementById('streakBadge');
-  if (el) el.innerText = '🔥 ' + streak + 'x Serie';
-  localStorage.setItem('chf_kasse_streak', streak.toString());
-  localStorage.setItem('chf_kasse_served', servedCount.toString());
-}
-
-function resetStats() {
-  if (confirm('Möchtest du deine Punkte und Serie wirklich zurücksetzen?')) {
-    streak = 0;
-    servedCount = 0;
-    updateStreakDisplay();
-    renderCurrentTab();
+function updateHeaderBadges() {
+  const sBadge = document.getElementById('streakBadge');
+  if (sBadge) sBadge.innerText = '🔥 ' + streak + 'x Serie';
+  
+  const rBadge = document.getElementById('rankBadge');
+  if (rBadge) {
+    let rank = 'Stufe 1 (Lehrling)';
+    if (correctTotal >= 50) rank = 'Stufe 5 (Kassen-Profi)';
+    else if (correctTotal >= 30) rank = 'Stufe 4 (Erfahrener DHF)';
+    else if (correctTotal >= 15) rank = 'Stufe 3 (Selbstständig)';
+    else if (correctTotal >= 5) rank = 'Stufe 2 (Fortgeschritten)';
+    rBadge.innerText = rank;
   }
+  
+  try {
+    localStorage.setItem('chf_apprentice_streak', streak.toString());
+    localStorage.setItem('chf_apprentice_served', servedTotal.toString());
+    localStorage.setItem('chf_apprentice_correct', correctTotal.toString());
+  } catch(e) {}
 }
 
-// --- ROUNDING HELPER (Swiss 5-Rappen Rule) ---
-function roundTo5Rappen(amount) {
-  return Math.round(amount * 20) / 20;
+// --- SWISS ARTICLES DATABASE ---
+const SWISS_ARTICLES = [
+  { name: 'Buttergipfel frisch', price: 1.60 },
+  { name: 'Laugenbrötli', price: 1.40 },
+  { name: 'Weggli', price: 1.20 },
+  { name: 'St. Galler Bürli (Paar)', price: 2.80 },
+  { name: 'Schinken-Sandwich', price: 5.60 },
+  { name: 'Nussgipfel', price: 2.60 },
+  { name: 'Ruchbrot 500g', price: 2.40 },
+  { name: 'Zopf klein 350g', price: 3.80 },
+  { name: 'Rivella Rot 50cl', price: 2.20 },
+  { name: 'Rivella Blau 50cl', price: 2.20 },
+  { name: 'Valser Mineral 50cl', price: 1.60 },
+  { name: 'Elmer Citro 50cl', price: 1.90 },
+  { name: 'Sinalco Original 33cl', price: 1.80 },
+  { name: 'Focuswater Fresh 50cl', price: 2.90 },
+  { name: 'Ramseier Apfelschorle 50cl', price: 2.10 },
+  { name: 'Emmi Caffè Latte Macchiato', price: 2.60 },
+  { name: 'Pastmilch 1 Liter UHT', price: 1.85 },
+  { name: 'Appenzeller Käse mild 200g', price: 4.90 },
+  { name: 'Gruyère AOP rezent 220g', price: 5.80 },
+  { name: 'Emmi Birchermüesli Classic', price: 2.50 },
+  { name: 'Toni Joghurt Erdbeere', price: 1.05 },
+  { name: 'Die Butter (Floralp) 200g', price: 3.95 },
+  { name: 'Zweifel Paprika Chips 90g', price: 2.95 },
+  { name: 'Ragusa Classique 50g', price: 1.90 },
+  { name: 'Kambly Bretzeli 115g', price: 3.40 },
+  { name: 'Ovomaltine Schokolade 100g', price: 2.60 },
+  { name: 'Ricola Kräuterzucker', price: 2.90 },
+  { name: 'Toblerone Milch 100g', price: 2.30 },
+  { name: 'Bio Bananen (Stück)', price: 0.75 },
+  { name: 'Schweizer Gala Äpfel 500g', price: 2.45 },
+  { name: 'Cherrytomaten 250g', price: 2.90 },
+  { name: 'Gurke Schweizer Herkunft', price: 1.50 },
+  { name: 'Papiertragtasche gross', price: 0.40 }
+];
+
+const CUSTOMER_PERSONAS = [
+  { name: 'Frau Meier', emoji: '👵' },
+  { name: 'Herr Schmid', emoji: '👨‍💼' },
+  { name: 'Lukas (Schüler)', emoji: '👦' },
+  { name: 'Frau Odermatt', emoji: '👩' },
+  { name: 'Herr Gerber', emoji: '👴' },
+  { name: 'Elena (Studentin)', emoji: '👩‍🎓' },
+  { name: 'Herr Bieri', emoji: '🧔' },
+  { name: 'Frau Keller', emoji: '👩‍🏫' }
+];
+
+function roundTo5Rappen(val) {
+  return Math.round(val * 20) / 20;
 }
 function formatCHF(val) {
   return 'CHF ' + (Math.round(val * 100) / 100).toFixed(2);
 }
 
-// --- CHF DENOMINATIONS ---
-const DENOMS = [
-  { id: '0.05', label: '5 Rp.', val: 0.05, type: 'coin-gold' },
-  { id: '0.10', label: '10 Rp.', val: 0.10, type: 'coin-silver' },
-  { id: '0.20', label: '20 Rp.', val: 0.20, type: 'coin-silver' },
-  { id: '0.50', label: '½ Fr.', val: 0.50, type: 'coin-silver' },
-  { id: '1.00', label: '1 Fr.', val: 1.00, type: 'coin-silver' },
-  { id: '2.00', label: '2 Fr.', val: 2.00, type: 'coin-silver' },
-  { id: '5.00', label: '5 Fr. (Fünfliber)', val: 5.00, type: 'coin-silver' },
-  { id: '10.00', label: '10 CHF Note', val: 10.00, type: 'note-chf' },
-  { id: '20.00', label: '20 CHF Note', val: 20.00, type: 'note-chf' },
-  { id: '50.00', label: '50 CHF Note', val: 50.00, type: 'note-chf' },
-  { id: '100.00', label: '100 CHF Note', val: 100.00, type: 'note-chf' }
+const CHF_DENOMINATIONS = [
+  { id: '0.05', label: '5 Rp.', val: 0.05, kind: 'coin', style: 'coin-gold' },
+  { id: '0.10', label: '10 Rp.', val: 0.10, kind: 'coin', style: 'coin-silver' },
+  { id: '0.20', label: '20 Rp.', val: 0.20, kind: 'coin', style: 'coin-silver' },
+  { id: '0.50', label: '½ Fr.', val: 0.50, kind: 'coin', style: 'coin-silver' },
+  { id: '1.00', label: '1 Fr.', val: 1.00, kind: 'coin', style: 'coin-silver' },
+  { id: '2.00', label: '2 Fr.', val: 2.00, kind: 'coin', style: 'coin-silver' },
+  { id: '5.00', label: '5 Fr.', val: 5.00, kind: 'coin', style: 'coin-silver' },
+  { id: '10.00', label: '10 CHF', val: 10.00, kind: 'note', style: 'note-10' },
+  { id: '20.00', label: '20 CHF', val: 20.00, kind: 'note', style: 'note-20' },
+  { id: '50.00', label: '50 CHF', val: 50.00, kind: 'note', style: 'note-50' },
+  { id: '100.00', label: '100 CHF', val: 100.00, kind: 'note', style: 'note-100' },
+  { id: '200.00', label: '200 CHF', val: 200.00, kind: 'note', style: 'note-200' }
 ];
 
-// --- CASHIER SCENARIO GENERATOR ---
-let currentScenario = null;
-let selectedMoney = {}; // { '0.05': count }
-let cashierFeedback = null;
+// --- 1. CASHIER PRACTICE MODE ---
+let activeScenario = null;
+let currentTray = {};
+let cashierResult = null;
+let showCountingHelp = false;
 
-const ITEMS_DB = [
-  { name: '1x Ruchbrot 500g', price: 2.40 },
-  { name: '1x Pastmilch 1L', price: 1.85 },
-  { name: '1x Emmentaler AOP', price: 4.65 },
-  { name: '2x Gipfeli', price: 3.20 },
-  { name: '1x Tafel Schokolade', price: 2.70 },
-  { name: '1x Bio Eier 6er', price: 4.30 },
-  { name: '1x Rivella Rot 500ml', price: 1.95 },
-  { name: '1x Bündnerfleisch', price: 6.80 }
-];
-
-function generateNewCashierScenario() {
-  selectedMoney = {};
-  cashierFeedback = null;
+function generateNewCashier() {
+  currentTray = {};
+  cashierResult = null;
   
-  // Pick 2-4 items
+  const persona = CUSTOMER_PERSONAS[Math.floor(Math.random() * CUSTOMER_PERSONAS.length)];
   const count = Math.floor(Math.random() * 3) + 2;
   const items = [];
-  let rawTotal = 0;
+  let unroundedTotal = 0;
+  
+  const shuffled = [...SWISS_ARTICLES].sort(() => 0.5 - Math.random());
   for (let i = 0; i < count; i++) {
-    const it = ITEMS_DB[Math.floor(Math.random() * ITEMS_DB.length)];
+    const it = shuffled[i];
     items.push(it);
-    rawTotal += it.price;
+    unroundedTotal += it.price;
   }
-  const total = roundTo5Rappen(rawTotal);
   
-  // Choose customer payment
-  const noteOptions = [5, 10, 20, 50, 100].filter(n => n >= total);
-  const givenBase = noteOptions.length > 0 ? noteOptions[Math.floor(Math.random() * Math.min(noteOptions.length, 3))] : Math.ceil(total / 10) * 10;
-  
-  // 30% chance customer adds small change (e.g. Total 13.65, customer gives 20 + 0.65)
-  let given = givenBase;
-  const rappenPart = Math.round((total % 1) * 100) / 100;
-  if (Math.random() < 0.35 && rappenPart > 0 && givenBase > total) {
-    given = givenBase + rappenPart;
+  let discount = 0;
+  let discountName = '';
+  if (Math.random() < 0.25 && unroundedTotal > 8) {
+    discount = 5.00;
+    discountName = 'CHF 5.00 Cumulus-Bon';
+    unroundedTotal = Math.max(0.50, unroundedTotal - discount);
   }
-  given = roundTo5Rappen(given);
+  
+  const total = roundTo5Rappen(unroundedTotal);
+  
+  const noteOptions = [5, 10, 20, 50, 100, 200].filter(n => n >= total);
+  const baseNote = noteOptions.length > 0 ? noteOptions[0] : Math.ceil(total / 10) * 10;
+  
+  let given = baseNote;
+  let comment = '';
+  const rappen = Math.round((total % 1) * 100) / 100;
+  
+  if (Math.random() < 0.40 && rappen > 0 && baseNote > total) {
+    given = roundTo5Rappen(baseNote + rappen);
+    comment = '«Ich gebe Ihnen noch genau ' + Math.round(rappen * 100) + ' Rappen dazu, dann geht es schön auf!»';
+  }
   
   const changeDue = roundTo5Rappen(given - total);
-  currentScenario = { items, total, given, changeDue };
-  renderCashierMode();
+  activeScenario = { persona, items, discount, discountName, total, given, changeDue, comment };
+  renderCashier();
 }
 
-function addCashierMoney(id) {
-  sfx.coin();
-  selectedMoney[id] = (selectedMoney[id] || 0) + 1;
-  renderCashierMode();
+function addTrayMoney(id) {
+  sfx.playCoin();
+  currentTray[id] = (currentTray[id] || 0) + 1;
+  renderCashier();
 }
 
-function removeCashierMoney(id) {
-  if (selectedMoney[id] > 0) {
-    selectedMoney[id]--;
-    if (selectedMoney[id] === 0) delete selectedMoney[id];
-    renderCashierMode();
+function removeTrayMoney(id) {
+  sfx.playCoin();
+  if (currentTray[id] > 0) {
+    currentTray[id]--;
+    if (currentTray[id] === 0) delete currentTray[id];
+    renderCashier();
   }
 }
 
-function getSelectedTotal() {
+function clearTray() {
+  sfx.playCoin();
+  currentTray = {};
+  renderCashier();
+}
+
+function getTrayTotal() {
   let sum = 0;
-  for (const [id, count] of Object.entries(selectedMoney)) {
-    sum += parseFloat(id) * count;
+  for (const [id, cnt] of Object.entries(currentTray)) {
+    sum += parseFloat(id) * cnt;
   }
   return roundTo5Rappen(sum);
 }
 
-function submitCashierChange() {
-  const selectedSum = getSelectedTotal();
-  const diff = Math.abs(selectedSum - currentScenario.changeDue);
+function checkCashier() {
+  const userTotal = getTrayTotal();
+  const diff = Math.abs(userTotal - activeScenario.changeDue);
   
-  if (diff < 0.01) {
-    sfx.success();
+  servedTotal++;
+  if (diff < 0.005) {
+    sfx.playSuccess();
     streak++;
-    servedCount++;
-    cashierFeedback = {
-      success: true,
-      text: 'Perfekt! Exakt ' + formatCHF(currentScenario.changeDue) + ' Rückgeld herausgegeben.'
+    correctTotal++;
+    cashierResult = {
+      correct: true,
+      text: 'Perfekt herausgegeben! ' + formatCHF(activeScenario.changeDue) + ' Wechselgeld überreicht.'
     };
   } else {
-    sfx.error();
+    sfx.playError();
     streak = 0;
-    cashierFeedback = {
-      success: false,
-      text: 'Leider falsch! Du hast ' + formatCHF(selectedSum) + ' gewählt. Richtig wäre: ' + formatCHF(currentScenario.changeDue)
+    cashierResult = {
+      correct: false,
+      text: 'Falscher Betrag! Du hast ' + formatCHF(userTotal) + ' bereitgelegt. Richtig wäre: ' + formatCHF(activeScenario.changeDue) + '.'
     };
   }
-  updateStreakDisplay();
-  renderCashierMode();
+  updateHeaderBadges();
+  renderCashier();
 }
 
-function renderCashierMode() {
-  if (!currentScenario) {
-    generateNewCashierScenario();
+function renderCashier() {
+  if (!activeScenario) {
+    generateNewCashier();
     return;
   }
-  
   const container = document.getElementById('mainContainer');
-  const selectedSum = getSelectedTotal();
+  const userTotal = getTrayTotal();
   
-  let receiptItemsHtml = currentScenario.items.map(it => 
+  let itemsHtml = activeScenario.items.map(it => 
     '<div class="receipt-item"><span>' + it.name + '</span><span>' + formatCHF(it.price) + '</span></div>'
   ).join('');
-
-  let trayChipsHtml = '';
-  for (const [id, count] of Object.entries(selectedMoney)) {
-    const denom = DENOMS.find(d => d.id === id);
-    if (denom && count > 0) {
-      trayChipsHtml += '<div class="tray-chip" onclick="removeCashierMoney(\'' + id + '\')">' + count + 'x ' + denom.label + ' ✕</div>';
-    }
+  
+  if (activeScenario.discount > 0) {
+    itemsHtml += '<div class="receipt-discount"><span>- ' + activeScenario.discountName + '</span><span>-' + formatCHF(activeScenario.discount) + '</span></div>';
   }
-  if (!trayChipsHtml) {
-    trayChipsHtml = '<span style="color: var(--text-muted); font-size: 13px;">Klicke auf die Münzen/Noten unten, um Rückgeld herauszugeben...</span>';
-  }
-
-  let drawerBtnsHtml = DENOMS.map(d => 
-    '<div class="money-btn ' + d.type + '" onclick="addCashierMoney(\'' + d.id + '\')"><div style="font-size:15px; font-weight:bold;">' + d.label + '</div><div style="font-size:10px; color:var(--text-muted); margin-top:2px;">+ hinzufügen</div></div>'
+  
+  let coinsHtml = CHF_DENOMINATIONS.filter(d => d.kind === 'coin').map(d => 
+    '<button type="button" class="money-btn" onclick="addTrayMoney(\'' + d.id + '\')"><div class="coin-round ' + d.style + '">' + d.label + '</div><div style="font-size:10px; color:var(--text-muted);">+ Klick</div></button>'
   ).join('');
 
-  let feedbackHtml = '';
-  if (cashierFeedback) {
-    const cls = cashierFeedback.success ? 'feedback-success' : 'feedback-error';
-    feedbackHtml = '<div class="feedback ' + cls + '"><span>' + cashierFeedback.text + '</span><button class="btn btn-red" onclick="generateNewCashierScenario()">Nächster Kunde ➔</button></div>';
+  let notesHtml = CHF_DENOMINATIONS.filter(d => d.kind === 'note').map(d => 
+    '<button type="button" class="money-btn" onclick="addTrayMoney(\'' + d.id + '\')"><div class="note-rect ' + d.style + '">' + d.label + '</div><div style="font-size:10px; color:var(--text-muted);">+ Klick</div></button>'
+  ).join('');
+  
+  let chipsHtml = '';
+  for (const [id, cnt] of Object.entries(currentTray)) {
+    const denom = CHF_DENOMINATIONS.find(d => d.id === id);
+    if (denom && cnt > 0) {
+      chipsHtml += '<button type="button" class="tray-chip" onclick="removeTrayMoney(\'' + id + '\')">' + cnt + 'x ' + denom.label + ' <span style="color:#dc2626; margin-left:4px;">✕</span></button>';
+    }
   }
-
+  if (!chipsHtml) {
+    chipsHtml = '<span style="color:var(--text-muted); font-size:13px;">Kassenschublade antippen, um Wechselgeld herauszunehmen...</span>';
+  }
+  
+  let feedbackHtml = '';
+  if (cashierResult) {
+    const cls = cashierResult.correct ? 'feedback-success' : 'feedback-error';
+    feedbackHtml = '<div class="feedback ' + cls + '"><div>' + cashierResult.text + '</div><button type="button" class="btn btn-red" style="align-self:flex-start;" onclick="generateNewCashier()">Nächster Kunde ➔</button></div>';
+  }
+  
   container.innerHTML = `
     <div class="grid-2">
-      <!-- Left Column: Receipt & Payment Info -->
+      <!-- Left: Receipt & Customer -->
       <div>
         <div class="card">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <span style="font-size:30px;">${activeScenario.persona.emoji}</span>
+            <div>
+              <div style="font-weight:800; font-size:14px; color:var(--text);">${activeScenario.persona.name}</div>
+              <div style="font-size:11px; color:var(--text-muted);">Kunde #${servedTotal + 1} · Migros Kasse 01</div>
+            </div>
+          </div>
+          
           <div class="receipt">
             <div class="receipt-header">
-              <h3 style="font-size:14px; font-weight:bold;">DETAILHANDEL FILIALE</h3>
-              <p style="font-size:11px; color:#64748b;">Kassenbon #${servedCount + 1}</p>
+              <div class="receipt-migros-mark">MIGROS</div>
+              <div style="font-weight:800; font-size:12px; color:#292524; margin-top:2px;">Migros-Filiale Schweiz · Kasse 01</div>
+              <div style="font-size:11px; color:#57534e;">Kassenbon MwSt. inkl. 2.6% / 8.1%</div>
             </div>
-            ${receiptItemsHtml}
+            ${itemsHtml}
             <div class="receipt-total">
               <span>TOTAL (CHF):</span>
-              <span>${formatCHF(currentScenario.total)}</span>
+              <span>${formatCHF(activeScenario.total)}</span>
             </div>
           </div>
-
+          
           <div class="given-box">
             <div>
-              <span style="font-size:11px; color:var(--text-muted); display:block;">VOM KUNDEN GEGEBEN</span>
-              <span class="big-num">${formatCHF(currentScenario.given)}</span>
+              <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">VOM KUNDEN GEGEBEN</span>
+              <span class="big-num">${formatCHF(activeScenario.given)}</span>
             </div>
             <div style="text-align:right;">
-              <span style="font-size:11px; color:var(--text-muted); display:block;">RECHNUNGSBETRAG</span>
-              <span style="font-size:16px; font-weight:bold; color:#fff;">${formatCHF(currentScenario.total)}</span>
+              <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">RECHNUNG</span>
+              <span style="font-size:16px; font-weight:800; color:var(--text);">${formatCHF(activeScenario.total)}</span>
             </div>
           </div>
-
-          <div style="margin-top: 14px; font-size: 12px; color: var(--text-muted); background: #0f172a; padding: 10px; border-radius: 8px;">
-            💡 <strong>Aufzähl-Tipp:</strong> Zähle laut von ${formatCHF(currentScenario.total)} bis ${formatCHF(currentScenario.given)} hoch!
+          
+          ${activeScenario.comment ? '<div class="customer-bubble">' + activeScenario.comment + '</div>' : ''}
+          
+          <div class="counting-help-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <strong style="color:var(--red-ink);">🧮 Schweizer Aufzähl-Methode:</strong>
+              <button type="button" class="btn" style="padding:4px 10px; min-height:36px; font-size:11px; background:#fff;" onclick="showCountingHelp = !showCountingHelp; renderCashier();">${showCountingHelp ? 'Ausblenden' : 'Tipp anzeigen'}</button>
+            </div>
+            ${showCountingHelp ? '<div style="margin-top:6px; font-family:monospace; line-height:1.6; color:var(--text);">«Vom Betrag ' + formatCHF(activeScenario.total) + ' hochzählen auf ' + formatCHF(activeScenario.given) + '»<br>➜ Wechselgeld beträgt exakt: <strong>' + formatCHF(activeScenario.changeDue) + '</strong></div>' : '<span style="color:var(--text-muted);">Zähle im Kopf vom Kassenbetrag zum gegebenen Betrag hoch.</span>'}
           </div>
         </div>
       </div>
-
-      <!-- Right Column: Register Drawer & Output Tray -->
+      
+      <!-- Right: Drawer & Selected Tray -->
       <div>
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3 style="font-size:16px; font-weight:bold;">Rückgeld-Ablage</h3>
-            <span style="font-size:16px; font-weight:bold; color:var(--gold); font-family:monospace;">
-              Gewählt: ${formatCHF(selectedSum)}
+            <h3 style="font-size:16px; font-weight:800;">Bereitgelegtes Rückgeld</h3>
+            <span style="font-size:17px; font-weight:900; color:var(--gold); font-family:monospace;">
+              Gewählt: ${formatCHF(userTotal)}
             </span>
           </div>
-
+          
           <div class="selected-tray">
-            ${trayChipsHtml}
+            ${chipsHtml}
           </div>
-
-          <div style="display:flex; gap:10px; margin-bottom:16px;">
-            <button class="btn btn-green" style="flex:1; justify-content:center; padding:12px;" onclick="submitCashierChange()" ${cashierFeedback ? 'disabled' : ''}>
-              ✅ Rückgeld übergeben (ENTER)
+          
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="btn btn-green" style="flex:1; justify-content:center; padding:12px; font-size:14px;" onclick="checkCashier()" ${cashierResult ? 'disabled' : ''}>
+              ✅ Wechselgeld übergeben (ENTER)
             </button>
-            <button class="btn" onclick="selectedMoney={}; renderCashierMode();">
+            <button type="button" class="btn" onclick="clearTray()">
               🗑️ Leeren
             </button>
           </div>
-
+          
           ${feedbackHtml}
-
-          <h4 style="font-size:12px; color:var(--text-muted); text-transform:uppercase; margin-top:20px; letter-spacing:0.5px;">
-            Schweizer Kassenschublade (CHF)
-          </h4>
+          
+          <div class="drawer-section-title">🪙 Schweizer Münzen (5 Rp. bis 5 Fr.)</div>
           <div class="drawer-grid">
-            ${drawerBtnsHtml}
+            ${coinsHtml}
+          </div>
+          
+          <div class="drawer-section-title">💶 Schweizer Banknoten (9. Serie)</div>
+          <div class="drawer-grid">
+            ${notesHtml}
           </div>
         </div>
       </div>
@@ -421,153 +819,192 @@ function renderCashierMode() {
   `;
 }
 
-// --- SPEED MATH MODE ---
+// --- 2. SPEED MATH MODE ---
 let speedQuestion = null;
 let speedInput = '';
 let speedScore = 0;
+let speedFeedback = null;
 
-function generateSpeedQuestion() {
+function generateSpeed() {
   speedInput = '';
-  const total = roundTo5Rappen(Math.floor(Math.random() * 4500 + 200) / 100);
+  const rawPrice = (Math.floor(Math.random() * 4800) + 150) / 100;
+  const total = roundTo5Rappen(rawPrice);
   const possibleNotes = [5, 10, 20, 50, 100].filter(n => n >= total);
   const given = possibleNotes.length > 0 ? possibleNotes[0] : Math.ceil(total / 10) * 10;
   const answer = roundTo5Rappen(given - total);
   speedQuestion = { total, given, answer };
-  renderSpeedMode();
+  renderSpeed();
 }
 
-function handleSpeedNumpad(val) {
-  sfx.coin();
-  if (val === 'C') {
-    speedInput = '';
-  } else if (val === '.') {
-    if (!speedInput.includes('.')) speedInput += '.';
+function handleNumpad(v) {
+  sfx.playCoin();
+  if (v === 'C') speedInput = '';
+  else if (v === 'DEL') speedInput = speedInput.slice(0, -1);
+  else if (v === '.') {
+    if (!speedInput.includes('.')) speedInput = speedInput === '' ? '0.' : speedInput + '.';
   } else {
-    speedInput += val;
+    if (speedInput.includes('.')) {
+      const parts = speedInput.split('.');
+      if (parts[1] && parts[1].length >= 2) return;
+    }
+    speedInput += v;
   }
-  renderSpeedMode();
+  renderSpeed();
 }
 
-function submitSpeedAnswer() {
-  const num = parseFloat(speedInput);
-  if (isNaN(num)) return;
-  
-  if (Math.abs(num - speedQuestion.answer) < 0.01) {
-    sfx.success();
+function checkSpeed() {
+  const val = parseFloat(speedInput);
+  if (isNaN(val)) return;
+  if (Math.abs(val - speedQuestion.answer) < 0.005) {
+    sfx.playSuccess();
     speedScore += 10;
     streak++;
+    correctTotal++;
+    speedFeedback = {
+      correct: true,
+      text: 'Richtig! ' + formatCHF(speedQuestion.given) + ' − ' + formatCHF(speedQuestion.total) + ' = ' + formatCHF(speedQuestion.answer)
+    };
   } else {
-    sfx.error();
+    sfx.playError();
     streak = 0;
-    alert('Falsch! Total war: ' + formatCHF(speedQuestion.total) + ', gegeben: ' + formatCHF(speedQuestion.given) + '. Richtiges Wechselgeld: ' + formatCHF(speedQuestion.answer));
+    speedFeedback = {
+      correct: false,
+      text: 'Falsch! ' + formatCHF(speedQuestion.given) + ' − ' + formatCHF(speedQuestion.total) + ' = ' + formatCHF(speedQuestion.answer)
+    };
   }
-  updateStreakDisplay();
-  generateSpeedQuestion();
+  updateHeaderBadges();
+  generateSpeed();
 }
 
-function renderSpeedMode() {
+function renderSpeed() {
   if (!speedQuestion) {
-    generateSpeedQuestion();
+    generateSpeed();
     return;
   }
   const container = document.getElementById('mainContainer');
+  const fbHtml = speedFeedback
+    ? '<div class="feedback ' + (speedFeedback.correct ? 'feedback-success' : 'feedback-error') + '" style="margin-bottom:14px; margin-top:0;"><div>' + speedFeedback.text + '</div></div>'
+    : '';
   container.innerHTML = `
-    <div class="card speed-container">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <span style="font-size:12px; color:var(--text-muted); font-weight:bold;">KOPFRECHNEN-BLITZ</span>
-        <span style="color:var(--gold); font-weight:bold; font-size:14px;">Punkte: ${speedScore}</span>
+    <div class="card speed-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Kopfrechnen-Blitz</span>
+        <span style="font-size:14px; font-weight:800; color:var(--gold);">Punkte: ${speedScore}</span>
       </div>
+      
+      ${fbHtml}
 
-      <div style="background:#0f172a; padding:16px; border-radius:12px; border:1px solid #1e293b;">
-        <div style="font-size:13px; color:var(--text-muted);">Rechnung: <strong>${formatCHF(speedQuestion.total)}</strong> • Gegeben: <strong>${formatCHF(speedQuestion.given)}</strong></div>
-        <div class="speed-math-display">Rückgeld: ${formatCHF(speedQuestion.given)} - ${formatCHF(speedQuestion.total)} = ?</div>
+      <div style="background:#1c1917; border:2px solid var(--red); border-radius:14px; padding:16px; color:#fff;">
+        <div style="font-size:13px; color:#d6d3d1;">Rechnung: <strong>${formatCHF(speedQuestion.total)}</strong> · Gegeben: <strong>${formatCHF(speedQuestion.given)}</strong></div>
+        <div style="font-size:26px; font-weight:900; font-family:monospace; margin-top:8px; color:#fff;">
+          ${formatCHF(speedQuestion.given)} − ${formatCHF(speedQuestion.total)} = ?
+        </div>
       </div>
-
-      <div style="margin:20px 0; font-size:24px; font-weight:bold; font-family:monospace; background:#0f172a; padding:12px; border-radius:8px; border:1px solid #334155; color:var(--blue);">
+      
+      <div style="margin:16px 0; font-size:28px; font-weight:900; font-family:monospace; background:#1c1917; border:2px solid var(--red); border-radius:14px; padding:12px; color:#FF8533;">
         ${speedInput || '0.00'} CHF
       </div>
-
+      
       <div class="numpad">
-        <button class="numpad-btn" onclick="handleSpeedNumpad('7')">7</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('8')">8</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('9')">9</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('4')">4</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('5')">5</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('6')">6</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('1')">1</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('2')">2</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('3')">3</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('C')">C</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('0')">0</button>
-        <button class="numpad-btn" onclick="handleSpeedNumpad('.')">.</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('7')">7</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('8')">8</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('9')">9</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('4')">4</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('5')">5</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('6')">6</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('1')">1</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('2')">2</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('3')">3</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('.')">.</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('0')">0</button>
+        <button type="button" class="numpad-btn" onclick="handleNumpad('DEL')">⌫</button>
       </div>
-
-      <button class="btn btn-green" style="width:100%; max-width:320px; margin-top:14px; padding:14px; font-size:15px; justify-content:center;" onclick="submitSpeedAnswer()">
-        Prüfen (ENTER)
-      </button>
+      
+      <div style="display:flex; gap:10px; max-width:360px; margin:0 auto;">
+        <button type="button" class="btn" style="flex:1;" onclick="handleNumpad('C')">C</button>
+        <button type="button" class="btn btn-green" style="flex:2; font-size:15px;" onclick="checkSpeed()">
+          Prüfen (ENTER)
+        </button>
+      </div>
     </div>
   `;
 }
 
-// --- ROUNDING DRILL MODE ---
-let roundingVal = 0;
-let roundingTarget = 0;
+// --- 3. 5-RAPPEN RUNDUNG DRILL ---
+let roundRaw = 0;
+let roundTarget = 0;
+let roundFeedback = null;
 
-function generateRoundingQuestion() {
-  const base = (Math.floor(Math.random() * 800) + 100) / 100;
-  roundingVal = parseFloat(base.toFixed(2));
-  roundingTarget = roundTo5Rappen(roundingVal);
-  renderRoundingMode();
+function generateRounding() {
+  const base = (Math.floor(Math.random() * 950) + 120) / 100;
+  roundRaw = parseFloat(base.toFixed(2));
+  roundTarget = roundTo5Rappen(roundRaw);
+  roundFeedback = null;
+  renderRounding();
 }
 
-function checkRoundingAnswer(userRounded) {
-  if (Math.abs(userRounded - roundingTarget) < 0.001) {
-    sfx.success();
+function checkRounding(choice) {
+  if (roundFeedback) return;
+  if (Math.abs(choice - roundTarget) < 0.005) {
+    sfx.playSuccess();
     streak++;
-    alert('Richtig! ' + roundingVal.toFixed(2) + ' CHF rundet auf ' + roundingTarget.toFixed(2) + ' CHF.');
+    correctTotal++;
+    roundFeedback = {
+      correct: true,
+      text: 'Richtig! ' + roundRaw.toFixed(2) + ' CHF rundet kaufmännisch auf ' + roundTarget.toFixed(2) + ' CHF.'
+    };
   } else {
-    sfx.error();
+    sfx.playError();
     streak = 0;
-    alert('Falsch! ' + roundingVal.toFixed(2) + ' CHF rundet auf ' + roundingTarget.toFixed(2) + ' CHF.');
+    roundFeedback = {
+      correct: false,
+      text: 'Falsch! ' + roundRaw.toFixed(2) + ' CHF wird an der Kasse zu ' + roundTarget.toFixed(2) + ' CHF.'
+    };
   }
-  updateStreakDisplay();
-  generateRoundingQuestion();
+  updateHeaderBadges();
+  renderRounding();
 }
 
-function renderRoundingMode() {
-  if (!roundingVal) {
-    generateRoundingQuestion();
+function renderRounding() {
+  if (!roundRaw) {
+    generateRounding();
     return;
   }
   const container = document.getElementById('mainContainer');
-  const lower0 = Math.floor(roundingVal * 10) / 10;
+  const lower0 = Math.floor(roundRaw * 10) / 10;
   const mid5 = lower0 + 0.05;
   const upper0 = lower0 + 0.10;
-
   const choices = Array.from(new Set([lower0, mid5, upper0].map(v => parseFloat(v.toFixed(2)))));
 
   let btnsHtml = choices.map(c => 
-    '<button class="btn" style="font-size:18px; padding:16px 24px; font-family:monospace; justify-content:center;" onclick="checkRoundingAnswer(' + c + ')">' + formatCHF(c) + '</button>'
+    '<button type="button" class="btn" style="font-size:18px; min-height:64px; padding:16px; font-family:monospace; justify-content:center;" onclick="checkRounding(' + c + ')" ' + (roundFeedback ? 'disabled' : '') + '>' + formatCHF(c) + '</button>'
   ).join('');
 
-  container.innerHTML = `
-    <div class="card speed-container">
-      <h3 style="font-size:16px; font-weight:bold; margin-bottom:6px;">5-Rappen-Rundungsdrill (Schweiz)</h3>
-      <p style="font-size:12px; color:var(--text-muted);">Wie lautet der gerundete Barzahlungsbetrag an der Schweizer Kasse?</p>
+  let fbHtml = '';
+  if (roundFeedback) {
+    fbHtml = '<div class="feedback ' + (roundFeedback.correct ? 'feedback-success' : 'feedback-error') + '" style="margin-bottom:16px;"><div>' + roundFeedback.text + '</div><button type="button" class="btn btn-red" style="align-self:center;" onclick="generateRounding()">Nächste Aufgabe ➔</button></div>';
+  }
 
-      <div style="background:#0f172a; border:2px solid var(--red); border-radius:16px; padding:24px; margin:24px 0;">
-        <span style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Unbearbeiteter Betrag</span>
-        <div style="font-size:38px; font-weight:900; color:var(--gold); font-family:monospace; margin-top:6px;">
-          ${formatCHF(roundingVal)}
+  container.innerHTML = `
+    <div class="card speed-box">
+      <h3 style="font-size:16px; font-weight:800; margin-bottom:4px;">5-Rappen-Rundungsdrill (Schweiz)</h3>
+      <p style="font-size:12px; color:var(--text-muted);">Welcher Betrag wird bei Barzahlung fällig?</p>
+
+      <div style="background:var(--orange-soft); border:2px solid var(--red); border-radius:16px; padding:24px; margin:18px 0;">
+        <span style="font-size:11px; color:var(--red-ink); text-transform:uppercase; font-weight:700;">Ungerundeter Waagen-/Kassenpreis</span>
+        <div style="font-size:36px; font-weight:900; color:var(--text); font-family:monospace; margin-top:6px;">
+          ${formatCHF(roundRaw)}
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:20px;">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:18px;">
         ${btnsHtml}
       </div>
 
-      <div style="text-align:left; background:#0f172a; padding:16px; border-radius:12px; border:1px solid #1e293b; font-size:12px; line-height:1.6;">
-        <strong>Schweizer Rundungsregel auf 5 Rappen:</strong><br>
+      ${fbHtml}
+
+      <div style="text-align:left; background:var(--card-sub); padding:14px; border-radius:12px; border:1px solid var(--border); font-size:12px; line-height:1.6; color:#44403c;">
+        <strong style="color:var(--text);">Offizielle Schweizer Rundungsregel:</strong><br>
         • <strong>.x1 / .x2</strong> ➔ Abrunden auf .x0<br>
         • <strong>.x3 / .x4</strong> ➔ Aufrunden auf .x5<br>
         • <strong>.x6 / .x7</strong> ➔ Abrunden auf .x5<br>
@@ -577,80 +1014,364 @@ function renderRoundingMode() {
   `;
 }
 
-// --- THEORY MODE ---
-function renderTheoryMode() {
+// --- 4. SCENARIOS (Kundentricks & Praxisfälle) ---
+const SCENARIOS = [
+  {
+    title: 'Kunde gibt Kleingeld nach',
+    person: 'Frau Blaser 👵',
+    desc: 'Einkauf: CHF 14.35. Die Kundin gibt zuerst eine 20 CHF Note. Als die Schublade aufgeht, legt sie noch CHF 4.35 in Münzen dazu.',
+    question: 'Wie viel Rückgeld gibst du heraus?',
+    options: [
+      { text: 'CHF 10.00 (eine runde 10er Note)', correct: true, exp: 'Korrekt! CHF 24.35 gegeben - CHF 14.35 Total = genau CHF 10.00.' },
+      { text: 'CHF 5.65', correct: false, exp: 'Falsch! Das wäre das Wechselgeld ohne das nachgereichte Kleingeld.' },
+      { text: 'CHF 14.35', correct: false, exp: 'Falsch! Das ist der Kaufpreis.' }
+    ]
+  },
+  {
+    title: 'Nur die Rappen nachgereicht',
+    person: 'Herr Wüthrich 👨‍💼',
+    desc: 'Total: CHF 26.85. Der Kunde gibt eine 50 CHF Note und reicht kurz darauf 85 Rappen hinterher.',
+    question: 'Welches Wechselgeld gehört in die Zahlschale?',
+    options: [
+      { text: 'CHF 24.00 glatt', correct: true, exp: 'Perfekt! 50.85 CHF gegeben - 26.85 CHF = genau CHF 24.00.' },
+      { text: 'CHF 23.15', correct: false, exp: 'Falsch! 85 Rappen wurden ja bereits ausgeglichen.' },
+      { text: 'CHF 25.00', correct: false, exp: 'Falsch gerechnet.' }
+    ]
+  },
+  {
+    title: 'Gutschein & 5-Rp. Rundung',
+    person: 'Elena (Studentin) 👩‍🎓',
+    desc: 'Warenwert CHF 18.32. Die Kundin löst einen CHF 5.00 Bon ein und zahlt den Rest mit einer 20er Note.',
+    question: 'Wie viel zahlt sie und wie lautet das Rückgeld?',
+    options: [
+      { text: 'Zahlbetrag CHF 13.30 ➔ Rückgeld CHF 6.70', correct: true, exp: 'Sehr gut! 18.32 - 5.00 = 13.32. Endung .32 rundet auf .30 ab! 20.00 - 13.30 = CHF 6.70.' },
+      { text: 'Zahlbetrag CHF 13.35 ➔ Rückgeld CHF 6.65', correct: false, exp: 'Falsch! .32 wird auf .30 abgerundet, nicht auf .35 aufgerundet.' },
+      { text: 'Zahlbetrag CHF 13.32 ➔ Rückgeld CHF 6.68', correct: false, exp: 'Falsch! Bargeld muss immer auf 5 Rappen gerundet werden.' }
+    ]
+  },
+  {
+    title: 'Kunde zahlt mit Euro (€)',
+    person: 'Tourist aus Deutschland 🧳',
+    desc: 'Ein Tourist kauft Schokolade für CHF 15.00 und bezahlt mit einer 20-Euro-Note.',
+    question: 'In welcher Währung wird das Rückgeld an Schweizer Kassen herausgegeben?',
+    options: [
+      { text: 'Ausnahmslos in Schweizer Franken (CHF)', correct: true, exp: 'Richtig! Schweizer Detailhandelskassen führen keine Euro-Münzen. Wechselgeld gibt es immer in CHF.' },
+      { text: 'In Euro-Münzen', correct: false, exp: 'Falsch. Schweizer Kassen geben kein Euro-Kleingeld heraus.' },
+      { text: 'Euro sind verboten', correct: false, exp: 'Falsch. Euro-Noten werden von vielen Händlern gerne angenommen.' }
+    ]
+  },
+  {
+    title: '«Ich habe Ihnen doch 100 Fr. gegeben!»',
+    person: 'Herr Tanner 😠',
+    desc: 'Einkauf: CHF 35.00. Kunde gab eine 50er Note. Beim Herausgeben von CHF 15.00 behauptet er lautstark, er habe einen Hunderter gegeben.',
+    question: 'Was ist die richtige Vorgehensweise an der Kasse?',
+    options: [
+      { text: 'Erhaltene Note liegt noch sichtbar auf der Kasse; bei Uneinigkeit Kassensturz & Filialleitung beiziehen.', correct: true, exp: 'Genau! Deshalb bleibt die Kundennote immer bis zum Abschluss sichtbar liegen.' },
+      { text: 'Sofort 50 Franken nachgeben, um Streit zu vermeiden.', correct: false, exp: 'Niemals! Das führt zu Kassenmanko und ist eine Betrugsmasche.' },
+      { text: 'Kunde als Lügner beschimpfen.', correct: false, exp: 'Falsch. Ruhig und professionell bleiben.' }
+    ]
+  }
+];
+
+let scenarioIdx = 0;
+let scenarioAnswered = false;
+
+function answerScenario(optIdx) {
+  if (scenarioAnswered) return;
+  scenarioAnswered = true;
+  const scen = SCENARIOS[scenarioIdx];
+  const opt = scen.options[optIdx];
+  
+  if (opt.correct) {
+    sfx.playSuccess();
+    streak++;
+    correctTotal++;
+  } else {
+    sfx.playError();
+    streak = 0;
+  }
+  updateHeaderBadges();
+  renderScenarios(optIdx);
+}
+
+function nextScenario() {
+  scenarioAnswered = false;
+  scenarioIdx = (scenarioIdx + 1) % SCENARIOS.length;
+  renderScenarios();
+}
+
+function renderScenarios(chosenIdx = null) {
+  const container = document.getElementById('mainContainer');
+  const scen = SCENARIOS[scenarioIdx];
+  
+  let optionsHtml = scen.options.map((opt, i) => {
+    let cls = 'option-btn';
+    if (chosenIdx !== null) {
+      if (opt.correct) cls += ' option-correct';
+      else if (i === chosenIdx) cls += ' option-wrong';
+    }
+    return '<button type="button" class="' + cls + '" onclick="answerScenario(' + i + ')"><div>' + String.fromCharCode(65 + i) + ') ' + opt.text + (chosenIdx !== null ? '<div style="margin-top:4px; font-size:12px; opacity:0.9;">' + opt.exp + '</div>' : '') + '</div></button>';
+  }).join('');
+
+  container.innerHTML = `
+    <div class="card" style="max-width:750px; margin:0 auto;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Praxisfall ${scenarioIdx + 1} von ${SCENARIOS.length}</span>
+        <span style="font-size:13px; font-weight:800; color:var(--gold);">${scen.person}</span>
+      </div>
+      
+      <h3 style="font-size:18px; font-weight:800; margin-bottom:8px; color:var(--text);">${scen.title}</h3>
+      <div style="background:var(--card-sub); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:16px; font-size:13px; line-height:1.5; color:#292524;">
+        ${scen.desc}
+      </div>
+      
+      <h4 style="font-size:14px; font-weight:800; margin-bottom:10px; color:var(--red-ink);">❓ ${scen.question}</h4>
+      ${optionsHtml}
+      
+      ${scenarioAnswered ? '<div style="text-align:center; margin-top:16px;"><button type="button" class="btn btn-red" onclick="nextScenario()">Nächster Praxisfall ➔</button></div>' : ''}
+    </div>
+  `;
+}
+
+// --- 5. EXAM MODE (QV Lehrabschluss) ---
+let examActive = false;
+let examScore = 0;
+let examTimer = null;
+let examSeconds = 300;
+let examQuestions = [
+  {
+    q: 'Einkauf beträgt CHF 14.35. Der Kunde gibt CHF 20.35. Wie lautet das Wechselgeld?',
+    options: [
+      { text: 'CHF 6.00 glatt', correct: true },
+      { text: 'CHF 5.65', correct: false },
+      { text: 'CHF 6.35', correct: false }
+    ]
+  },
+  {
+    q: 'Ein Artikel wiegt an der Waage und kostet CHF 3.42. Der Kunde bezahlt bar mit einem 5-Franken-Stück. Wie viel Wechselgeld erhält er nach 5-Rp.-Rundung?',
+    options: [
+      { text: 'CHF 1.60 (3.42 rundet auf 3.40)', correct: true },
+      { text: 'CHF 1.55 (3.42 rundet auf 3.45)', correct: false },
+      { text: 'CHF 1.58', correct: false }
+    ]
+  },
+  {
+    q: 'Wie lautet die goldene Regel für erhaltene Banknoten an der Kasse?',
+    options: [
+      { text: 'Note laut nennen und auf der Kassenablage sichtbar liegen lassen, bis das Wechselgeld übergeben wurde.', correct: true },
+      { text: 'Note sofort in die Schublade stecken und Schublade offen lassen.', correct: false },
+      { text: 'Note erst nach Ladenschluss prüfen.', correct: false }
+    ]
+  },
+  {
+    q: 'Total CHF 17.65. Der Kunde gibt CHF 50.00 und reicht 65 Rappen nach. Was gibst du heraus?',
+    options: [
+      { text: 'CHF 33.00 (eine 20er, eine 10er Note und ein 2-Fr.-Stück + 1-Fr.)', correct: true },
+      { text: 'CHF 32.35', correct: false },
+      { text: 'CHF 35.00', correct: false }
+    ]
+  }
+];
+let examQIdx = 0;
+let examFinishedResult = null;
+
+function startExam() {
+  examActive = true;
+  examFinishedResult = null;
+  examScore = 0;
+  examSeconds = 300;
+  examQIdx = 0;
+  if (examTimer) clearInterval(examTimer);
+  examTimer = setInterval(() => {
+    examSeconds--;
+    const tEl = document.getElementById('examTimerDisplay');
+    if (tEl) {
+      const m = Math.floor(examSeconds / 60);
+      const s = examSeconds % 60;
+      tEl.innerText = m + ':' + (s < 10 ? '0' : '') + s;
+    }
+    if (examSeconds <= 0) {
+      clearInterval(examTimer);
+      examActive = false;
+      const grade = (1 + (examScore / examQuestions.length) * 5).toFixed(1);
+      examFinishedResult = { timeout: true, score: examScore, total: examQuestions.length, grade };
+      renderExam();
+    }
+  }, 1000);
+  renderExam();
+}
+
+function answerExamQuestion(isCorrect) {
+  if (isCorrect) {
+    sfx.playSuccess();
+    examScore++;
+  } else {
+    sfx.playError();
+  }
+  examQIdx++;
+  if (examQIdx >= examQuestions.length) {
+    if (examTimer) clearInterval(examTimer);
+    examActive = false;
+    const grade = (1 + (examScore / examQuestions.length) * 5).toFixed(1);
+    examFinishedResult = { timeout: false, score: examScore, total: examQuestions.length, grade };
+  }
+  renderExam();
+}
+
+function renderExam() {
+  const container = document.getElementById('mainContainer');
+  if (!examActive && examFinishedResult) {
+    const passed = parseFloat(examFinishedResult.grade) >= 4.0;
+    container.innerHTML = `
+      <div class="card speed-box">
+        <div style="font-size:42px; margin-bottom:10px;">${passed ? '🎉' : '📚'}</div>
+        <h2 style="font-size:22px; font-weight:900; margin-bottom:8px;">
+          ${examFinishedResult.timeout ? 'Zeit abgelaufen!' : 'QV-Simulation beendet'}
+        </h2>
+        <div style="font-size:34px; font-weight:900; font-family:monospace; color:${passed ? 'var(--green)' : '#e11d48'}; margin:12px 0;">
+          Note ${examFinishedResult.grade} / 6.0
+        </div>
+        <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px;">
+          ${examFinishedResult.score} von ${examFinishedResult.total} Aufgaben richtig · ${passed ? 'Bestanden!' : 'Unter 4.0 – weiter üben!'}
+        </p>
+        <button type="button" class="btn btn-red" style="font-size:15px; padding:14px 28px;" onclick="startExam()">
+          Prüfung wiederholen
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  if (!examActive) {
+    container.innerHTML = `
+      <div class="card speed-box">
+        <div style="font-size:40px; margin-bottom:10px;">🎓</div>
+        <h2 style="font-size:22px; font-weight:900; margin-bottom:8px; color:var(--text);">QV-Prüfungssimulator Detailhandel</h2>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.5;">
+          Teste dein Kassen- & Rechenwissen unter Prüfungsbedingungen nach Schweizer Lehrplan (DHA / DHF). Bestanden ab Note 4.0!
+        </p>
+        <button type="button" class="btn btn-red" style="font-size:15px; padding:14px 28px;" onclick="startExam()">
+          Prüfung jetzt starten (5 Min.)
+        </button>
+      </div>
+    `;
+    return;
+  }
+  
+  const curQ = examQuestions[examQIdx];
+  let optionsHtml = curQ.options.map((opt, i) => 
+    '<button type="button" class="option-btn" onclick="answerExamQuestion(' + opt.correct + ')"><div><strong>' + String.fromCharCode(65 + i) + ')</strong> ' + opt.text + '</div></button>'
+  ).join('');
+
+  container.innerHTML = `
+    <div class="card" style="max-width:700px; margin:0 auto;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <span style="font-weight:800; color:var(--red-ink);">Frage ${examQIdx + 1} von ${examQuestions.length}</span>
+        <span id="examTimerDisplay" style="font-size:16px; font-weight:900; color:#dc2626; font-family:monospace;">5:00</span>
+      </div>
+      
+      <div style="font-size:15px; font-weight:700; line-height:1.6; margin-bottom:16px; color:var(--text);">
+        ${curQ.q}
+      </div>
+      
+      ${optionsHtml}
+    </div>
+  `;
+}
+
+// --- 6. THEORY / SPICKZETTEL ---
+function renderTheory() {
   const container = document.getElementById('mainContainer');
   container.innerHTML = `
     <div class="card" style="max-width:800px; margin:0 auto; line-height:1.6;">
-      <h2 style="font-size:20px; font-weight:bold; margin-bottom:14px; color:#fff;">🇨🇭 Theorie & Spickzettel Detailhandel Schweiz</h2>
+      <h2 style="font-size:20px; font-weight:900; margin-bottom:14px; color:var(--text);">🧡 Migros & Detailhandel Schweiz: Kassen-Spickzettel</h2>
       
-      <div style="margin-bottom:20px;">
-        <h3 style="color:var(--gold); font-size:15px; margin-bottom:6px;">1. Die Aufzähl-Methode (Standard im Schweizer Detailhandel)</h3>
-        <p style="font-size:13px; color:var(--text-muted);">
-          Im Schweizer Detailhandel gibt man das Wechselgeld nicht stumm heraus, sondern zählt laut vom Rechnungsbetrag zum gegebenen Betrag hoch:
+      <div style="margin-bottom:18px;">
+        <h3 style="color:var(--red-ink); font-size:15px; margin-bottom:6px;">1. Die Schweizer 5-Rappen-Rundung</h3>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">
+          Seit 2007 gibt es keine 1- und 2-Rappen-Münzen mehr. Barzahlungen werden immer kaufmännisch gerundet:
         </p>
-        <div style="background:#0f172a; padding:12px; border-radius:8px; margin-top:8px; font-size:13px; font-family:monospace;">
-          Einkauf: CHF 14.35 • Gegeben: CHF 20.00<br>
-          «14.35 plus 5 Rp. macht 14.40, plus 10 Rp. macht 14.50, plus 50 Rp. macht 15 Franken, und 5 Franken macht 20 Franken. Danke vielmals!»
+        <div style="background:var(--card-sub); border:1px solid var(--border); padding:12px 14px; border-radius:10px; font-size:13px; font-family:monospace; color:var(--text);">
+          • .x1 / .x2 ➔ .x0 (z.B. CHF 4.32 ➔ <strong>CHF 4.30</strong>)<br>
+          • .x3 / .x4 ➔ .x5 (z.B. CHF 4.33 ➔ <strong>CHF 4.35</strong>)<br>
+          • .x6 / .x7 ➔ .x5 (z.B. CHF 4.37 ➔ <strong>CHF 4.35</strong>)<br>
+          • .x8 / .x9 ➔ .y0 (z.B. CHF 4.38 ➔ <strong>CHF 4.40</strong>)
         </div>
       </div>
 
-      <div style="margin-bottom:20px;">
-        <h3 style="color:var(--gold); font-size:15px; margin-bottom:6px;">2. Die 7 Schweizer Münzen</h3>
-        <ul style="font-size:13px; color:var(--text-muted); padding-left:20px;">
-          <li><strong>5 Rappen:</strong> Einzige goldfarbene Münze (Alu-Bronze)</li>
-          <li><strong>10 & 20 Rappen:</strong> Silberfarben (Kupfernickel)</li>
-          <li><strong>½ Franken (50 Rp.):</strong> Kleinste Silbermünze</li>
-          <li><strong>1 & 2 Franken:</strong> Stehende Helvetia mit Schild</li>
-          <li><strong>5 Franken (Fünfliber):</strong> Grösste Münze mit Alphirt</li>
-        </ul>
+      <div style="margin-bottom:18px;">
+        <h3 style="color:var(--red-ink); font-size:15px; margin-bottom:6px;">2. Die Aufzähl-Methode an der Kasse</h3>
+        <p style="font-size:13px; color:var(--text-muted);">
+          Geld wird nie stumm herausgegeben! Man zählt laut vom Rechnungsbetrag zum gegebenen Geld hoch:
+        </p>
+        <div style="background:var(--orange-soft); border:1px solid rgba(255,102,0,0.22); padding:12px 14px; border-radius:10px; font-size:12px; font-family:monospace; margin-top:6px; color:var(--text);">
+          Einkauf: CHF 13.65 • Gegeben: CHF 20.00 Note<br>
+          «13.65 + 5 Rp. macht 13.70, + 10 Rp. macht 13.80, + 20 Rp. macht 14.00, + 1 Fr. macht 15.00, und 5 Fr. macht 20 Franken!»
+        </div>
       </div>
 
       <div>
-        <h3 style="color:var(--gold); font-size:15px; margin-bottom:6px;">3. Kassenmanko vermeiden</h3>
-        <ul style="font-size:13px; color:var(--text-muted); padding-left:20px;">
-          <li>Erhaltene Banknote immer erst sichtbar auf die Kasse legen, bis das Rückgeld ausgehändigt wurde.</li>
-          <li>Kassenschublade nach jedem Bezahlvorgang sofort schliessen.</li>
-          <li>Niemals gleichzeitig mit zwei Kunden kassieren.</li>
+        <h3 style="color:var(--red-ink); font-size:15px; margin-bottom:6px;">3. Wichtigste Kassenregeln gegen Manko</h3>
+        <ul style="font-size:13px; color:#44403c; padding-left:20px; line-height:1.7;">
+          <li>Erhaltenen Geldschein immer laut nennen («Auf fünfzig Franken...») und auf die Kassenablage legen.</li>
+          <li>Kassenschublade sofort nach der Geldentnahme schliessen.</li>
+          <li>Wechselgeld immer in Schweizer Franken herausgeben – auch bei Euro-Zahlungen.</li>
         </ul>
       </div>
     </div>
   `;
 }
 
-function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  if (event && event.target) event.target.classList.add('active');
-  renderCurrentTab();
+// --- TAB SWITCHER ---
+function switchTab(t) {
+  currentTab = t;
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.getAttribute('data-tab') === t) {
+      b.classList.add('active');
+    } else {
+      b.classList.remove('active');
+    }
+  });
+  
+  if (t === 'cashier') renderCashier();
+  else if (t === 'speed') renderSpeed();
+  else if (t === 'rounding') renderRounding();
+  else if (t === 'scenarios') renderScenarios();
+  else if (t === 'exam') renderExam();
+  else if (t === 'theory') renderTheory();
 }
 
-function openTheory() {
-  switchTab('theory');
+function openIpadHelp() {
+  const modal = document.getElementById('ipadHelpModal');
+  if (modal) modal.classList.add('open');
 }
 
-function renderCurrentTab() {
-  if (currentTab === 'cashier') renderCashierMode();
-  else if (currentTab === 'speed') renderSpeedMode();
-  else if (currentTab === 'rounding') renderRoundingMode();
-  else if (currentTab === 'theory') renderTheoryMode();
+function closeIpadHelp() {
+  const modal = document.getElementById('ipadHelpModal');
+  if (modal) modal.classList.remove('open');
 }
 
-// Global Keyboard Handler (Enter to submit)
+// Keyboard Enter shortcut
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     if (currentTab === 'cashier') {
-      if (cashierFeedback) generateNewCashierScenario();
-      else submitCashierChange();
+      if (cashierResult) generateNewCashier();
+      else checkCashier();
     } else if (currentTab === 'speed') {
-      submitSpeedAnswer();
+      checkSpeed();
     }
   }
 });
 
-// Init on load
-updateStreakDisplay();
-renderCashierMode();
+// Startup initialization
+document.addEventListener('DOMContentLoaded', () => {
+  updateHeaderBadges();
+  renderCashier();
+});
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  updateHeaderBadges();
+  renderCashier();
+}
 </script>
 </body>
 </html>
