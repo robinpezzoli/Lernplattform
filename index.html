@@ -27,6 +27,7 @@
             font-family: "Courier New", Courier, monospace;
             background: var(--cream);
             color: var(--text);
+            overflow-x: hidden;
         }
 
         header {
@@ -38,6 +39,7 @@
             border: 2px solid var(--mint);
             border-radius: 18px;
             position: relative;
+            z-index: 2;
         }
 
         header h1 {
@@ -74,6 +76,8 @@
         main {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         .bereich {
@@ -142,34 +146,148 @@
             text-align: center;
             color: var(--forest);
             font-size: 0.85rem;
+            position: relative;
+            z-index: 2;
         }
 
-        /* Dekorative Ziegen */
-        .ziege {
+        /* =====================================
+           🐐 ZIEGEN UND PFLANZEN IM HINTERGRUND
+        ===================================== */
+
+        #ziegenWiese {
             position: fixed;
-            z-index: -1;
-            font-size: 2rem;
-            animation: ziegenWackeln 3s ease-in-out infinite;
+            inset: 0;
+            z-index: 1;
+            overflow: hidden;
             pointer-events: none;
         }
 
-        .ziege-links {
-            left: 5px;
-            top: 45%;
+        .ziege {
+            position: absolute;
+            font-size: 2.5rem;
+            line-height: 1;
+            transition:
+                left 3s ease-in-out,
+                top 3s ease-in-out;
+            transform-origin: center;
+            will-change: left, top;
+            filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.12));
         }
 
-        .ziege-rechts {
-            right: 5px;
-            top: 65%;
-            animation-delay: 1s;
+        .ziege.geht {
+            animation: laufen 0.35s infinite alternate;
         }
 
-        @keyframes ziegenWackeln {
-            0%, 100% {
-                transform: rotate(-8deg) translateY(0);
+        .ziege.frisst {
+            animation: kauen 0.5s infinite alternate;
+        }
+
+        .ziege.umgedreht {
+            transform: scaleX(-1);
+        }
+
+        @keyframes laufen {
+            from {
+                margin-top: -2px;
             }
-            50% {
-                transform: rotate(8deg) translateY(-8px);
+            to {
+                margin-top: 3px;
+            }
+        }
+
+        @keyframes kauen {
+            from {
+                transform: scale(1) rotate(-3deg);
+            }
+            to {
+                transform: scale(1.12) rotate(3deg);
+            }
+        }
+
+        .pflanze {
+            position: absolute;
+            font-size: 1.8rem;
+            opacity: 0.85;
+            transition: opacity 0.5s, transform 0.5s;
+            animation: pflanzenWachsen 2s ease-in-out infinite alternate;
+        }
+
+        .pflanze.verschwindet {
+            opacity: 0;
+            transform: scale(0.1);
+        }
+
+        @keyframes pflanzenWachsen {
+            from {
+                transform: scale(0.9) rotate(-5deg);
+            }
+            to {
+                transform: scale(1.08) rotate(5deg);
+            }
+        }
+
+        .pflanze-neu {
+            animation: neuWachsen 2s ease-out;
+        }
+
+        @keyframes neuWachsen {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 0.85;
+                transform: scale(1);
+            }
+        }
+
+        .fress-text {
+            position: absolute;
+            font-size: 1rem;
+            animation: fressBlase 1.5s forwards;
+        }
+
+        @keyframes fressBlase {
+            0% {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+            30% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .app-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 12px;
+            }
+
+            .app-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .ziege {
+                font-size: 2rem;
+            }
+
+            .pflanze {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .app-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
 
@@ -241,29 +359,9 @@
             font-weight: bold;
         }
 
-        @media (max-width: 1100px) {
-            .app-grid {
-                grid-template-columns: repeat(5, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 650px) {
-            body {
-                padding: 12px;
-            }
-
-            .app-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-
-            .ziege {
-                font-size: 1.5rem;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .app-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+        @media (prefers-reduced-motion: reduce) {
+            .ziege, .pflanze {
+                animation: none !important;
             }
         }
     </style>
@@ -271,8 +369,8 @@
 
 <body>
 
-    <div class="ziege ziege-links">🐐</div>
-    <div class="ziege ziege-rechts">🐐</div>
+    <!-- Ziegenwiese -->
+    <div id="ziegenWiese" aria-hidden="true"></div>
 
     <header>
         <h1>💡 Hirntraining 🧠</h1>
@@ -337,7 +435,6 @@
             </div>
         </section>
 
-        <!-- Medien & Informatik -->
         <section class="bereich">
             <h2>💻 Medien &amp; Informatik</h2>
 
@@ -391,6 +488,230 @@
     </div>
 
     <script>
+        /* =====================================
+           🐐 ZIEGEN UND PFLANZEN
+        ===================================== */
+
+        const wiese = document.getElementById("ziegenWiese");
+
+        const pflanzenArten = ["🍀", "☘️", "🌿", "🌱"];
+
+        const ziegen = [];
+        const pflanzen = [];
+
+        const ANZAHL_ZIEGEN = 2;
+        const ANZAHL_PFLANZEN = 12;
+
+        function zufall(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function neuePosition() {
+            const rand = 45;
+
+            return {
+                x: zufall(rand, Math.max(rand + 1, window.innerWidth - rand)),
+                y: zufall(100, Math.max(110, window.innerHeight - 70))
+            };
+        }
+
+        // Pflanzen anlegen
+        function pflanzeErstellen() {
+            const pflanze = document.createElement("div");
+
+            pflanze.className = "pflanze";
+            pflanze.textContent =
+                pflanzenArten[Math.floor(Math.random() * pflanzenArten.length)];
+
+            const pos = neuePosition();
+
+            pflanze.style.left = pos.x + "px";
+            pflanze.style.top = pos.y + "px";
+
+            wiese.appendChild(pflanze);
+
+            const daten = {
+                element: pflanze,
+                x: pos.x,
+                y: pos.y,
+                verfuegbar: true
+            };
+
+            pflanzen.push(daten);
+
+            return daten;
+        }
+
+        // Ziegen erstellen
+        function ziegeErstellen(index) {
+            const ziege = document.createElement("div");
+
+            ziege.className = "ziege geht";
+            ziege.textContent = "🐐";
+
+            const pos = neuePosition();
+
+            ziege.style.left = pos.x + "px";
+            ziege.style.top = pos.y + "px";
+
+            wiese.appendChild(ziege);
+
+            return {
+                element: ziege,
+                x: pos.x,
+                y: pos.y,
+                beschaeftigt: false,
+                index: index
+            };
+        }
+
+        // Passende Pflanze suchen
+        function findePflanze(ziege) {
+            const verfuegbare = pflanzen.filter(p => p.verfuegbar);
+
+            if (verfuegbare.length === 0) {
+                return null;
+            }
+
+            // Meistens die nächstgelegene Pflanze wählen
+            verfuegbare.sort((a, b) => {
+                const da = Math.hypot(a.x - ziege.x, a.y - ziege.y);
+                const db = Math.hypot(b.x - ziege.x, b.y - ziege.y);
+                return da - db;
+            });
+
+            return verfuegbare[0];
+        }
+
+        // Ziegen zu einer Pflanze bewegen
+        function bewegeZiege(ziege, x, y) {
+            const element = ziege.element;
+
+            element.classList.remove("frisst");
+            element.classList.add("geht");
+
+            const blickNachRechts = x >= ziege.x;
+
+            element.style.transform = blickNachRechts
+                ? "scaleX(1)"
+                : "scaleX(-1)";
+
+            element.style.left = x + "px";
+            element.style.top = y + "px";
+
+            const entfernung = Math.hypot(x - ziege.x, y - ziege.y);
+            const dauer = Math.max(1500, entfernung * 7);
+
+            ziege.x = x;
+            ziege.y = y;
+
+            return dauer;
+        }
+
+        // Fressanimation
+        function frisstZiege(ziege, pflanze) {
+            ziege.element.classList.remove("geht");
+            ziege.element.classList.add("frisst");
+
+            // Pflanze verschwindet
+            pflanze.verfuegbar = false;
+            pflanze.element.classList.add("verschwindet");
+
+            // Kleine Fressblase
+            const blase = document.createElement("div");
+            blase.className = "fress-text";
+            blase.textContent = "😋";
+            blase.style.left = ziege.x + "px";
+            blase.style.top = (ziege.y - 25) + "px";
+
+            wiese.appendChild(blase);
+
+            setTimeout(() => blase.remove(), 1600);
+
+            // Pflanze nach 2 bis 4 Minuten nachwachsen lassen
+            const wartezeit = zufall(120000, 240000);
+
+            setTimeout(() => {
+                pflanze.element.remove();
+
+                const index = pflanzen.indexOf(pflanze);
+                if (index !== -1) {
+                    pflanzen.splice(index, 1);
+                }
+
+                pflanzeErstellen();
+            }, wartezeit);
+
+            // Nach dem Fressen weiterlaufen
+            setTimeout(() => {
+                ziege.element.classList.remove("frisst");
+                ziege.element.classList.add("geht");
+                ziege.beschaeftigt = false;
+                ziegeWeiter(ziege);
+            }, zufall(2500, 4500));
+        }
+
+        // Ziegen bewegen sich selbstständig
+        function ziegeWeiter(ziege) {
+            if (ziege.beschaeftigt) return;
+
+            ziege.beschaeftigt = true;
+
+            const pflanze = findePflanze(ziege);
+
+            if (pflanze) {
+                pflanze.verfuegbar = false;
+
+                const zielX = pflanze.x;
+                const zielY = pflanze.y;
+
+                const dauer = bewegeZiege(ziege, zielX, zielY);
+
+                setTimeout(() => {
+                    frisstZiege(ziege, pflanze);
+                }, dauer + 300);
+            } else {
+                // Wenn gerade nichts wächst, gemütlich weiterlaufen
+                const pos = neuePosition();
+                const dauer = bewegeZiege(ziege, pos.x, pos.y);
+
+                setTimeout(() => {
+                    ziege.beschaeftigt = false;
+                    ziegeWeiter(ziege);
+                }, dauer + 1000);
+            }
+        }
+
+        // Wiese starten
+        function starteZiegenWiese() {
+            for (let i = 0; i < ANZAHL_PFLANZEN; i++) {
+                pflanzeErstellen();
+            }
+
+            for (let i = 0; i < ANZAHL_ZIEGEN; i++) {
+                const ziege = ziegeErstellen(i);
+                ziegen.push(ziege);
+
+                setTimeout(() => {
+                    ziegeWeiter(ziege);
+                }, i * 1800);
+            }
+        }
+
+        starteZiegenWiese();
+
+        // Bei Änderung der Bildschirmgrösse keine Überläufe verursachen
+        window.addEventListener("resize", () => {
+            ziegen.forEach(ziege => {
+                ziege.x = Math.min(ziege.x, window.innerWidth - 50);
+                ziege.y = Math.min(ziege.y, window.innerHeight - 50);
+            });
+        });
+
+        /* =====================================
+           🔐 LEHRPERSONEN-LOGIN
+        ===================================== */
+
         function oeffneLehrerLogin() {
             document.getElementById("lehrerModal").style.display = "flex";
             document.getElementById("lehrerPasswort").focus();
