@@ -2,589 +2,201 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Lehrpersonenbereich</title>
 
-<title>🔐 Lehrpersonenbereich – Hirntraining</title>
+    <style>
+        :root {
+            --forest: #52796f;
+            --deep: #354f52;
+            --sage: #84a98c;
+            --mint: #cadfd3;
+            --pastel: #e8f3ec;
+            --cream: #f8f8ef;
+            --text: #354f52;
+        }
 
-<style>
-:root {
-    --forest: #315d49;
-    --deep: #244b3b;
-    --sage: #8caf98;
-    --mint: #dcefe0;
-    --pastel: #f1f7ef;
-    --cream: #ffffff;
-    --text: #345344;
-    --shadow: rgba(49, 93, 73, 0.10);
-}
+        * {
+            box-sizing: border-box;
+        }
 
-* {
-    box-sizing: border-box;
-}
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Courier New", Courier, monospace;
+            background: var(--cream);
+            color: var(--text);
+        }
 
-body {
-    margin: 0;
-    font-family: "Courier New", Courier, monospace;
-    background: linear-gradient(135deg, #f3f8ef, #eaf4eb);
-    color: var(--text);
-    overflow-x: hidden;
-}
+        header {
+            max-width: 1400px;
+            margin: 0 auto 25px;
+            padding: 20px;
+            text-align: center;
+            background: var(--pastel);
+            border: 2px solid var(--mint);
+            border-radius: 18px;
+        }
 
-/* HEADER */
+        header h1 {
+            margin: 10px 0;
+            color: var(--deep);
+            font-size: clamp(1.7rem, 4vw, 2.5rem);
+        }
 
-header {
-    background: linear-gradient(135deg, #315d49, #83ad8c);
-    color: white;
-    text-align: center;
-    padding: 65px 15px 42px;
-    border-radius: 0 0 28px 28px;
-    box-shadow: 0 5px 20px var(--shadow);
-    position: relative;
-}
+        header p {
+            font-size: 0.95rem;
+        }
 
-header h1 {
-    font-size: clamp(24px, 4vw, 38px);
-    margin: 0 0 10px;
-}
+        .zurueck {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 10px;
+            background: var(--forest);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
 
-header p {
-    font-size: 14px;
-    color: #f0f8ec;
-    margin: 0;
-}
+        .zurueck:hover {
+            background: var(--deep);
+            transform: translateY(-2px);
+        }
 
-/* NAVIGATION */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-.nav-button {
-    position: absolute;
-    top: 15px;
-    left: 20px;
-    background: rgba(255,255,255,0.2);
-    color: white;
-    border: 1px solid rgba(255,255,255,0.7);
-    padding: 10px 14px;
-    border-radius: 12px;
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: 0.2s;
-}
+        .willkommen {
+            margin-bottom: 25px;
+            padding: 18px;
+            text-align: center;
+            background: white;
+            border: 2px solid var(--mint);
+            border-radius: 15px;
+        }
 
-.nav-button:hover {
-    background: white;
-    color: var(--forest);
-}
+        .willkommen h2 {
+            margin-top: 0;
+            color: var(--forest);
+        }
 
-.lehrer-label {
-    display: inline-block;
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.4);
-    padding: 7px 15px;
-    border-radius: 20px;
-    font-size: 11px;
-    margin-bottom: 15px;
-}
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(10, minmax(0, 1fr));
+            gap: 12px;
+        }
 
-/* INHALT */
+        .app-card {
+            min-width: 0;
+            padding: 18px 10px;
+            text-align: center;
+            background: white;
+            border: 2px solid var(--mint);
+            border-radius: 14px;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 9px;
+            transition: 0.2s;
+        }
 
-main {
-    width: 98%;
-    max-width: 1800px;
-    margin: 30px auto;
-    padding: 8px;
-}
+        .app-card:hover {
+            background: var(--pastel);
+            border-color: var(--forest);
+            transform: translateY(-4px);
+        }
 
-.willkommen {
-    text-align: center;
-    background: rgba(255,255,255,0.8);
-    border: 1px solid #dceadd;
-    border-radius: 18px;
-    padding: 20px;
-    margin-bottom: 35px;
-    box-shadow: 0 3px 10px var(--shadow);
-}
+        .app-icon {
+            font-size: 2.5rem;
+        }
 
-.willkommen h2 {
-    color: var(--forest);
-    font-size: 21px;
-    margin-top: 0;
-}
+        .app-card h3 {
+            margin: 0;
+            font-size: 0.95rem;
+        }
 
-.willkommen p {
-    color: #718578;
-    font-size: 13px;
-    line-height: 1.6;
-}
+        .app-card span {
+            font-size: 0.75rem;
+        }
 
-/* BEREICHE */
+        footer {
+            max-width: 1400px;
+            margin: 35px auto 0;
+            padding: 15px;
+            text-align: center;
+            color: var(--forest);
+            font-size: 0.85rem;
+        }
 
-.bereich {
-    margin-bottom: 38px;
-}
+        @media (max-width: 1100px) {
+            .app-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+            }
+        }
 
-.bereich-titel {
-    text-align: center;
-    color: var(--forest);
-    font-size: clamp(17px, 2vw, 23px);
-    margin-bottom: 17px;
-    padding-bottom: 9px;
-    border-bottom: 2px solid #cfe3d1;
-}
+        @media (max-width: 650px) {
+            body {
+                padding: 12px;
+            }
 
-/* KARTEN */
-
-.karten {
-    display: grid;
-    grid-template-columns: repeat(10, minmax(0, 1fr));
-    gap: 10px;
-}
-
-.karte {
-    background: rgba(255,255,255,0.9);
-    padding: 14px 8px;
-    border-radius: 15px;
-    text-align: center;
-    border: 1px solid #dceadd;
-    box-shadow: 0 3px 10px var(--shadow);
-    transition: transform 0.2s, box-shadow 0.2s;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.karte:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 18px rgba(49,93,73,0.17);
-    background: white;
-}
-
-.symbol {
-    font-size: 29px;
-    margin-bottom: 5px;
-}
-
-.karte h3 {
-    color: var(--forest);
-    font-size: 11px;
-    line-height: 1.4;
-    margin: 4px 0;
-    overflow-wrap: anywhere;
-}
-
-.karte p {
-    font-size: 9px;
-    line-height: 1.5;
-    color: #718578;
-    margin: 5px 0 10px;
-    flex-grow: 1;
-}
-
-.button {
-    display: inline-block;
-    background: #8caf98;
-    color: white;
-    padding: 8px 9px;
-    border-radius: 9px;
-    text-decoration: none;
-    font-size: 9px;
-    font-weight: bold;
-    margin-top: auto;
-    transition: background 0.2s, transform 0.2s;
-}
-
-.button:hover {
-    background: var(--forest);
-    transform: scale(1.04);
-}
-
-/* INFO-KARTEN */
-
-.info-karten {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 15px;
-}
-
-.info-karte {
-    background: #ffffff;
-    border: 1px solid #dceadd;
-    border-radius: 16px;
-    padding: 18px;
-    box-shadow: 0 3px 10px var(--shadow);
-    text-align: center;
-}
-
-.info-karte .symbol {
-    font-size: 30px;
-}
-
-.info-karte h3 {
-    font-size: 14px;
-    color: var(--forest);
-}
-
-.info-karte p {
-    color: #718578;
-    font-size: 11px;
-    line-height: 1.5;
-}
-
-/* FOOTER */
-
-footer {
-    background: #e1eee0;
-    text-align: center;
-    padding: 22px 10px;
-    margin-top: 40px;
-    color: var(--forest);
-    border-radius: 25px 25px 0 0;
-    font-size: 12px;
-}
-
-footer p {
-    margin: 5px;
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 1100px) {
-    .karten {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 650px) {
-    header {
-        padding-top: 75px;
-    }
-
-    .nav-button {
-        top: 12px;
-        left: 12px;
-        padding: 8px 10px;
-    }
-
-    .karten {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .info-karten {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 380px) {
-    .karten {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .karte {
-        transition: none;
-    }
-}
-</style>
+            .app-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
+    <header>
+        <a class="zurueck" href="index.html">← Zurück zur Startseite</a>
 
-<header>
+        <h1>📚 Lehrpersonenbereich</h1>
+        <p>Willkommen im exklusiven Lehrpersonenbereich 🌱</p>
+    </header>
 
-    <a class="nav-button" href="index.html">
-        ← Zurück
-    </a>
+    <main>
 
-    <div class="lehrer-label">
-        🔐 EXKLUSIVER LEHRPERSONENBEREICH
-    </div>
+        <section class="willkommen">
+            <h2>👋 Willkommen!</h2>
+            <p>
+                Hier findest du deine Werkzeuge für den Unterricht.
+                Wähle einfach die gewünschte Anwendung aus.
+            </p>
+        </section>
 
-    <h1>📚 Lehrpersonen-Dashboard</h1>
+        <section>
+            <h2>🧑‍🏫 Deine Unterrichtswerkzeuge</h2>
 
-    <p>Planen, vorbereiten, begleiten und fördern! 🌷</p>
+            <div class="app-grid">
 
-</header>
-
-<main>
-
-    <!-- WILLKOMMEN -->
-
-    <section class="willkommen">
-
-        <h2>🌿 Herzlich willkommen!</h2>
-
-        <p>
-            Schön, dass du hier bist! In diesem Bereich findest du
-            Materialien, Lösungen und hilfreiche Unterlagen
-            rund um das digitale Hirntraining.
-        </p>
-
-        <p>
-            Viel Freude beim Unterrichten und Begleiten deiner Lernenden! 💚
-        </p>
-
-    </section>
-
-
-    <!-- UNTERRICHT -->
-
-    <section class="bereich">
-
-        <h2 class="bereich-titel">
-            📚 Unterricht & Materialien
-        </h2>
-
-        <div class="karten">
-
-            <div class="karte">
-                <div class="symbol">📖</div>
-                <h3>Unterrichtsmaterialien</h3>
-                <p>Sammlung von Materialien für den Unterricht.</p>
-                <a class="button" href="unterrichtsmaterialien.html">
-                    Öffnen →
+                <a class="app-card" href="loswerk.html">
+                    <div class="app-icon">📝</div>
+                    <h3>Loswerk</h3>
+                    <span>Aufgaben und Übungen</span>
                 </a>
-            </div>
 
-            <div class="karte">
-                <div class="symbol">📝</div>
-                <h3>Arbeitsblätter</h3>
-                <p>Zusätzliche Übungen und Aufgaben für Lernende.</p>
-                <a class="button" href="arbeitsblaetter.html">
-                    Öffnen →
+                <a class="app-card" href="lektionstool.html">
+                    <div class="app-icon">📚</div>
+                    <h3>Lektionstool</h3>
+                    <span>Unterricht planen</span>
                 </a>
+
             </div>
+        </section>
 
-            <div class="karte">
-                <div class="symbol">📋</div>
-                <h3>Lernkontrollen</h3>
-                <p>Tests und Lernkontrollen für verschiedene Themen.</p>
-                <a class="button" href="lernkontrollen.html">
-                    Öffnen →
-                </a>
-            </div>
+    </main>
 
-            <div class="karte">
-                <div class="symbol">🎯</div>
-                <h3>Lernziele</h3>
-                <p>Übersicht über Lernziele und Kompetenzen.</p>
-                <a class="button" href="lernziele.html">
-                    Öffnen →
-                </a>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- LÖSUNGEN -->
-
-    <section class="bereich">
-
-        <h2 class="bereich-titel">
-            🔑 Lösungen & Korrekturen
-        </h2>
-
-        <div class="karten">
-
-            <div class="karte">
-                <div class="symbol">🔢</div>
-                <h3>Mathe-Lösungen</h3>
-                <p>Lösungen und Erklärungen zu den Mathe-Apps.</p>
-                <a class="button" href="loesungen_mathe.html">
-                    Öffnen →
-                </a>
-            </div>
-
-            <div class="karte">
-                <div class="symbol">🌍</div>
-                <h3>RZG-Lösungen</h3>
-                <p>Lösungen zu den RZG-Lerninhalten.</p>
-                <a class="button" href="loesungen_rzg.html">
-                    Öffnen →
-                </a>
-            </div>
-
-            <div class="karte">
-                <div class="symbol">✅</div>
-                <h3>Korrekturhilfen</h3>
-                <p>Hilfen zur Beurteilung und Korrektur.</p>
-                <a class="button" href="korrekturhilfen.html">
-                    Öffnen →
-                </a>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- APPS -->
-
-    <section class="bereich">
-
-        <h2 class="bereich-titel">
-            💻 Lernapps verwalten & testen
-        </h2>
-
-        <div class="karten">
-
-            <div class="karte">
-                <div class="symbol">🏆</div>
-                <h3>Mathe-Master-Challenge</h3>
-                <p>Die Mathe-Challenge aus Lehrpersonensicht testen.</p>
-                <a class="button" href="Mathe-Master-Challenge-3.html">
-                    Öffnen →
-                </a>
-            </div>
-
-            <div class="karte">
-                <div class="symbol">🏔️</div>
-                <h3>Alpenlift – Pythagoras</h3>
-                <p>Die Pythagoras-Lernapp öffnen.</p>
-                <a class="button" href="alpenlift-pythagoras.html">
-                    Öffnen →
-                </a>
-            </div>
-
-            <div class="karte">
-                <div class="symbol">✖️</div>
-                <h3>Multiplikations-Duell</h3>
-                <p>Einmaleins-Training testen.</p>
-                <a class="button" href="multiplikations_duell.html">
-                    Öffnen →
-                </a>
-            </div>
-
-            <div class="karte">
-                <div class="symbol">🛒</div>
-                <h3>Kassentrainer Schweiz</h3>
-                <p>Schweizer Franken und Rückgeld üben.</p>
-                <a class="button" href="Detailhandel_Kassentrainer_Schweiz.html">
-                    Öffnen →
-                </a>
-            </div>
-
-            <div class="karte">
-                <div class="symbol">🌙</div>
-                <h3>Mondphasen-Atlas</h3>
-                <p>Die Mondphasen-Lernapp öffnen.</p>
-                <a class="button" href="Mondphasen-Atlas.html">
-                    Öffnen →
-                </a>
-            </div>
-
-            <div class="karte">
-                <div class="symbol">🌷</div>
-                <h3>Jahreszeiten Schweiz</h3>
-                <p>Die Jahreszeiten-Lernapp öffnen.</p>
-                <a class="button" href="Jahreszeiten_in_der_Schweiz.html">
-                    Öffnen →
-                </a>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ORGANISATION -->
-
-    <section class="bereich">
-
-        <h2 class="bereich-titel">
-            ⚙️ Organisation & Planung
-        </h2>
-
-        <div class="karten">
-
-            <div class="karte">
-                <div class="symbol">📅</div>
-                <h3>Unterrichtsplanung</h3>
-                <p>Planung und Organisation des Unterrichts.</p>
-                <a class="button" href="unterrichtsplanung.html">
-                    Öffnen →
-                </a>
-            </div>
-
-            <div class="karte">
-                <div class="symbol">💡</div>
-                <h3>Ideensammlung</h3>
-                <p>Neue Ideen und Vorschläge für Lernapps.</p>
-                <a class="button" href="ideensammlung.html">
-                    Öffnen →
-                </a>
-            </div>
-
-            <div class="karte">
-                <div class="symbol">📂</div>
-                <h3>Weitere Unterlagen</h3>
-                <p>Zusätzliche Dokumente und Materialien.</p>
-                <a class="button" href="weitere_unterlagen.html">
-                    Öffnen →
-                </a>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- HINWEISE -->
-
-    <section class="bereich">
-
-        <h2 class="bereich-titel">
-            🌱 Auf einen Blick
-        </h2>
-
-        <div class="info-karten">
-
-            <div class="info-karte">
-                <div class="symbol">📚</div>
-                <h3>Gut vorbereitet</h3>
-                <p>
-                    Alle Unterrichtsmaterialien und Lernhilfen
-                    an einem zentralen Ort.
-                </p>
-            </div>
-
-            <div class="info-karte">
-                <div class="symbol">🎓</div>
-                <h3>Individuell fördern</h3>
-                <p>
-                    Lernende können spielerisch üben
-                    und ihre Fähigkeiten verbessern.
-                </p>
-            </div>
-
-            <div class="info-karte">
-                <div class="symbol">💚</div>
-                <h3>Mit Freude lernen</h3>
-                <p>
-                    Abwechslungsreiche Übungen machen
-                    das Lernen spannend und motivierend.
-                </p>
-            </div>
-
-        </div>
-
-    </section>
-
-</main>
-
-
-<!-- FOOTER -->
-
-<footer>
-    <p>🌲 Denken. Üben. Lernen. Wachsen. 🌲</p>
-    <p>🔐 Lehrpersonenbereich – Hirntraining</p>
-</footer>
+    <footer>
+        🌱 Planen. Unterrichten. Lernen. Wachsen. 🌱
+    </footer>
 
 </body>
 </html>
