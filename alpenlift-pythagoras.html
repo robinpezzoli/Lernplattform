@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>AlpenLift Pythagoras — Schweizer Skilift- &amp; Bike-Simulation</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-muted: #f1f5f9;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --red: #dc2626;
+      --blue: #0284c7;
+      --green: #059669;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tabular { font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: 0;
+    }
+    .nav-pages {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-link {
+      background: none;
+      border: none;
+      padding: 8px 4px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      min-height: 38px;
+    }
+    .nav-link:hover { color: var(--text); }
+    .nav-link.active {
+      color: var(--red);
+      border-bottom-color: var(--red);
+      font-weight: 600;
+    }
+    .container {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 20px 16px 32px;
+    }
+    .preset-strip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .kpi-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+    .kpi-value { font-size: 20px; font-weight: 700; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(340px, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .workspace { grid-template-columns: 1fr; }
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .stage-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stage-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .stage-meta strong { color: var(--text); font-size: 14px; }
+    .seg-group {
+      display: inline-flex;
+      background: var(--surface-muted);
+      padding: 4px;
+      border-radius: 8px;
+      gap: 4px;
+    }
+    .seg-btn {
+      border: none;
+      background: transparent;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      min-height: 34px;
+      white-space: nowrap;
+    }
+    .seg-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+    .svg-wrap { background: #e0f2fe; width: 100%; }
+    svg#alpine-svg { display: block; width: 100%; height: auto; max-height: 560px; user-select: none; }
+    .stage-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-dark {
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 42px;
+    }
+    .btn-red {
+      background: #dc2626;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .btn-outline {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 40px;
+    }
+    .btn-outline.active { border-color: #0f172a; background: #f1f5f9; }
+    .deck-section { padding: 18px; border-bottom: 1px solid var(--border); }
+    .deck-section:last-child { border-bottom: none; }
+    .deck-title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+    .deck-title { font-size: 15px; font-weight: 700; margin: 0; }
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background: var(--surface-muted);
+      padding: 4px;
+      border-radius: 8px;
+    }
+    .mode-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 6px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      min-height: 42px;
+    }
+    .mode-btn.active { background: #ffffff; color: var(--text); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08); }
+    .task-num-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .task-num-btn {
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      border-radius: 8px;
+      min-height: 40px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .task-num-btn.active { background: #0f172a; color: #ffffff; border-color: #0f172a; }
+    .task-num-btn.done { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+    .field-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+    .field-label { font-size: 13px; font-weight: 600; }
+    .field-input-wrap { display: flex; align-items: center; gap: 6px; }
+    .num-input {
+      width: 92px;
+      min-height: 40px;
+      padding: 6px 10px;
+      text-align: right;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+    .unit { font-size: 12px; color: var(--text-muted); width: 46px; }
+    input[type="range"].slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 28px;
+      background: transparent;
+      cursor: pointer;
+      touch-action: pan-y;
+    }
+    input[type="range"].slider::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: #e2e8f0; }
+    input[type="range"].slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      margin-top: -9px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2.5px solid var(--c, #dc2626);
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.16);
+    }
+    .sync-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #065f46;
+      margin-bottom: 16px;
+    }
+    .result-box {
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .result-val { font-size: 24px; font-weight: 700; font-family: var(--font-mono); }
+    .steps-box {
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: #334155;
+      background: #ffffff;
+    }
+    .error-box { padding: 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; color: #991b1b; font-size: 13px; }
+    .theory-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
+    .theory-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 18px; }
+    @media (max-width: 900px) {
+      .theory-grid-3, .theory-grid-2 { grid-template-columns: 1fr; }
+    }
+    .theory-card { background: #ffffff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    @keyframes flagWave {
+      0%, 100% { transform: skewY(0deg) scaleX(1); }
+      50% { transform: skewY(-4deg) scaleX(0.94); }
+    }
+    .swiss-flag {
+      transform-box: fill-box;
+      transform-origin: left center;
+      animation: flagWave 2.6s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <button type="button" class="brand" id="brand-btn">AlpenLift Pythagoras</button>
+    <nav class="nav-pages" aria-label="Seitennavigation">
+      <button type="button" class="nav-link active" id="nav-tasks">Aufgaben</button>
+      <button type="button" class="nav-link" id="nav-theory">Theorie</button>
+    </nav>
+    <div style="font-size: 12px; color: #64748b; white-space: nowrap;">Laptop &amp; iPad</div>
+  </header>
+
+  <main class="container">
+    <!-- PAGE 1: AUFGABEN (HAUPTSEITE) -->
+    <div id="page-tasks">
+      <div id="preset-strip" class="preset-strip" style="display:none;"></div>
+
+      <section class="kpi-strip" aria-label="Übersicht Kennzahlen">
+        <div class="kpi-card">
+          <div class="kpi-label">Starthöhe → Zielhöhe</div>
+          <div class="kpi-value" id="kpi-elev" style="font-size:16px;">–</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Höhenmeter a</div>
+          <div class="kpi-value" id="kpi-a" style="color:#059669;">–</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Horizontaldistanz b</div>
+          <div class="kpi-value" id="kpi-b" style="color:#0284c7;">–</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Seillänge c (einfach)</div>
+          <div class="kpi-value" id="kpi-c" style="color:#dc2626;">–</div>
+        </div>
+      </section>
+
+      <div class="workspace">
+        <!-- Interactive Swiss Alpine Stage -->
+        <section class="card">
+          <div class="stage-header">
+            <div class="stage-meta">
+              <strong id="stage-resort-label">Zermatt · Matterhorn Paradise</strong>
+              <span>·</span>
+              <span>Massstab 1:1</span>
+              <span>·</span>
+              <span id="stage-slope-label" class="tabular">Steigung –</span>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <div class="seg-group" id="season-group">
+                <button type="button" class="seg-btn" data-season="winter">Winter · Ski</button>
+                <button type="button" class="seg-btn" data-season="summer">Sommer · Biken</button>
+              </div>
+              <div class="seg-group" id="lift-type-group">
+                <button type="button" class="seg-btn" data-lift="gondel">Gondel</button>
+                <button type="button" class="seg-btn" data-lift="sessel">Sessel</button>
+                <button type="button" class="seg-btn" data-lift="buegel" id="lift-tbar-btn">Skilift</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="svg-wrap">
+            <svg id="alpine-svg" viewBox="0 0 1000 600" role="img" aria-label="Schweizer Bergbahn Pythagoras Animation">
+              <defs>
+                <linearGradient id="skyWinter" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#7dd3fc" />
+                  <stop offset="55%" stop-color="#e0f2fe" />
+                  <stop offset="100%" stop-color="#f8fafc" />
+                </linearGradient>
+                <linearGradient id="skySummer" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#38bdf8" />
+                  <stop offset="58%" stop-color="#bae6fd" />
+                  <stop offset="100%" stop-color="#f0fdf4" />
+                </linearGradient>
+                <linearGradient id="snowGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#ffffff" />
+                  <stop offset="60%" stop-color="#f1f5f9" />
+                  <stop offset="100%" stop-color="#cbd5e1" />
+                </linearGradient>
+                <linearGradient id="meadowGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#86efac" />
+                  <stop offset="45%" stop-color="#4ade80" />
+                  <stop offset="100%" stop-color="#16a34a" />
+                </linearGradient>
+              </defs>
+              <g id="scene-bg"></g>
+              <g id="scene-dynamic"></g>
+              <g id="scene-snow"></g>
+            </svg>
+          </div>
+
+          <div class="stage-footer">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button type="button" class="btn-dark" id="btn-play">Pause</button>
+              <div class="seg-group" id="speed-group">
+                <button type="button" class="seg-btn" data-speed="0.5">0.5×</button>
+                <button type="button" class="seg-btn active" data-speed="1">1×</button>
+                <button type="button" class="seg-btn" data-speed="2">2×</button>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button type="button" class="btn-outline active" id="btn-triangle">Pythagoras-Dreieck</button>
+              <button type="button" class="btn-outline active" id="btn-snow">Schneefall</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right Panel: Exercises (1-6) vs Free Calculator -->
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="card" style="padding:6px; display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <button type="button" class="mode-btn active" id="ws-exercises">Übungsaufgaben (1–6)</button>
+            <button type="button" class="mode-btn" id="ws-free">Freier Rechner</button>
+          </div>
+          <aside class="card" id="right-panel"></aside>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: THEORIE (ERKLÄRSEITE) -->
+    <div id="page-theory" style="display:none;">
+      <section class="theory-card">
+        <div class="theory-grid-2" style="margin-top:0; align-items:center;">
+          <div>
+            <div style="font-size:12px; font-weight:700; color:#b91c1c; margin-bottom:8px;">Theorie · Satz des Pythagoras am Berg</div>
+            <h1 style="font-size:26px; margin:0 0 12px; line-height:1.2;">Wie hängt eine Bergbahn mit dem Satz des Pythagoras zusammen?</h1>
+            <p style="font-size:14.5px; color:#475569; line-height:1.6; margin:0 0 16px;">
+              Zwischen Talstation und Bergstation bildet eine Seilbahn ein <strong>rechtwinkliges Dreieck</strong>:
+              Die <strong style="color:#047857;">Höhenmeter (a)</strong> und die <strong style="color:#0369a1;">Horizontaldistanz (b)</strong> stehen genau im <strong>90°-Winkel</strong> aufeinander.
+              Das Tragseil ist die längste Seite (Hypotenuse <strong style="color:#b91c1c;">c</strong>).
+            </p>
+            <div class="mode-grid" id="theory-focus-group" style="margin-bottom:16px;">
+              <button type="button" class="mode-btn active" data-focus="cable">Seillänge c</button>
+              <button type="button" class="mode-btn" data-focus="distance">Distanz b</button>
+              <button type="button" class="mode-btn" data-focus="height">Höhenmeter a</button>
+            </div>
+            <button type="button" class="btn-red" id="btn-goto-tasks">Jetzt Aufgaben lösen →</button>
+          </div>
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px;">
+            <svg id="theory-svg" viewBox="0 0 560 320" style="width:100%; height:auto; display:block;"></svg>
+          </div>
+        </div>
+      </section>
+
+      <div class="theory-grid-3">
+        <div class="theory-card">
+          <div style="font-size:12px; font-weight:700; color:#b91c1c; margin-bottom:6px;">1. Hypotenuse gesucht</div>
+          <h2 style="font-size:17px; margin:0 0 10px;">Seillänge c berechnen</h2>
+          <div class="steps-box" style="margin-bottom:10px;"><strong>c = √(a² + b²)</strong></div>
+          <p style="font-size:13.5px; color:#475569; line-height:1.55; margin:0;">Addiere die Quadrate der Höhenmeter a und der Horizontaldistanz b und ziehe die Wurzel.</p>
+        </div>
+        <div class="theory-card">
+          <div style="font-size:12px; font-weight:700; color:#0369a1; margin-bottom:6px;">2. Kathete gesucht</div>
+          <h2 style="font-size:17px; margin:0 0 10px;">Horizontaldistanz b berechnen</h2>
+          <div class="steps-box" style="margin-bottom:10px;"><strong>b = √(c² − a²)</strong></div>
+          <p style="font-size:13.5px; color:#475569; line-height:1.55; margin:0;">Subtrahiere vom Quadrat der Seillänge c das Quadrat der Höhenmeter a.</p>
+        </div>
+        <div class="theory-card">
+          <div style="font-size:12px; font-weight:700; color:#047857; margin-bottom:6px;">3. Kathete gesucht</div>
+          <h2 style="font-size:17px; margin:0 0 10px;">Höhenmeter a berechnen</h2>
+          <div class="steps-box" style="margin-bottom:10px;"><strong>a = √(c² − b²)</strong></div>
+          <p style="font-size:13.5px; color:#475569; line-height:1.55; margin:0;">Berechne a aus c und b. Danach gilt: Zielhöhe = Starthöhe + a.</p>
+        </div>
+      </div>
+
+      <div class="theory-grid-2">
+        <div class="theory-card">
+          <h3 style="font-size:15px; margin:0 0 8px;">Starthöhe, Zielhöhe und Höhenmeter</h3>
+          <p style="font-size:13.5px; color:#475569; line-height:1.55; margin:0 0 10px;">Höhen in der Schweiz stehen in Metern über Meer (m ü. M.). Für das Dreieck gilt:</p>
+          <div class="sync-box" style="display:block; margin:0; font-family:var(--font-mono); font-size:12.5px; line-height:1.6;">
+            <div>Höhenmeter a = Zielhöhe − Starthöhe</div>
+            <div>Zielhöhe = Starthöhe + a &nbsp;|&nbsp; Starthöhe = Zielhöhe − a</div>
+          </div>
+        </div>
+        <div class="theory-card">
+          <h3 style="font-size:15px; margin:0 0 8px;">Wichtige Kontrollregeln</h3>
+          <p style="font-size:13.5px; color:#475569; line-height:1.6; margin:0;">
+            1. <strong>c</strong> ist immer die längste Seite (grösser als a und b).<br/>
+            2. Das umlaufende Förderseil einer Bahn misst <strong>2 · c</strong>.<br/>
+            3. Die Steigung in Prozent berechnet man mit <strong>(a / b) · 100 %</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const PRESETS = [{"id":"zermatt","shortName":"Zermatt","name":"Zermatt · Matterhorn Paradise","canton":"VS","liftName":"Furi – Trockener Steg","liftType":"gondel","startHeight":1867,"endHeight":2939,"distance":2450,"description":"Steile Hochalpen-Gondelbahn im Wallis mit Blick Richtung Matterhorn."},{"id":"laax","shortName":"Laax","name":"Flims Laax Falera","canton":"GR","liftName":"Crap Sogn Gion Bahn","liftType":"gondel","startHeight":1100,"endHeight":2228,"distance":3650,"description":"Lange Bündner Bergbahn vom Tal direkt hinauf auf den Crap Sogn Gion."},{"id":"arosa","shortName":"Arosa","name":"Arosa Lenzerheide","canton":"GR","liftName":"Carmenna Sesselbahn","liftType":"sessel","startHeight":1780,"endHeight":2370,"distance":1380,"description":"Klassische Graubündner Sesselbahn über weite alpine Schneehänge."},{"id":"titlis","shortName":"Engelberg","name":"Engelberg · Titlis","canton":"OW","liftName":"Jochpass Skilift","liftType":"buegel","startHeight":1800,"endHeight":2210,"distance":920,"description":"Typischer Zentralschweizer Bügellift mit knackiger Steigung am Jochpass."}];
+      const TASKS = [{"id":"task-1","number":1,"title":"Seillänge im Wallis","season":"winter","resortName":"Zermatt · Matterhorn Paradise","liftName":"Furi – Trockener Steg","liftType":"gondel","solveTarget":"cable","elevationInputMode":"start_end","heightAnchorMode":"from_start","startHeight":1867,"endHeight":2939,"heightDiff":1072,"distance":2450,"cableLength":2674,"prompt":"Die Gondelbahn in Zermatt startet auf einer Starthöhe von 1'867 m ü. M. und führt hinauf zur Bergstation auf 2'939 m ü. M. Die Horizontaldistanz beträgt 2'450 m. Berechne die einfache Seillänge c.","questionLabel":"Gesucht: Seillänge c in Metern","hint":"Berechne zuerst die Höhenmeter a = Zielhöhe − Starthöhe. Danach gilt c = √(a² + b²)."},{"id":"task-2","number":2,"title":"Bike-Gondelbahn im Sommer","season":"summer","resortName":"Arosa Lenzerheide Bike Kingdom","liftName":"Rothorn-Biketrail Zubringer","liftType":"sessel","solveTarget":"cable","elevationInputMode":"start_diff","heightAnchorMode":"from_start","startHeight":1489,"endHeight":1904,"heightDiff":415,"distance":1280,"cableLength":1346,"prompt":"Im Bikepark Lenzerheide transportiert eine Sesselbahn Mountainbikes vom Tal (1'489 m ü. M.) über 415 Höhenmeter nach oben. Die Horizontaldistanz auf der Karte misst 1'280 m. Wie lang ist das Tragseil c?","questionLabel":"Gesucht: Seillänge c in Metern","hint":"Du hast direkt a = 415 m und b = 1'280 m gegeben. Nutze c = √(a² + b²)."},{"id":"task-3","number":3,"title":"Horizontaldistanz berechnen","season":"winter","resortName":"Arosa · Carmenna","liftName":"Carmenna Sesselbahn","liftType":"sessel","solveTarget":"distance","elevationInputMode":"start_end","heightAnchorMode":"from_start","startHeight":1780,"endHeight":2370,"heightDiff":590,"distance":1379,"cableLength":1500,"prompt":"Die Sesselbahn überwindet den Weg von 1'780 m ü. M. auf 2'370 m ü. M. mit einer gespannten Seillänge c von genau 1'500 m. Wie gross ist die Horizontaldistanz b auf der Landeskarte?","questionLabel":"Gesucht: Horizontaldistanz b in Metern","hint":"Bestimme zuerst a = 2'370 − 1'780. Da eine Kathete gesucht ist, rechnest du b = √(c² − a²)."},{"id":"task-4","number":4,"title":"Sommer-Traillift in Graubünden","season":"summer","resortName":"Flims Laax · Runca Trail","liftName":"Nagens Bike-Bahn","liftType":"gondel","solveTarget":"distance","elevationInputMode":"start_end","heightAnchorMode":"from_start","startHeight":1100,"endHeight":1840,"heightDiff":740,"distance":2019,"cableLength":2150,"prompt":"Für den Runca-Biketrail fahren die Biker mit der Gondel von 1'100 m ü. M. auf 1'840 m ü. M. Das Förderseil misst zwischen den Stationen 2'150 m. Berechne die waagrechte Distanz b.","questionLabel":"Gesucht: Horizontaldistanz b in Metern","hint":"Höhenmeter a = 1'840 − 1'100 = 740 m. Anschliessend b = √(2'150² − 740²)."},{"id":"task-5","number":5,"title":"Höhenmeter & Zielhöhe am Jochpass","season":"winter","resortName":"Engelberg · Titlis","liftName":"Jochpass Skilift","liftType":"buegel","solveTarget":"height","elevationInputMode":"start_end","heightAnchorMode":"from_start","startHeight":1800,"endHeight":2280,"heightDiff":480,"distance":900,"cableLength":1020,"prompt":"Ein Skilift startet auf 1'800 m ü. M. Seine Fahrstrecke (Seillänge c) beträgt 1'020 m und die Horizontaldistanz b ist 900 m lang. Wie viele Höhenmeter a legt der Lift zurück?","questionLabel":"Gesucht: Höhenmeter a in Metern","hint":"Berechne a = √(c² − b²) = √(1'020² − 900²). Die Zielhöhe liegt dann a Meter über 1'800 m ü. M."},{"id":"task-6","number":6,"title":"Talhöhe im Bikepark Verbier","season":"summer","resortName":"Verbier · Bike Park","liftName":"Médran Bike-Gondel","liftType":"gondel","solveTarget":"height","elevationInputMode":"start_end","heightAnchorMode":"from_end","startHeight":1000,"endHeight":2200,"heightDiff":1200,"distance":1600,"cableLength":2000,"prompt":"Die Bergstation des Bike-Lifts liegt auf 2'200 m ü. M. Die Seillänge c beträgt 2'000 m und die Horizontaldistanz b misst 1'600 m. Wie viele Höhenmeter a überwindet der Lift?","questionLabel":"Gesucht: Höhenmeter a in Metern","hint":"Mit a = √(2'000² − 1'600²) erhältst du die Höhenmeter a. Die Starthöhe ist 2'200 − a."}];
+      const state = Object.assign({}, {"solveTarget":"cable","elevationInputMode":"start_end","heightAnchorMode":"from_start","liftType":"gondel","startHeight":1867,"endHeight":2939,"heightDiff":1072,"distance":2450,"cableLength":2674});
+
+      let activePage = 'tasks';
+      let workspaceMode = 'exercises';
+      let activeTaskIndex = 0;
+      let solvedIds = [];
+      let activePresetId = PRESETS[0].id;
+      let season = 'winter';
+      let isPlaying = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let speed = 1;
+      let showTriangle = true;
+      let showAtmosphere = true;
+      let practiceMode = false;
+      let solutionRevealed = false;
+      let answerDraft = '';
+      let checkStatus = 'idle';
+      let showHint = false;
+      let theoryFocus = 'cable';
+      let animPhase = 0;
+      let lastTs = null;
+
+      // Sync initial task into state if starting in exercises
+      function applyTask(idx) {
+        activeTaskIndex = idx;
+        const t = TASKS[idx];
+        season = t.season;
+        state.solveTarget = t.solveTarget;
+        state.elevationInputMode = t.elevationInputMode;
+        state.heightAnchorMode = t.heightAnchorMode;
+        state.liftType = t.liftType;
+        state.startHeight = t.startHeight;
+        state.endHeight = t.endHeight;
+        state.heightDiff = t.heightDiff;
+        state.distance = t.distance;
+        state.cableLength = t.cableLength;
+        answerDraft = '';
+        checkStatus = 'idle';
+        showHint = false;
+        solutionRevealed = false;
+      }
+      applyTask(0);
+
+      const flakes = Array.from({ length: 40 }, (_, i) => ({
+        x: ((Math.sin(i * 12.98) * 43758.54) % 1 + 1) % 1 * 1000,
+        y: ((Math.sin(i * 78.23) * 43758.54) % 1 + 1) % 1 * 600,
+        r: 1.4 + (i % 3) * 0.75,
+        speedY: 22 + (i % 5) * 9,
+        drift: 8 + (i % 4) * 5,
+        phase: i * 0.7,
+        opacity: 0.4 + (i % 4) * 0.14
+      }));
+
+      function fmt(val, dec) {
+        if (!Number.isFinite(val)) return '–';
+        const d = dec === undefined ? 1 : dec;
+        const fixed = Number(val.toFixed(d)).toFixed(d);
+        const parts = fixed.split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+        return d === 0 ? parts[0] : parts[0] + '.' + parts[1];
+      }
+
+      function fmtCompact(val) {
+        if (!Number.isFinite(val)) return '–';
+        return Math.abs(val - Math.round(val)) < 0.05 ? fmt(val, 0) : fmt(val, 1);
+      }
+
+      function solve() {
+        let sH = Number(state.startHeight) || 0;
+        let eH = Number(state.endHeight) || 0;
+        let a = Number(state.heightDiff) || 0;
+        let b = Number(state.distance) || 0;
+        let c = Number(state.cableLength) || 0;
+
+        if (state.solveTarget === 'cable') {
+          if (state.elevationInputMode === 'start_end') a = eH - sH;
+          else { a = state.heightDiff; eH = sH + a; }
+          if (a <= 0) return { valid: false, error: 'Die Zielhöhe muss höher als die Starthöhe sein.', startHeight: sH, endHeight: eH, a: 0, b, c: 0, angleDeg: 0, gradePercent: 0, totalLoop: 0 };
+          if (b <= 0) return { valid: false, error: 'Die Horizontaldistanz b muss grösser als 0 m sein.', startHeight: sH, endHeight: eH, a, b: 0, c: 0, angleDeg: 0, gradePercent: 0, totalLoop: 0 };
+          c = Math.sqrt(a * a + b * b);
+        } else if (state.solveTarget === 'distance') {
+          if (state.elevationInputMode === 'start_end') a = eH - sH;
+          else { a = state.heightDiff; eH = sH + a; }
+          if (a <= 0) return { valid: false, error: 'Die Zielhöhe muss höher als die Starthöhe sein.', startHeight: sH, endHeight: eH, a: 0, b: 0, c, angleDeg: 0, gradePercent: 0, totalLoop: c * 2 };
+          if (c <= a) return { valid: false, error: 'Die Seillänge c muss grösser sein als die Höhenmeter a.', startHeight: sH, endHeight: eH, a, b: 0, c, angleDeg: 0, gradePercent: 0, totalLoop: c * 2 };
+          b = Math.sqrt(c * c - a * a);
+        } else {
+          if (b <= 0) return { valid: false, error: 'Die Horizontaldistanz b muss grösser als 0 m sein.', startHeight: sH, endHeight: eH, a: 0, b: 0, c, angleDeg: 0, gradePercent: 0, totalLoop: c * 2 };
+          if (c <= b) return { valid: false, error: 'Die Seillänge c muss grösser sein als die Horizontaldistanz b.', startHeight: sH, endHeight: eH, a: 0, b, c, angleDeg: 0, gradePercent: 0, totalLoop: c * 2 };
+          a = Math.sqrt(c * c - b * b);
+          if (state.heightAnchorMode === 'from_start') eH = sH + a;
+          else sH = Math.max(0, eH - a);
+        }
+        return {
+          valid: true,
+          error: null,
+          startHeight: sH,
+          endHeight: eH,
+          a,
+          b,
+          c,
+          angleDeg: Math.atan2(a, b) * 180 / Math.PI,
+          gradePercent: (a / b) * 100,
+          totalLoop: c * 2
+        };
+      }
+
+      function niceScale(pxPerM) {
+        const target = 110 / pxPerM;
+        const cands = [25, 50, 100, 200, 250, 500, 1000, 1500, 2000];
+        let best = cands[0];
+        for (const v of cands) if (Math.abs(target - v) < Math.abs(target - best)) best = v;
+        return best;
+      }
+
+      function renderTheoryDiagram() {
+        const svg = document.getElementById('theory-svg');
+        const f = theoryFocus;
+        svg.innerHTML =
+          '<rect width="560" height="320" rx="8" fill="#f8fafc"/>' +
+          '<path d="M 30 260 L 110 250 L 420 72 L 530 92 L 530 320 L 30 320 Z" fill="#e2e8f0" opacity="0.5"/>' +
+          '<polygon points="110,250 420,72 420,250" fill="#fff" stroke="#cbd5e1"/>' +
+          '<path d="M 396 250 A 24 24 0 0 1 420 226" fill="rgba(15,23,42,0.06)" stroke="#0f172a" stroke-width="1.8"/>' +
+          '<circle cx="411" cy="241" r="2.3" fill="#0f172a"/>' +
+          '<line x1="110" y1="250" x2="420" y2="250" stroke="#0284c7" stroke-width="' + (f === 'distance' ? 5 : 3) + '" opacity="' + (f === 'distance' ? 1 : 0.45) + '"/>' +
+          '<rect x="185" y="264" width="160" height="28" rx="6" fill="#fff" stroke="#0284c7" stroke-width="' + (f === 'distance' ? 2 : 1.2) + '"/>' +
+          '<text x="265" y="282" text-anchor="middle" fill="#0369a1" font-size="12.5" font-weight="700">b = Horizontaldistanz</text>' +
+          '<line x1="420" y1="250" x2="420" y2="72" stroke="#059669" stroke-width="' + (f === 'height' ? 5 : 3) + '" opacity="' + (f === 'height' ? 1 : 0.45) + '"/>' +
+          '<rect x="432" y="146" width="118" height="30" rx="6" fill="#fff" stroke="#059669" stroke-width="' + (f === 'height' ? 2 : 1.2) + '"/>' +
+          '<text x="491" y="165" text-anchor="middle" fill="#047857" font-size="12.5" font-weight="700">a = Höhenmeter</text>' +
+          '<line x1="110" y1="250" x2="420" y2="72" stroke="#dc2626" stroke-width="' + (f === 'cable' ? 5 : 3) + '" opacity="' + (f === 'cable' ? 1 : 0.45) + '"/>' +
+          '<g transform="translate(245,134) rotate(-30)"><rect x="-68" y="-14" width="136" height="28" rx="6" fill="#fff" stroke="#dc2626" stroke-width="' + (f === 'cable' ? 2 : 1.2) + '"/><text x="0" y="4" text-anchor="middle" fill="#b91c1c" font-size="12.5" font-weight="700">c = Seillänge</text></g>' +
+          '<circle cx="110" cy="250" r="6" fill="#0f172a"/><text x="110" y="232" text-anchor="middle" fill="#0f172a" font-size="11.5" font-weight="600">Talstation (Starthöhe)</text>' +
+          '<circle cx="420" cy="72" r="6" fill="#0f172a"/><text x="415" y="54" text-anchor="middle" fill="#0f172a" font-size="11.5" font-weight="600">Bergstation (Zielhöhe)</text>';
+      }
+
+      function renderScene(g) {
+        const bgG = document.getElementById('scene-bg');
+        const dyn = document.getElementById('scene-dynamic');
+        const snowG = document.getElementById('scene-snow');
+        const isSum = season === 'summer';
+
+        bgG.innerHTML =
+          '<rect width="1000" height="600" fill="' + (isSum ? 'url(#skySummer)' : 'url(#skyWinter)') + '"/>' +
+          '<circle cx="145" cy="82" r="' + (isSum ? 28 : 24) + '" fill="' + (isSum ? '#fde047' : '#fef9c3') + '"/>' +
+          '<g fill="#fff" opacity="' + (isSum ? 0.88 : 0.75) + '"><path d="M 240 92 Q 260 72 288 84 Q 312 68 338 86 Q 358 84 364 98 L 235 98 Z"/><path d="M 650 68 Q 672 50 698 60 Q 722 44 748 62 Q 768 62 775 76 L 642 76 Z"/></g>' +
+          '<g opacity="' + (isSum ? 0.9 : 0.82) + '">' +
+            '<polygon points="0,420 110,270 195,335 305,215 390,310 510,245 615,315 745,175 835,295 925,220 1000,285 1000,600 0,600" fill="' + (isSum ? '#94a3b8' : '#cbd5e1') + '"/>' +
+            '<polygon points="445,355 548,142 586,210 648,355" fill="' + (isSum ? '#64748b' : '#94a3b8') + '"/>' +
+            '<polygon points="445,355 548,142 560,240 518,355" fill="' + (isSum ? '#cbd5e1' : '#f8fafc') + '"/>' +
+            '<polygon points="548,142 528,184 548,176 565,190" fill="#fff"/>' +
+            '<polygon points="305,215 268,262 308,255 335,270" fill="' + (isSum ? '#e2e8f0' : '#fff') + '"/>' +
+            '<polygon points="745,175 702,226 742,216 778,236" fill="' + (isSum ? '#f8fafc' : '#fff') + '"/>' +
+          '</g>';
+
+        if (showAtmosphere) {
+          if (!isSum) {
+            snowG.innerHTML = flakes.map(f => {
+              const y = (f.y + animPhase * f.speedY * 2.5) % 590;
+              const x = (f.x + Math.sin(animPhase * 2 + f.phase) * f.drift + 1000) % 1000;
+              return '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + f.r + '" fill="#fff" opacity="' + f.opacity + '"/>';
+            }).join('');
+          } else {
+            snowG.innerHTML = [0, 1, 2, 3].map(i => {
+              const bx = ((i * 230 + animPhase * 115) % 1060) - 30;
+              const by = 78 + i * 26 + Math.sin(animPhase * 4 + i) * 6;
+              return '<path d="M ' + (bx - 7) + ' ' + by + ' Q ' + (bx - 3.5) + ' ' + (by - 4) + ' ' + bx + ' ' + by + ' Q ' + (bx + 3.5) + ' ' + (by - 4) + ' ' + (bx + 7) + ' ' + by + '" fill="none" stroke="#334155" stroke-width="1.6" opacity="0.65"/>';
+            }).join('');
+          }
+        } else {
+          snowG.innerHTML = '';
+        }
+
+        if (!g.valid) {
+          dyn.innerHTML = '<g transform="translate(500,290)"><rect x="-270" y="-42" width="540" height="84" rx="10" fill="#fff" stroke="#dc2626" stroke-width="2"/><text x="0" y="-6" text-anchor="middle" fill="#b91c1c" font-size="15" font-weight="700">Dreieck geometrisch nicht möglich</text><text x="0" y="18" text-anchor="middle" fill="#334155" font-size="12.5">' + g.error + '</text></g>';
+          return;
+        }
+
+        const plotX0 = 138, plotW = 680, plotY1 = 486, plotH = 374;
+        const pxPerM = Math.min(plotW / Math.max(g.b, 80), plotH / Math.max(g.a, 40));
+        const triW = g.b * pxPerM, triH = g.a * pxPerM;
+        const xStart = plotX0 + (plotW - triW) / 2, xEnd = xStart + triW;
+        const yStart = plotY1, yEnd = yStart - triH;
+        const dx = xEnd - xStart, dy = yEnd - yStart, len = Math.max(Math.hypot(dx, dy), 1);
+        const snowOff = state.liftType === 'buegel' ? 14 : 26;
+        const vY = yStart + snowOff, sY = yEnd + snowOff;
+        const hideAns = (workspaceMode === 'exercises' && !solutionRevealed) || (workspaceMode === 'free' && practiceMode && !solutionRevealed);
+        const hideStart = hideAns && state.solveTarget === 'height' && state.heightAnchorMode === 'from_end';
+        const hideEnd = hideAns && state.solveTarget === 'height' && state.heightAnchorMode === 'from_start';
+
+        let out = '';
+        out += '<path d="M 0 ' + (vY + 12) + ' L ' + Math.max(0, xStart - 45) + ' ' + (vY + 3) + ' L ' + xStart + ' ' + vY + ' Q ' + ((xStart + xEnd) * 0.5) + ' ' + ((vY + sY) * 0.5 + 8) + ' ' + xEnd + ' ' + sY + ' L ' + Math.min(1000, xEnd + 55) + ' ' + (sY + 6) + ' L 1000 ' + Math.min(560, sY + 88) + ' L 1000 620 L 0 620 Z" fill="' + (isSum ? 'url(#meadowGrad)' : 'url(#snowGrad)') + '"/>';
+
+        if (!isSum) {
+          out += '<path d="M ' + (xEnd - 6) + ' ' + (sY + 4) + ' C ' + (xEnd - triW * 0.25) + ' ' + (sY + triH * 0.34) + ', ' + (xStart + triW * 0.32) + ' ' + (vY - triH * 0.24) + ', ' + (xStart - 16) + ' ' + (vY + 8) + ' L ' + (xStart + 28) + ' ' + (vY + 14) + ' C ' + (xStart + triW * 0.42) + ' ' + (vY - triH * 0.14) + ', ' + (xEnd - triW * 0.16) + ' ' + (sY + triH * 0.38) + ', ' + (xEnd + 16) + ' ' + (sY + 8) + ' Z" fill="#fff" opacity="0.92" stroke="#bae6fd" stroke-width="1.5" stroke-dasharray="6 6"/>';
+        } else {
+          const trail = 'M ' + (xEnd + 2) + ' ' + (sY + 6) + ' C ' + (xEnd - triW * 0.2) + ' ' + (sY + triH * 0.36) + ', ' + (xStart + triW * 0.37) + ' ' + (vY - triH * 0.19) + ', ' + (xStart + 4) + ' ' + (vY + 11);
+          out += '<path d="' + trail + '" fill="none" stroke="#92400e" stroke-width="12" stroke-linecap="round" opacity="0.72"/>';
+          out += '<path d="' + trail + '" fill="none" stroke="#d97706" stroke-width="6.5" stroke-linecap="round" opacity="0.88"/>';
+        }
+
+        // Pines
+        [0.08, 0.2, 0.36, 0.54, 0.72].forEach((fr, idx) => {
+          const tx = xStart * 0.3 + fr * (xEnd - xStart * 0.3) * 0.72;
+          const sr = Math.max(0, Math.min(1, (tx - xStart) / Math.max(dx, 1)));
+          const ty = vY - sr * (vY - sY) + 16 + (idx % 2) * 8;
+          out += '<g transform="translate(' + tx + ',' + ty + ') scale(' + (0.8 + (idx % 2) * 0.15) + ')"><rect x="-2" y="0" width="4" height="7" fill="#78350f"/><polygon points="0,-24 -11,-6 11,-6" fill="#166534"/><polygon points="0,-32 -8,-16 8,-16" fill="#15803d"/>' + (!isSum ? '<polygon points="0,-32 -4,-24 4,-24" fill="#fff"/>' : '') + '</g>';
+        });
+
+        // Skiers or Mountain Bikers
+        [0, 1, 2].forEach(idx => {
+          const t = (animPhase * (isSum ? 0.44 : 0.38) + idx * 0.33) % 1;
+          const px = xEnd - dx * t;
+          const py = sY + (vY - sY) * t + 8;
+          const wave = Math.sin(t * Math.PI * 5 + idx * 2.1) * 8;
+          const dir = Math.cos(t * Math.PI * 5 + idx * 2.1) >= 0 ? 1 : -1;
+          const col = idx === 0 ? '#dc2626' : idx === 1 ? '#0284c7' : '#d97706';
+          if (!isSum) {
+            out += '<g transform="translate(' + (px + wave * 0.4) + ',' + py + ')"><line x1="' + (-5 * dir) + '" y1="3" x2="' + (6 * dir) + '" y2="5" stroke="#1e293b" stroke-width="1.8"/><line x1="0" y1="3" x2="' + (-1.5 * dir) + '" y2="-5" stroke="' + col + '" stroke-width="3" stroke-linecap="round"/><circle cx="' + (-1.5 * dir) + '" cy="-7.5" r="2.3" fill="#0f172a"/></g>';
+          } else {
+            out += '<g transform="translate(' + (px + wave * 0.4) + ',' + py + ') scale(-1,1)"><circle cx="-6" cy="2.5" r="3.6" fill="none" stroke="#0f172a" stroke-width="1.6"/><circle cx="6" cy="2.5" r="3.6" fill="none" stroke="#0f172a" stroke-width="1.6"/><polyline points="-6,2.5 -1,-2 4,-2 6,2.5" fill="none" stroke="#334155" stroke-width="1.6"/><line x1="-1" y1="-2.5" x2="2.5" y2="-7.5" stroke="' + col + '" stroke-width="2.8" stroke-linecap="round"/><circle cx="3" cy="-9.5" r="2.4" fill="#0f172a"/></g>';
+          }
+        });
+
+        // Elevation Axis
+        out += '<g class="tabular"><line x1="88" y1="' + Math.min(yEnd - 18, 95) + '" x2="88" y2="' + (yStart + 22) + '" stroke="#64748b" stroke-width="1.2"/><text x="88" y="' + Math.min(yEnd - 26, 86) + '" text-anchor="middle" fill="#475569" font-size="10.5" font-weight="600">m ü. M.</text>';
+        out += '<line x1="82" y1="' + yEnd + '" x2="' + xEnd + '" y2="' + yEnd + '" stroke="#059669" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.7"/><rect x="10" y="' + (yEnd - 11) + '" width="72" height="22" rx="4" fill="#fff" stroke="#cbd5e1"/><text x="46" y="' + (yEnd + 3.5) + '" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="600">' + (hideEnd ? '? m' : fmtCompact(g.endHeight)) + '</text>';
+        out += '<line x1="82" y1="' + yStart + '" x2="' + xStart + '" y2="' + yStart + '" stroke="#0284c7" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.7"/><rect x="10" y="' + (yStart - 11) + '" width="72" height="22" rx="4" fill="#fff" stroke="#cbd5e1"/><text x="46" y="' + (yStart + 3.5) + '" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="600">' + (hideStart ? '? m' : fmtCompact(g.startHeight)) + '</text></g>';
+
+        // Pylons
+        const pCount = len > 480 ? 4 : len > 300 ? 3 : len > 170 ? 2 : 1;
+        for (let i = 1; i <= pCount; i++) {
+          const t = i / (pCount + 1);
+          const px = xStart + dx * t, pyC = yStart + dy * t, pyG = vY - (vY - sY) * t + 6;
+          out += '<rect x="' + (px - 6) + '" y="' + (pyG - 4) + '" width="12" height="7" rx="1" fill="#64748b"/><line x1="' + px + '" y1="' + pyG + '" x2="' + px + '" y2="' + pyC + '" stroke="#475569" stroke-width="3.2"/><line x1="' + (px - 9) + '" y1="' + (pyC + 2) + '" x2="' + (px + 9) + '" y2="' + (pyC + 2) + '" stroke="#334155" stroke-width="2.5"/>';
+        }
+
+        if (state.liftType !== 'buegel') {
+          out += '<line x1="' + xStart + '" y1="' + (yStart + 6) + '" x2="' + xEnd + '" y2="' + (yEnd + 6) + '" stroke="#64748b" stroke-width="1.5" opacity="0.7"/>';
+        }
+        out += '<line x1="' + xStart + '" y1="' + yStart + '" x2="' + xEnd + '" y2="' + yEnd + '" stroke="' + (showTriangle ? '#dc2626' : '#1e293b') + '" stroke-width="' + (showTriangle ? 3.5 : 2.4) + '" stroke-linecap="round"/>';
+
+        const cCount = Math.max(3, Math.min(6, Math.round(len / 115)));
+        for (let i = 0; i < cCount; i++) {
+          const tUp = (i / cCount + animPhase * 0.45) % 1;
+          const cx = xStart + dx * tUp, cy = yStart + dy * tUp;
+          if (state.liftType === 'gondel') {
+            out += '<g transform="translate(' + cx + ',' + cy + ')"><line x1="0" y1="0" x2="0" y2="9" stroke="#334155" stroke-width="1.6"/><rect x="-9" y="9" width="18" height="14" rx="3.5" fill="#dc2626" stroke="#7f1d1d"/><rect x="-6.5" y="11" width="13" height="6" rx="1.5" fill="#bae6fd"/><rect x="-1" y="18.5" width="2" height="3.5" fill="#fff"/><rect x="-1.75" y="19.25" width="3.5" height="2" fill="#fff"/>' + (isSum ? '<circle cx="10" cy="17" r="3.2" fill="none" stroke="#0f172a" stroke-width="1.3"/>' : '') + '</g>';
+          } else if (state.liftType === 'sessel') {
+            out += '<g transform="translate(' + cx + ',' + cy + ')"><line x1="0" y1="0" x2="0" y2="11" stroke="#334155" stroke-width="1.6"/><path d="M -6 11 L 4 11 L 4 17 L -7 17" fill="none" stroke="#1e293b" stroke-width="2.2"/>' + (isSum ? '<circle cx="-1" cy="14" r="2.2" fill="#059669"/><circle cx="7" cy="18" r="2.8" fill="none" stroke="#0f172a" stroke-width="1.2"/><circle cx="11" cy="11" r="2.8" fill="none" stroke="#0f172a" stroke-width="1.2"/>' : '<circle cx="-1" cy="11.5" r="2.2" fill="#dc2626"/>') + '</g>';
+          } else {
+            out += '<g transform="translate(' + cx + ',' + cy + ')"><line x1="0" y1="0" x2="0" y2="18" stroke="#334155" stroke-width="1.2"/><line x1="-4" y1="18" x2="4" y2="18" stroke="#dc2626" stroke-width="2.2"/>' + (isSum ? '<circle cx="-4" cy="22" r="2.6" fill="none" stroke="#0f172a" stroke-width="1.3"/><circle cx="4" cy="22" r="2.6" fill="none" stroke="#0f172a" stroke-width="1.3"/>' : '<circle cx="0" cy="13" r="2.2" fill="#0284c7"/>') + '</g>';
+          }
+        }
+
+        // Stations
+        out += '<g transform="translate(' + xStart + ',' + yStart + ')"><rect x="-34" y="4" width="44" height="22" rx="2" fill="#94a3b8"/><rect x="-32" y="-12" width="40" height="18" fill="#78350f"/><rect x="-26" y="-7" width="8" height="7" rx="1" fill="#fde047"/><rect x="-13" y="-7" width="8" height="7" rx="1" fill="#fde047"/><polygon points="-38,-11 -12,-28 14,-11" fill="#451a03"/>' + (!isSum ? '<polyline points="-39,-11 -12,-29 15,-11" fill="none" stroke="#fff" stroke-width="3.2"/>' : '') + '<circle cx="0" cy="0" r="6" fill="#334155"/><line x1="-29" y1="-18" x2="-29" y2="-40" stroke="#334155" stroke-width="1.6"/><g class="swiss-flag" transform="translate(-29,-40)"><rect width="14" height="14" fill="#dc2626" rx="1"/><rect x="5.5" y="3" width="3" height="8" fill="#fff"/><rect x="3" y="5.5" width="8" height="3" fill="#fff"/></g><rect x="-66" y="30" width="128" height="22" rx="4" fill="#fff" stroke="#cbd5e1"/><text x="-2" y="44.5" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="600">Talstation · ' + (hideStart ? '? m' : fmtCompact(g.startHeight) + ' m') + '</text></g>';
+        out += '<g transform="translate(' + xEnd + ',' + yEnd + ')"><rect x="-10" y="4" width="44" height="22" rx="2" fill="#64748b"/><rect x="-8" y="-13" width="40" height="19" fill="#92400e"/><rect x="-3" y="-8" width="28" height="9" rx="1" fill="#bae6fd"/><polygon points="-14,-12 12,-29 38,-12" fill="#451a03"/>' + (!isSum ? '<polyline points="-15,-12 12,-30 39,-12" fill="none" stroke="#fff" stroke-width="3.2"/>' : '') + '<circle cx="0" cy="0" r="6" fill="#334155"/><line x1="29" y1="-18" x2="29" y2="-40" stroke="#334155" stroke-width="1.6"/><g class="swiss-flag" transform="translate(29,-40)"><rect width="14" height="14" fill="#dc2626" rx="1"/><rect x="5.5" y="3" width="3" height="8" fill="#fff"/><rect x="3" y="5.5" width="8" height="3" fill="#fff"/></g><rect x="-44" y="-56" width="136" height="22" rx="4" fill="#fff" stroke="#cbd5e1"/><text x="24" y="-41.5" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="600">Bergstation · ' + (hideEnd ? '? m' : fmtCompact(g.endHeight) + ' m') + '</text></g>';
+
+        if (showTriangle) {
+          const lA = hideAns && state.solveTarget === 'height' ? 'a = ? m' : 'a = ' + fmtCompact(g.a) + ' m';
+          const lB = hideAns && state.solveTarget === 'distance' ? 'b = ? m' : 'b = ' + fmtCompact(g.b) + ' m';
+          const lC = hideAns && state.solveTarget === 'cable' ? 'c = ? m' : 'c = ' + fmtCompact(g.c) + ' m';
+          const perpX = dy / len, perpY = -dx / len;
+          const cLX = (xStart + xEnd) / 2 + perpX * 32, cLY = (yStart + yEnd) / 2 + perpY * 32;
+          const ang = Math.max(-45, Math.min(45, Math.atan2(dy, dx) * 180 / Math.PI));
+
+          out += '<polygon points="' + xStart + ',' + yStart + ' ' + xEnd + ',' + yEnd + ' ' + xEnd + ',' + yStart + '" fill="#0284c7" opacity="0.08"/>';
+          if (triW > 24 && triH > 24) {
+            out += '<path d="M ' + (xEnd - 18) + ' ' + yStart + ' A 18 18 0 0 1 ' + xEnd + ' ' + (yStart - 18) + '" fill="rgba(15,23,42,0.08)" stroke="#0f172a" stroke-width="1.6"/><circle cx="' + (xEnd - 6.5) + '" cy="' + (yStart - 6.5) + '" r="2" fill="#0f172a"/>';
+          }
+          out += '<line x1="' + xStart + '" y1="' + yStart + '" x2="' + xEnd + '" y2="' + yStart + '" stroke="#0284c7" stroke-width="3.2"/>';
+          out += '<g transform="translate(' + ((xStart + xEnd) / 2) + ',' + (yStart + 26) + ')"><rect x="-62" y="-12" width="124" height="24" rx="5" fill="#fff" stroke="#0284c7" stroke-width="1.5"/><text x="0" y="4" text-anchor="middle" fill="#0369a1" font-size="12" font-weight="700" class="tabular">' + lB + '</text></g>';
+          out += '<line x1="' + xEnd + '" y1="' + yStart + '" x2="' + xEnd + '" y2="' + yEnd + '" stroke="#059669" stroke-width="3.2"/>';
+          out += '<g transform="translate(' + (xEnd + 16) + ',' + ((yStart + yEnd) / 2) + ')"><rect x="0" y="-12" width="124" height="24" rx="5" fill="#fff" stroke="#059669" stroke-width="1.5"/><text x="62" y="4" text-anchor="middle" fill="#047857" font-size="12" font-weight="700" class="tabular">' + lA + '</text></g>';
+          out += '<g transform="translate(' + cLX + ',' + cLY + ') rotate(' + ang + ')"><rect x="-64" y="-13" width="128" height="25" rx="5" fill="#fff" stroke="#dc2626" stroke-width="1.6"/><text x="0" y="4" text-anchor="middle" fill="#b91c1c" font-size="12" font-weight="700" class="tabular">' + lC + '</text></g>';
+        }
+
+        const scM = niceScale(pxPerM), scPx = scM * pxPerM;
+        out += '<g transform="translate(24,558)" class="tabular"><rect x="-8" y="-14" width="' + Math.max(125, scPx + 22) + '" height="34" rx="6" fill="rgba(255,255,255,0.92)" stroke="#cbd5e1"/><text x="0" y="-1" fill="#475569" font-size="9.5" font-weight="600">Massstab 1:1</text><line x1="0" y1="10" x2="' + scPx + '" y2="10" stroke="#0f172a" stroke-width="2.2"/><text x="' + (scPx + 6) + '" y="13.5" fill="#0f172a" font-size="10.5" font-weight="600">' + fmtCompact(scM) + ' m</text></g>';
+
+        dyn.innerHTML = out;
+      }
+
+      function renderRightPanel() {
+        const panel = document.getElementById('right-panel');
+        const g = solve();
+
+        if (workspaceMode === 'exercises') {
+          const t = TASKS[activeTaskIndex];
+          const tVal = t.solveTarget === 'cable' ? g.c : t.solveTarget === 'distance' ? g.b : g.a;
+          const tName = t.solveTarget === 'cable' ? 'Seillänge c' : t.solveTarget === 'distance' ? 'Horizontaldistanz b' : 'Höhenmeter a';
+
+          let givenHtml = '';
+          if (t.solveTarget !== 'height') {
+            if (t.elevationInputMode === 'start_end') {
+              givenHtml += '<div style="display:flex;justify-content:space-between;"><span>Starthöhe (Tal)</span><strong>' + fmtCompact(t.startHeight) + ' m ü. M.</strong></div>';
+              givenHtml += '<div style="display:flex;justify-content:space-between;"><span>Zielhöhe (Berg)</span><strong>' + fmtCompact(t.endHeight) + ' m ü. M.</strong></div>';
+            } else {
+              givenHtml += '<div style="display:flex;justify-content:space-between;"><span>Starthöhe (Tal)</span><strong>' + fmtCompact(t.startHeight) + ' m ü. M.</strong></div>';
+              givenHtml += '<div style="display:flex;justify-content:space-between;"><span>Höhenmeter a</span><strong style="color:#047857;">' + fmtCompact(t.heightDiff) + ' m</strong></div>';
+            }
+          } else {
+            givenHtml += '<div style="display:flex;justify-content:space-between;"><span>' + (t.heightAnchorMode === 'from_start' ? 'Starthöhe (Tal)' : 'Zielhöhe (Berg)') + '</span><strong>' + fmtCompact(t.heightAnchorMode === 'from_start' ? t.startHeight : t.endHeight) + ' m ü. M.</strong></div>';
+          }
+          if (t.solveTarget !== 'distance') givenHtml += '<div style="display:flex;justify-content:space-between;"><span>Horizontaldistanz b</span><strong style="color:#0369a1;">' + fmtCompact(t.distance) + ' m</strong></div>';
+          if (t.solveTarget !== 'cable') givenHtml += '<div style="display:flex;justify-content:space-between;"><span>Seillänge c</span><strong style="color:#b91c1c;">' + fmtCompact(t.cableLength) + ' m</strong></div>';
+
+          let solHtml = '';
+          if (solutionRevealed) {
+            if (t.solveTarget === 'cable') {
+              solHtml = '<div>1. Höhenmeter: <strong style="color:#047857">a = ' + fmtCompact(g.endHeight) + ' − ' + fmtCompact(g.startHeight) + ' = ' + fmtCompact(g.a) + ' m</strong></div><div>2. Formel: <strong>c = √(a² + b²)</strong></div><div>3. Einsetzen: c = √(' + fmtCompact(g.a) + '² + ' + fmtCompact(g.b) + '²)</div><div style="color:#b91c1c;font-weight:700;">4. Ergebnis: c = ' + fmt(g.c, 1) + ' m</div>';
+            } else if (t.solveTarget === 'distance') {
+              solHtml = '<div>1. Höhenmeter: <strong style="color:#047857">a = ' + fmtCompact(g.endHeight) + ' − ' + fmtCompact(g.startHeight) + ' = ' + fmtCompact(g.a) + ' m</strong></div><div>2. Formel: <strong>b = √(c² − a²)</strong></div><div>3. Einsetzen: b = √(' + fmtCompact(g.c) + '² − ' + fmtCompact(g.a) + '²)</div><div style="color:#0369a1;font-weight:700;">4. Ergebnis: b = ' + fmt(g.b, 1) + ' m</div>';
+            } else {
+              solHtml = '<div>1. Formel: <strong>a = √(c² − b²)</strong></div><div>2. Einsetzen: a = √(' + fmtCompact(g.c) + '² − ' + fmtCompact(g.b) + '²)</div><div style="color:#047857;font-weight:700;">3. Ergebnis: a = ' + fmt(g.a, 1) + ' m</div>';
+            }
+          }
+
+          panel.innerHTML =
+            '<div class="deck-section">' +
+              '<div class="deck-title-row"><h2 class="deck-title">Aufgabe ' + t.number + ' von ' + TASKS.length + '</h2><span style="font-size:12px;color:#475569;" class="tabular">Gelöst: ' + solvedIds.length + ' / ' + TASKS.length + '</span></div>' +
+              '<div class="task-num-grid">' + TASKS.map((x, idx) => '<button type="button" class="task-num-btn ' + (idx === activeTaskIndex ? 'active' : solvedIds.includes(x.id) ? 'done' : '') + '" data-tidx="' + idx + '">' + x.number + '</button>').join('') + '</div>' +
+            '</div>' +
+            '<div class="deck-section">' +
+              '<div style="font-size:12px;color:#64748b;margin-bottom:4px;">' + (t.season === 'summer' ? 'Sommermodus · Biken' : 'Wintermodus · Skifahren') + ' · ' + t.resortName + '</div>' +
+              '<h3 style="font-size:16px;margin:0 0 10px;">' + t.title + '</h3>' +
+              '<p style="font-size:13.5px;line-height:1.55;color:#334155;margin:0 0 12px;">' + t.prompt + '</p>' +
+              '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:12.5px;line-height:1.7;margin-bottom:14px;" class="tabular">' + givenHtml + '</div>' +
+              '<form id="ex-form">' +
+                '<label style="display:block;font-size:13px;font-weight:700;margin-bottom:8px;">' + t.questionLabel + '</label>' +
+                '<div style="display:flex;gap:8px;margin-bottom:10px;">' +
+                  '<input id="ex-input" type="text" inputmode="decimal" placeholder="Ergebnis in m..." value="' + answerDraft + '" style="flex:1;min-width:0;min-height:44px;padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;font-family:var(--font-mono);" />' +
+                  '<button type="submit" class="btn-red">Prüfen</button>' +
+                '</div>' +
+              '</form>' +
+              (checkStatus === 'correct' ? '<div style="padding:10px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;color:#065f46;font-size:13px;font-weight:600;margin-bottom:10px;">Richtig! ' + tName + ' = ' + fmt(tVal, 1) + ' m</div>' : '') +
+              (checkStatus === 'wrong' ? '<div style="padding:10px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;color:#991b1b;font-size:13px;margin-bottom:10px;">Noch nicht ganz richtig. Nutze den Tipp oder rechne nochmals nach.</div>' : '') +
+              '<div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;">' +
+                '<div style="display:flex;gap:6px;">' +
+                  '<button type="button" class="btn-outline" id="btn-hint">' + (showHint ? 'Tipp ausblenden' : 'Tipp') + '</button>' +
+                  '<button type="button" class="btn-outline" id="btn-sol">' + (solutionRevealed ? 'Lösung verbergen' : 'Lösung zeigen') + '</button>' +
+                '</div>' +
+                '<button type="button" class="btn-outline" id="btn-next" style="background:#f1f5f9;">Nächste Aufgabe →</button>' +
+              '</div>' +
+              (showHint ? '<div style="margin-top:10px;padding:10px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;font-size:12.5px;color:#0c4a6e;"><strong>Tipp:</strong> ' + t.hint + '</div>' : '') +
+            '</div>' +
+            (solutionRevealed ? '<div class="deck-section" style="background:#f8fafc;"><div style="font-size:12px;font-weight:700;margin-bottom:6px;">Musterlösung</div><div class="steps-box">' + solHtml + '</div></div>' : '');
+
+          panel.querySelectorAll('[data-tidx]').forEach(b => b.addEventListener('click', () => {
+            applyTask(Number(b.dataset.tidx));
+            renderAll();
+          }));
+          const exIn = document.getElementById('ex-input');
+          exIn.addEventListener('input', () => { answerDraft = exIn.value; checkStatus = 'idle'; });
+          document.getElementById('ex-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const n = Number(answerDraft.replace(/'/g, '').replace(',', '.').trim());
+            if (Number.isFinite(n) && answerDraft.trim() !== '' && Math.abs(n - tVal) <= 1.5) {
+              checkStatus = 'correct';
+              solutionRevealed = true;
+              if (!solvedIds.includes(t.id)) solvedIds.push(t.id);
+            } else {
+              checkStatus = 'wrong';
+            }
+            renderAll();
+          });
+          document.getElementById('btn-hint').addEventListener('click', () => { showHint = !showHint; renderRightPanel(); });
+          document.getElementById('btn-sol').addEventListener('click', () => { solutionRevealed = !solutionRevealed; renderAll(); });
+          document.getElementById('btn-next').addEventListener('click', () => { applyTask((activeTaskIndex + 1) % TASKS.length); renderAll(); });
+        } else {
+          // Free Calculator mode
+          const tVal = state.solveTarget === 'cable' ? g.c : state.solveTarget === 'distance' ? g.b : g.a;
+          const tName = state.solveTarget === 'cable' ? 'Seillänge c' : state.solveTarget === 'distance' ? 'Horizontaldistanz b' : 'Höhenmeter a';
+
+          panel.innerHTML =
+            '<div class="deck-section">' +
+              '<div class="deck-title-row"><h2 class="deck-title">Gesuchte Grösse wählen</h2><button type="button" class="btn-outline" id="btn-reset" style="min-height:34px;padding:4px 10px;">Zurücksetzen</button></div>' +
+              '<div class="mode-grid" id="solve-mode-group">' +
+                '<button type="button" class="mode-btn ' + (state.solveTarget === 'cable' ? 'active' : '') + '" data-mode="cable">Seillänge c</button>' +
+                '<button type="button" class="mode-btn ' + (state.solveTarget === 'distance' ? 'active' : '') + '" data-mode="distance">Distanz b</button>' +
+                '<button type="button" class="mode-btn ' + (state.solveTarget === 'height' ? 'active' : '') + '" data-mode="height">Höhenmeter a</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="deck-section" id="free-inputs"></div>' +
+            '<div class="deck-section">' +
+              '<div class="deck-title-row"><h3 class="deck-title">Pythagoras Rechenweg</h3></div>' +
+              (!g.valid ? '<div class="error-box">' + g.error + '</div>' :
+                '<div class="result-box"><div><div style="font-size:12px;color:#64748b;">Ergebnis · ' + tName + '</div></div><div class="result-val">' + fmt(tVal, 1) + ' m</div></div>' +
+                '<div class="steps-box">' +
+                  (state.solveTarget === 'cable' ? 'c = √(' + fmtCompact(g.a) + '² + ' + fmtCompact(g.b) + '²) = <strong>' + fmt(g.c, 1) + ' m</strong>' :
+                   state.solveTarget === 'distance' ? 'b = √(' + fmtCompact(g.c) + '² − ' + fmtCompact(g.a) + '²) = <strong>' + fmt(g.b, 1) + ' m</strong>' :
+                   'a = √(' + fmtCompact(g.c) + '² − ' + fmtCompact(g.b) + '²) = <strong>' + fmt(g.a, 1) + ' m</strong>') +
+                '</div>') +
+            '</div>';
+
+          panel.querySelectorAll('#solve-mode-group button').forEach(b => b.addEventListener('click', () => {
+            const cur = solve();
+            state.solveTarget = b.dataset.mode;
+            if (cur.valid) {
+              state.startHeight = Math.round(cur.startHeight);
+              state.endHeight = Math.round(cur.endHeight);
+              state.heightDiff = Math.round(cur.a);
+              state.distance = Math.round(cur.b);
+              state.cableLength = Math.round(cur.c);
+            }
+            renderAll();
+          }));
+          document.getElementById('btn-reset').addEventListener('click', () => {
+            const p = PRESETS[0];
+            activePresetId = p.id;
+            state.liftType = p.liftType;
+            state.startHeight = p.startHeight;
+            state.endHeight = p.endHeight;
+            state.heightDiff = p.endHeight - p.startHeight;
+            state.distance = p.distance;
+            state.cableLength = Math.round(Math.sqrt(state.heightDiff * state.heightDiff + p.distance * p.distance));
+            renderAll();
+          });
+
+          const fIn = document.getElementById('free-inputs');
+          function addSlider(id, label, unit, val, min, max, col, onV) {
+            const d = document.createElement('div');
+            d.className = 'field';
+            d.innerHTML = '<div class="field-top"><label class="field-label" for="' + id + '">' + label + '</label><div class="field-input-wrap"><input class="num-input" id="' + id + '" type="text" inputmode="decimal" value="' + Math.round(val) + '"/><span class="unit">' + unit + '</span></div></div><input class="slider" type="range" min="' + min + '" max="' + max + '" step="10" value="' + Math.min(max, Math.max(min, val)) + '" style="--c:' + col + '"/>';
+            const nEl = d.querySelector('.num-input'), rEl = d.querySelector('.slider');
+            nEl.addEventListener('change', () => { const v = Number(nEl.value.replace(/'/g, '').replace(',', '.')); if (Number.isFinite(v)) { onV(v); renderDynamic(); } });
+            rEl.addEventListener('input', () => { const v = Number(rEl.value); nEl.value = String(Math.round(v)); onV(v); renderDynamic(); });
+            fIn.appendChild(d);
+          }
+          addSlider('fr-start', 'Starthöhe (Talstation)', 'm ü. M.', state.startHeight, 400, 2800, '#059669', v => { state.startHeight = v; state.heightDiff = Math.max(0, state.endHeight - v); });
+          if (state.solveTarget !== 'height') {
+            addSlider('fr-end', 'Zielhöhe (Bergstation)', 'm ü. M.', state.endHeight, 500, 4000, '#059669', v => { state.endHeight = v; state.heightDiff = Math.max(0, v - state.startHeight); });
+          }
+          if (state.solveTarget !== 'distance') {
+            addSlider('fr-dist', 'Horizontaldistanz b', 'm', state.distance, 100, 4500, '#0284c7', v => { state.distance = v; });
+          }
+          if (state.solveTarget !== 'cable') {
+            addSlider('fr-cable', 'Seillänge c', 'm', state.cableLength, 150, 5000, '#dc2626', v => { state.cableLength = v; });
+          }
+        }
+      }
+
+      function renderDynamic() {
+        const g = solve();
+        const hideAns = (workspaceMode === 'exercises' && !solutionRevealed) || (workspaceMode === 'free' && practiceMode && !solutionRevealed);
+        const hideStart = hideAns && state.solveTarget === 'height' && state.heightAnchorMode === 'from_end';
+        const hideEnd = hideAns && state.solveTarget === 'height' && state.heightAnchorMode === 'from_start';
+
+        document.getElementById('kpi-elev').textContent = (hideStart ? '? m' : fmtCompact(g.startHeight)) + ' → ' + (hideEnd ? '? m' : fmtCompact(g.endHeight) + ' m');
+        document.getElementById('kpi-a').textContent = hideAns && state.solveTarget === 'height' ? '? m' : fmt(g.a, 1) + ' m';
+        document.getElementById('kpi-b').textContent = hideAns && state.solveTarget === 'distance' ? '? m' : fmt(g.b, 1) + ' m';
+        document.getElementById('kpi-c').textContent = hideAns && state.solveTarget === 'cable' ? '? m' : fmt(g.c, 1) + ' m';
+
+        const t = TASKS[activeTaskIndex];
+        const p = PRESETS.find(x => x.id === activePresetId);
+        document.getElementById('stage-resort-label').textContent = workspaceMode === 'exercises' ? t.resortName : (p ? p.name : 'Schweizer Bergbahn');
+        document.getElementById('stage-slope-label').textContent = g.valid ? 'Steigung ' + fmtCompact(g.gradePercent) + ' % (' + fmtCompact(g.angleDeg) + '°)' : 'Ungültige Werte';
+
+        renderScene(g);
+      }
+
+      function renderAll() {
+        document.getElementById('page-tasks').style.display = activePage === 'tasks' ? 'block' : 'none';
+        document.getElementById('page-theory').style.display = activePage === 'theory' ? 'block' : 'none';
+        document.getElementById('nav-tasks').classList.toggle('active', activePage === 'tasks');
+        document.getElementById('nav-theory').classList.toggle('active', activePage === 'theory');
+
+        document.getElementById('ws-exercises').classList.toggle('active', workspaceMode === 'exercises');
+        document.getElementById('ws-free').classList.toggle('active', workspaceMode === 'free');
+
+        const pStrip = document.getElementById('preset-strip');
+        if (workspaceMode === 'free') {
+          pStrip.style.display = 'flex';
+          pStrip.innerHTML = '<span style="font-size:12px;font-weight:600;color:#64748b;">Schweizer Gebiete (Vorlagen):</span><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+            PRESETS.map(p => '<button type="button" class="btn-outline ' + (p.id === activePresetId ? 'active' : '') + '" data-pid="' + p.id + '" style="min-height:34px;padding:4px 10px;">' + p.shortName + ' (' + p.canton + ')</button>').join('') + '</div>';
+          pStrip.querySelectorAll('[data-pid]').forEach(b => b.addEventListener('click', () => {
+            const p = PRESETS.find(x => x.id === b.dataset.pid);
+            if (!p) return;
+            activePresetId = p.id;
+            state.liftType = p.liftType;
+            state.startHeight = p.startHeight;
+            state.endHeight = p.endHeight;
+            state.heightDiff = p.endHeight - p.startHeight;
+            state.distance = p.distance;
+            state.cableLength = Math.round(Math.sqrt(state.heightDiff * state.heightDiff + p.distance * p.distance));
+            renderAll();
+          }));
+        } else {
+          pStrip.style.display = 'none';
+        }
+
+        document.querySelectorAll('#season-group button').forEach(b => b.classList.toggle('active', b.dataset.season === season));
+        document.querySelectorAll('#lift-type-group button').forEach(b => b.classList.toggle('active', b.dataset.lift === state.liftType));
+        document.getElementById('lift-tbar-btn').textContent = season === 'summer' ? 'Bike-Lift' : 'Skilift';
+        document.getElementById('btn-snow').textContent = season === 'summer' ? 'Bergvögel' : 'Schneefall';
+
+        renderRightPanel();
+        renderDynamic();
+        renderTheoryDiagram();
+      }
+
+      document.getElementById('brand-btn').addEventListener('click', () => { activePage = 'tasks'; renderAll(); });
+      document.getElementById('nav-tasks').addEventListener('click', () => { activePage = 'tasks'; renderAll(); });
+      document.getElementById('nav-theory').addEventListener('click', () => { activePage = 'theory'; renderAll(); });
+      document.getElementById('btn-goto-tasks').addEventListener('click', () => { activePage = 'tasks'; renderAll(); });
+
+      document.getElementById('ws-exercises').addEventListener('click', () => {
+        workspaceMode = 'exercises';
+        applyTask(activeTaskIndex);
+        renderAll();
+      });
+      document.getElementById('ws-free').addEventListener('click', () => {
+        workspaceMode = 'free';
+        solutionRevealed = false;
+        const p = PRESETS.find(x => x.id === activePresetId) || PRESETS[0];
+        state.liftType = p.liftType;
+        state.startHeight = p.startHeight;
+        state.endHeight = p.endHeight;
+        state.heightDiff = p.endHeight - p.startHeight;
+        state.distance = p.distance;
+        state.cableLength = Math.round(Math.sqrt(state.heightDiff * state.heightDiff + p.distance * p.distance));
+        renderAll();
+      });
+
+      document.querySelectorAll('#season-group button').forEach(b => b.addEventListener('click', () => {
+        season = b.dataset.season;
+        renderAll();
+      }));
+      document.querySelectorAll('#lift-type-group button').forEach(b => b.addEventListener('click', () => {
+        state.liftType = b.dataset.lift;
+        renderAll();
+      }));
+      document.getElementById('btn-play').addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        document.getElementById('btn-play').textContent = isPlaying ? 'Pause' : 'Animation starten';
+      });
+      document.querySelectorAll('#speed-group button').forEach(b => b.addEventListener('click', () => {
+        speed = Number(b.dataset.speed);
+        document.querySelectorAll('#speed-group button').forEach(x => x.classList.toggle('active', x === b));
+      }));
+      document.getElementById('btn-triangle').addEventListener('click', e => {
+        showTriangle = !showTriangle;
+        e.currentTarget.classList.toggle('active', showTriangle);
+        renderScene(solve());
+      });
+      document.getElementById('btn-snow').addEventListener('click', e => {
+        showAtmosphere = !showAtmosphere;
+        e.currentTarget.classList.toggle('active', showAtmosphere);
+        renderScene(solve());
+      });
+      document.querySelectorAll('#theory-focus-group button').forEach(b => b.addEventListener('click', () => {
+        theoryFocus = b.dataset.focus;
+        document.querySelectorAll('#theory-focus-group button').forEach(x => x.classList.toggle('active', x === b));
+        renderTheoryDiagram();
+      }));
+
+      function loop(ts) {
+        if (isPlaying && activePage === 'tasks') {
+          if (lastTs !== null) {
+            const dt = Math.min((ts - lastTs) / 1000, 0.1);
+            animPhase = (animPhase + dt * 0.11 * speed) % 1000;
+            renderScene(solve());
+          }
+          lastTs = ts;
+        } else {
+          lastTs = null;
+        }
+        requestAnimationFrame(loop);
+      }
+
+      renderAll();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>
