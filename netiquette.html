@@ -1,0 +1,1212 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Netiquette Master 100 — Offline-Quiz</title>
+  <style>
+    :root {
+      --bg: #FAF6EF;
+      --surface-header: #FDFBF7;
+      --surface-card: #F5EFE5;
+      --surface-deck: #F4F2EA;
+      --surface-scenario: #EDF3EC;
+      --border: #E4DAC9;
+      --border-scenario: #D4E0D2;
+      --text: #292524;
+      --text-muted: #57534E;
+      --text-soft: #78716C;
+      --accent: #5B826E;
+      --accent-hover: #4B6E5C;
+      --accent-text: #315841;
+      --ok-bg: #E1EFE4;
+      --ok-border: #649678;
+      --ok-text: #315841;
+      --err-bg: #F9EAE8;
+      --err-border: #CF7A75;
+      --err-text: #9E4540;
+      --radius: 14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button, input {
+      font: inherit;
+      color: inherit;
+    }
+    button {
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0);
+    }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    /* Header */
+    header {
+      background: var(--surface-header);
+      border-bottom: 1px solid var(--border);
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 0;
+    }
+    .brand {
+      background: none;
+      border: 0;
+      padding: 4px 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      color: var(--text);
+    }
+    .nav-desktop {
+      display: none;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-btn {
+      background: none;
+      border: 0;
+      padding: 6px 2px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      position: relative;
+      white-space: nowrap;
+    }
+    .nav-btn.active {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .nav-btn.active::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: -2px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .nav-mobile {
+      display: flex;
+      gap: 6px;
+      padding: 8px 0 10px;
+      border-top: 1px solid #EFE8DB;
+      overflow-x: auto;
+    }
+    .nav-mobile .nav-btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .nav-mobile .nav-btn.active {
+      background: #E8F0E8;
+      color: #3F5E4E;
+    }
+    .nav-mobile .nav-btn.active::after { display: none; }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      min-height: 40px;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      background: var(--surface-header);
+      color: var(--text);
+      border: 1px solid #DDD4C3;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      min-height: 40px;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover { background: var(--surface-card); }
+    .btn-secondary:disabled { opacity: 0.4; cursor: default; }
+
+    /* Main */
+    main {
+      padding: 24px 0 48px;
+      min-height: calc(100vh - 130px);
+    }
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .segmented {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      gap: 4px;
+      background: #EFE8DB;
+      padding: 4px;
+      border-radius: 10px;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+    .seg-btn {
+      background: transparent;
+      border: 0;
+      border-radius: 7px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap;
+      min-height: 36px;
+    }
+    .seg-btn.active {
+      background: var(--surface-header);
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .chip-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #E0D6C6;
+      background: var(--surface-header);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      min-height: 40px;
+      white-space: nowrap;
+    }
+    .chip-toggle.active {
+      border-color: #8FB39E;
+      background: #E8F0E8;
+      color: #2F4E3E;
+    }
+
+    /* Two-zone grid */
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .scenario-card {
+      background: var(--surface-scenario);
+      border: 1px solid var(--border-scenario);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .meta-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .scenario-title {
+      margin: 18px 0 0;
+      font-size: clamp(19px, 2.4vw, 24px);
+      font-weight: 600;
+      line-height: 1.38;
+      color: var(--text);
+      max-width: 65ch;
+    }
+    .options-list {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .option-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      width: 100%;
+      text-align: left;
+      padding: 16px;
+      min-height: 56px;
+      border-radius: 12px;
+      border: 1px solid #D9D5C9;
+      background: var(--surface-header);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.5;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: #789D88;
+      background: #fff;
+    }
+    .option-btn:disabled { cursor: default; }
+    .option-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      border-radius: 7px;
+      border: 1px solid #DDD5C6;
+      background: #F5EFE5;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 1px;
+    }
+    .option-text { flex: 1; }
+    .option-tag {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    .option-btn.correct-selected {
+      border-color: var(--ok-border);
+      background: var(--ok-bg);
+    }
+    .option-btn.correct-selected .option-key {
+      background: #4B795E;
+      border-color: #4B795E;
+      color: #fff;
+    }
+    .option-btn.correct-selected .option-tag { color: var(--ok-text); }
+    .option-btn.wrong-selected {
+      border-color: var(--err-border);
+      background: var(--err-bg);
+    }
+    .option-btn.wrong-selected .option-key {
+      background: #B95D58;
+      border-color: #B95D58;
+      color: #fff;
+    }
+    .option-btn.wrong-selected .option-tag { color: var(--err-text); }
+    .option-btn.correct-reveal {
+      border-color: #7FA98F;
+      background: #E8F2E9;
+    }
+    .option-btn.correct-reveal .option-key {
+      background: #D1E5D5;
+      border-color: #6B9B7E;
+      color: #264634;
+    }
+    .option-btn.correct-reveal .option-tag { color: var(--ok-text); }
+    .option-btn.dimmed {
+      border-color: #DFDAD0;
+      background: rgba(250, 247, 242, 0.75);
+      color: var(--text-soft);
+    }
+
+    .feedback-box {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #CFDCD0;
+    }
+    .feedback-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .feedback-head.ok { color: var(--ok-text); }
+    .feedback-head.err { color: var(--err-text); }
+    .retry-link {
+      background: none;
+      border: 0;
+      padding: 4px 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .retry-link:hover { color: var(--text); }
+    .explanation {
+      margin: 10px 0 0;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #44403C;
+      max-width: 65ch;
+    }
+    .card-footer {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid #CFDCD0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    /* Sidebar Deck */
+    .deck {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .deck-card {
+      background: var(--surface-deck);
+      border: 1px solid #DFD8C8;
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .deck-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .deck-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .progress-track {
+      margin-top: 12px;
+      height: 8px;
+      border-radius: 999px;
+      background: #E5DFD2;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+    .metrics-3 {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #E4DDD0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+    }
+    .metrics-3 > div + div {
+      border-left: 1px solid #DFD8C8;
+    }
+    .metric-val {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .metric-lbl {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .matrix {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+    }
+    .matrix.compact {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .m-cell {
+      height: 34px;
+      border-radius: 6px;
+      border: 1px solid #DCD5C5;
+      background: var(--surface-header);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    .m-cell.ok {
+      border-color: #77A387;
+      background: #DCEBDD;
+      color: #244532;
+    }
+    .m-cell.err {
+      border-color: #D68B86;
+      background: #F7E3E1;
+      color: #8B3B36;
+    }
+    .m-cell.current {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+      font-weight: 700;
+    }
+    .legend {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #E4DDD0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Platforms / Catalog / Results */
+    .page-title {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 700;
+    }
+    .page-sub {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 62ch;
+    }
+    .cards-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .beige-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .kpi-grid {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .catalog-item {
+      background: var(--surface-header);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-top: 12px;
+    }
+    .search-input {
+      width: 100%;
+      max-width: 420px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #DFD5C5;
+      background: var(--surface-header);
+      font-size: 14px;
+      min-height: 42px;
+    }
+    footer {
+      border-top: 1px solid #E6DDD0;
+      background: var(--surface-header);
+      padding: 16px 0;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    @media (min-width: 768px) {
+      .nav-desktop { display: flex; }
+      .nav-mobile { display: none; }
+      .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (min-width: 960px) {
+      .toolbar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .quiz-grid {
+        grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+      }
+      .scenario-card { padding: 32px; }
+    }
+  </style>
+<script src="/_aistudio-iframe.js?v=29045eb3"></script></head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <button type="button" class="brand" id="brandBtn">Netiquette Master 100</button>
+        <nav class="nav-desktop" aria-label="Hauptnavigation">
+          <button type="button" class="nav-btn active" data-view="quiz">Quiz</button>
+          <button type="button" class="nav-btn" data-view="platforms">Plattformen</button>
+          <button type="button" class="nav-btn" data-view="catalog">Katalog</button>
+          <button type="button" class="nav-btn" data-view="results">Auswertung</button>
+        </nav>
+        <button type="button" class="btn-primary" id="sprintBtn">10er-Sprint</button>
+      </div>
+      <nav class="nav-mobile" aria-label="Mobile Navigation">
+        <button type="button" class="nav-btn active" data-view="quiz">Quiz</button>
+        <button type="button" class="nav-btn" data-view="platforms">Plattformen</button>
+        <button type="button" class="nav-btn" data-view="catalog">Katalog</button>
+        <button type="button" class="nav-btn" data-view="results">Auswertung</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" id="appRoot"></div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>Netiquette Master 100 · Offline-Version für PC, Laptop &amp; iPad</span>
+      <span class="mono">100 Fallbeispiele</span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var QUESTIONS = [{"id":1,"category":"WhatsApp","scenario":"Du hast deinem Crush eine mutige Nachricht geschrieben und deine Gefühle gestanden. Er/Sie hat die Nachricht gelesen (blaue Haken), aber seit 24 Stunden nicht geantwortet. Deine Freunde im Gruppenchat raten dir, sofort nachzuhaken.","options":{"A":"Eine zweite Nachricht schicken: '??', um zu zeigen, dass du auf eine Antwort wartest.","B":"Die Nachricht für alle löschen, damit es weniger peinlich wirkt, falls keine Antwort kommt.","C":"Abwarten und der Person Zeit geben, die Nachricht zu verarbeiten, ohne Druck aufzubauen."},"correctOption":"C","explanation":"Ghosting oder langes Warten ist emotional anstrengend, aber Druck durch 'Nachhaken' führt oft zu Abwehr. Respektiere das Tempo des anderen, auch wenn es schwerfällt."},{"id":2,"category":"Discord","scenario":"In deinem Lieblings-Server postet jemand im #creative-Channel seine erste digitale Zeichnung. Sie sieht objektiv noch sehr unprofessionell aus. Du willst helfen.","options":{"A":"Direkt schreiben: 'Ist nicht böse gemeint, aber das sieht echt noch nicht gut aus. Üb lieber noch mal.'","B":"Einen positiven Aspekt hervorheben (z.B. Farbwahl) und dann einen konkreten Tipp zur Technik geben.","C":"Einfach nur ein 'Nice' schreiben, um die Person nicht zu entmutigen, auch wenn du es nicht so meinst."},"correctOption":"B","explanation":"Konstruktives Feedback folgt der Sandwich-Methode: Positives - Kritik/Tipp - Motivierender Abschluss. Das hilft der Person wirklich weiter."},{"id":3,"category":"TikTok","scenario":"Du nimmst ein Video auf dem Schulhof auf. Im Hintergrund sieht man zwei Leute aus deiner Parallelklasse, die sich gerade heftig streiten. Das Video ist ansonsten perfekt.","options":{"A":"Das Video posten, aber die Gesichter der Personen im Hintergrund mit einem Emoji verdecken.","B":"Das Video posten, da der Schulhof ein öffentlicher Ort ist und du die Hauptperson bist.","C":"Das Video nicht posten, da die Privatsphäre der anderen durch die Aufzeichnung ihres Streits verletzt wird."},"correctOption":"C","explanation":"Selbst mit Emojis bleibt die Situation erkennbar. Das Recht am eigenen Bild und die Privatsphäre wiegen schwerer als ein viraler Clip, besonders bei Konflikten."},{"id":4,"category":"Gaming","scenario":"In einer Runde 'League of Legends' wird ein Mitspieler extrem toxisch und beleidigt dich persönlich, weil du einen Fehler gemacht hast.","options":{"A":"Ihn sofort muten und nach dem Match sachlich über das Report-System melden.","B":"Ihm erklären, dass er selbst nicht perfekt spielt, um seinen Fokus wieder aufs Game zu lenken.","C":"Ironisch antworten ('Danke für dein Feedback, Profi!'), um die Situation zu entschärfen."},"correctOption":"A","explanation":"Diskussionen mit toxischen Spielern eskalieren fast immer. Muten schützt deine eigene Psyche und Konzentration, Melden schützt die Community."},{"id":5,"category":"Instagram","scenario":"Ein Freund postet ein Meme in seiner Story, das eine rassistische Beleidigung als 'schwarzen Humor' tarnt. Du bist unsicher, wie du reagieren sollst.","options":{"A":"Nichts tun, um die Freundschaft nicht zu gefährden; es war ja vermutlich nur ein Witz.","B":"Ihm eine Privatnachricht schreiben und erklären, warum der Inhalt diskriminierend und nicht lustig ist.","C":"Einen Screenshot machen und ihn öffentlich in deiner eigenen Story als Rassist bloßstellen."},"correctOption":"B","explanation":"Direkte Konfrontation unter vier Augen (privat) ist effektiver, um Einsicht zu bewirken, als öffentliches 'Prangern', was oft nur zu Trotz führt."},{"id":6,"category":"BeReal","scenario":"Der BeReal-Alarm geht los, während du gerade mit deiner besten Freundin über ein sehr privates Familienproblem sprichst. Sie weint gerade ein bisschen.","options":{"A":"Ein schnelles Foto machen, aber nur von deinen Füßen, um den Moment einzufangen, ohne sie zu zeigen.","B":"Das BeReal ignorieren und erst später posten, wenn die Situation geklärt ist und es ihr besser geht.","C":"Sie kurz fragen, ob es okay ist, wenn du schnell ein Foto machst, weil 'Realness' wichtig ist."},"correctOption":"B","explanation":"Echte Empathie geht vor Social Media. In einem emotionalen Moment nach einem Foto zu fragen oder heimlich zu fotografieren, ist respektlos."},{"id":7,"category":"WhatsApp","scenario":"Jemand hat in der Klassengruppe einen Sticker von einem Lehrer erstellt, der ihn mit einer dümmlichen Grimasse zeigt. Alle lachen.","options":{"A":"Den Sticker speichern, aber nicht selbst weiterverschicken, um keinen Ärger zu bekommen.","B":"Kurz darauf hinweisen, dass das Erstellen und Verbreiten solcher Sticker rechtliche Folgen haben kann.","C":"Den Admin der Gruppe bitten, den Ersteller sofort zu kicken, ohne vorher mit ihm zu reden."},"correctOption":"B","explanation":"Sticker von Personen ohne deren Einwilligung sind eine Urheberrechts- und Persönlichkeitsrechtsverletzung. Aufklärung schützt die ganze Gruppe vor Ärger."},{"id":8,"category":"Discord","scenario":"Du bist Moderator auf einem Server. Ein langjähriges Mitglied, das du eigentlich magst, verstößt wiederholt gegen die 'No-Spam'-Regel.","options":{"A":"Ein Auge zudrücken, weil die Person schon so lange dabei ist und den Server belebt.","B":"Die Person öffentlich im Chat verwarnen, um an ihr ein Exempel für neue User zu statuieren.","C":"Die Person privat anschreiben, an die Regeln erinnern und bei Uneinsichtigkeit konsequent sanktionieren."},"correctOption":"C","explanation":"Gleichbehandlung ist die Basis für gute Moderation. Ein privater Hinweis ist fair, aber die Regeln müssen für alle gelten, egal wie lange sie dabei sind."},{"id":9,"category":"Instagram","scenario":"Du bekommst eine DM von einem 'Model-Scout', der sagt, er hätte dich auf Insta entdeckt und möchte dich für ein Shooting buchen. Du sollst vorab 'Testfotos' schicken.","options":{"A":"Professionelle Fotos schicken, aber darauf achten, dass keine privaten Details im Hintergrund zu sehen sind.","B":"Den Namen der Agentur googeln und dort anrufen (nicht über die Nummer in der DM), um die Echtheit zu prüfen.","C":"Erstmal nachfragen, wie viel Geld man für das Shooting bekommt, bevor man Fotos schickt."},"correctOption":"B","explanation":"Vorsicht vor Cybergrooming und Betrug! Seriöse Scouts fordern keine Fotos via DM an, ohne dass eine verifizierbare Identität vorliegt."},{"id":10,"category":"Gaming","scenario":"Du spielst ein Online-Game und merkst, dass ein Teammitglied im Voice-Chat wegen seines Akzents gemobbt wird. Du kennst die Person nicht.","options":{"A":"Dich raushalten, um nicht selbst zum Ziel der Bullys zu werden.","B":"Den Gemobbten privat anschreiben und ihm sagen, dass du es auch blöd findest.","C":"Im Voice-Chat klar sagen: 'Hey Leute, lasst das, der Akzent ist egal, wir wollen nur zocken'."},"correctOption":"C","explanation":"Zivilcourage im Netz bedeutet, Position zu beziehen. Oft reicht eine einzige Stimme, um die Dynamik der Bullys zu brechen."},{"id":11,"category":"WhatsApp","scenario":"Du hast dich mit einem Crush getroffen und ihr hattet einen nice Vibe. Seit zwei Tagen antwortet die Person nicht mehr, obwohl sie bei WhatsApp oft online war. Du fühlst dich geghostet.","options":{"A":"Du schreibst eine passiv-aggressive Nachricht wie: 'Danke für nichts, hättest auch direkt sagen können, dass du kein Bock hast.'","B":"Du schickst nach ein paar Tagen eine entspannte Nachricht: 'Hey, alles fit? Würde mich freuen, von dir zu hören, wenn du Zeit hast.'","C":"Du löschst sofort den Chat und die Nummer, um Stärke zu zeigen und nicht weiter zu warten."},"correctOption":"B","explanation":"Ghosting ist unhöflich, aber oft stecken Stress oder Unsicherheit dahinter. Eine freundliche Nachfrage gibt der Gegenseite die Chance, sich ohne Druck zu erklären, während Aggression die Situation nur eskaliert."},{"id":12,"category":"Discord","scenario":"Ein Freund zeigt dir auf Discord seinen ersten eigenen Bot. Der Code ist ziemlich buggy und das Design im Embed sieht echt unordentlich aus. Er ist aber mega stolz darauf.","options":{"A":"Du sagst: 'Echt cool, dass du das probierst! Wenn du willst, kann ich dir zeigen, wie man die Embeds noch cleaner macht.'","B":"Du bist ehrlich: 'Bro, das sieht leider echt nach Schrott aus. Schau dir mal Tutorials an, bevor du das veröffentlichst.'","C":"Du schreibst 'Nice!', nutzt den Bot aber danach nie wieder, um ihn nicht auf die Fehler hinweisen zu müssen."},"correctOption":"A","explanation":"Gute Netiquette bedeutet constructive Criticism. Man lobt den Aufwand und bietet Hilfe an, ohne das Gegenüber vor den Kopf zu stoßen oder unehrlich zu sein."},{"id":13,"category":"TikTok","scenario":"Du hast ein Video von einem Tanz-Trend in der Schulkantine gemacht. Im Hintergrund sieht man im Fokus eine Mitschülerin, die gerade weint, weil sie eine schlechte Note bekommen hat.","options":{"A":"Du postest das Video trotzdem, weil du gut aussiehst und sie ja nur zufällig im Hintergrund ist.","B":"Du schneidest das Video so zu oder nutzt einen Blur-Effekt, dass die Mitschülerin nicht mehr erkennbar ist.","C":"Du fragst sie nach der Schule, ob es für sie okay ist, wenn du es postest, da es ja ein öffentlicher Raum ist."},"correctOption":"B","explanation":"Das Recht am eigenen Bild gilt auch im Hintergrund. Da sie in einer verletzlichen Situation ist, ist es respektlos, sie zu zeigen oder sie in diesem Moment um Erlaubnis zu fragen. Bearbeiten oder Nicht-Posten ist die einzige korrekte Wahl."},{"id":14,"category":"Instagram","scenario":"Jemand aus deinem Jahrgang postet ein Bild, auf dem die Person unvorteilhaft aussieht. In einer privaten Insta-Gruppe fangen alle an, Memes daraus zu machen.","options":{"A":"Du schickst ein 'LMAO' Emoji, damit die anderen dich nicht für einen Spielverderber halten.","B":"Du schreibst in die Gruppe: 'Leute, kommt mal klar. Stellt euch vor, das wäre ein Bild von euch.'","C":"Du verlässt die Gruppe wortlos, um mit der Sache nichts zu tun zu haben."},"correctOption":"B","explanation":"Zivilcourage im Netz beginnt in privaten Gruppen. Ein kurzes Statement gegen Cybermobbing kann die Gruppendynamik stoppen, während Schweigen oft als Zustimmung gewertet wird."},{"id":15,"category":"BeReal","scenario":"Der BeReal-Alarm geht los, während du gerade bei einem Freund chillst. Du machst das Foto, bemerkst aber erst nach dem Posten, dass man im Hintergrund seinen PC-Monitor mit privaten Chatverläufen sieht.","options":{"A":"Du lässt es drin, weil man die Schrift beim Zoomen sowieso kaum lesen kann.","B":"Du löschst das BeReal sofort und erklärst deinem Freund, was passiert ist.","C":"Du schreibst in die Kommentare: 'Leute, bitte nicht zoomen, ist privat!', um die Aufmerksamkeit davon abzulenken."},"correctOption":"B","explanation":"Privatsphäre ist kritisch. Auch wenn es nervig ist, das BeReal zu löschen, geht der Schutz privater Daten Dritter immer vor. Ein Kommentar würde die Leute erst recht zum Zoomen animieren."},{"id":16,"category":"Gaming","scenario":"Du spielst eine Runde Valorant und ein Teammate fängt an, dich extrem zu beleidigen, weil du einen 'Clutch' versaut hast. Die anderen Teammates schweigen.","options":{"A":"Du beleidigst ihn noch krasser zurück, damit er merkt, dass er sich mit dem Falschen anlegt.","B":"Du ignorierst ihn komplett, spielst aber ab jetzt absichtlich schlecht, um ihn zu triggern.","C":"Du mutest den Spieler sofort, reportest ihn nach dem Match und konzentrierst dich weiter auf dein Spiel."},"correctOption":"C","explanation":"Toxizität im Gaming bekämpft man am besten durch Entzug der Aufmerksamkeit. Muten verhindert, dass du dich aufregst, und Reporting hilft der Community langfristig."},{"id":17,"category":"WhatsApp","scenario":"In der Klassengruppe wird ein Meme geteilt, das rassistische Klischees nutzt. Einige schreiben 'Haha' oder schicken Lach-Emojis.","options":{"A":"Du schreibst: 'Leute, das ist rassistisch und absolut nicht witzig. Löscht das mal.'","B":"Du meldest die Nachricht direkt bei WhatsApp, ohne in der Gruppe etwas zu sagen.","C":"Du ignorierst es, weil du keinen Stress mit den 'coolen' Leuten aus der Klasse willst."},"correctOption":"A","explanation":"Bei Diskriminierung ist eine klare Positionierung wichtig. Nur so wird ein Standard für die Netiquette in der Gruppe gesetzt. Ignorieren wird oft als Akzeptanz missverstanden."},{"id":18,"category":"Instagram","scenario":"Du möchtest ein Foto von einer Party posten. Dein bester Freund sieht darauf aber ziemlich fertig und betrunken aus, was seinen Eltern bestimmt nicht gefallen würde.","options":{"A":"Du postest es nur in deine 'Enge Freunde' Liste, da dort niemand petzen wird.","B":"Du schickst ihm das Bild vorher und fragst: 'Hey, kann ich das posten oder ist dir das unangenehm?'","C":"Du postest es, verlinkst ihn aber nicht, damit es nicht direkt in seinem Profil erscheint."},"correctOption":"B","explanation":"Respekt gegenüber Freunden bedeutet, deren Ruf zu schützen. Auch in 'Engen Freunden' können Screenshots gemacht werden. Vorher fragen ist der sicherste Weg."},{"id":19,"category":"TikTok","scenario":"Du hast ein Video hochgeladen, in dem du deine Meinung zu einem kontroversen Thema sagst. Jemand kommentiert: 'Du hast keine Ahnung, lösch dich einfach.'","options":{"A":"Du antwortest sachlich: 'Was genau meinst du? Lass uns drüber diskutieren, wenn du Argumente hast.'","B":"Du löschst den Kommentar und blockierst den User direkt, um deine Mentale Gesundheit zu schützen.","C":"Du machst ein Video-Reply, in dem du dich über das Profilbild des Haters lustig machst."},"correctOption":"B","explanation":"Auf destruktiven Hate ('Lösch dich') muss man nicht eingehen. Blockieren und Löschen ist kein Zeichen von Schwäche, sondern effektives Community-Management gegen Trolle."},{"id":20,"category":"Gaming","scenario":"Du merkst, dass ein neuer Spieler in deiner Gilde/deinem Clan bei Discord gemobbt wird, weil er noch nicht so gut spielt und viele Fragen stellt.","options":{"A":"Du schreibst ihm privat: 'Ignorier die einfach, die sind immer so zu Neuen.'","B":"Du verteidigst ihn öffentlich im Channel und bietest ihm an, ihm die Basics in einer privaten Session zu erklären.","C":"Du hältst dich raus, weil du Angst hast, deinen Rang in der Gilde zu verlieren, wenn du dich gegen die Leader stellst."},"correctOption":"B","explanation":"Feedback-Kultur im Gaming bedeutet, Neulinge zu unterstützen statt sie zu 'gaten'. Öffentlich Stellung zu beziehen zeigt, dass Mobbing im Clan nicht toleriert wird."},{"id":21,"category":"WhatsApp","scenario":"In deiner Klassengruppe wird ein Sticker von einem Mitschüler geteilt, der ihn in einer peinlichen Situation zeigt. Alle feiern es mit Lach-Emojis, aber du weißt, dass der Mitschüler das eigentlich nicht wollte.","options":{"A":"Du schreibst direkt in die Gruppe: 'Leute, löscht das mal, das ist echt uncool und kann Ärger geben.'","B":"Du schreibst dem Ersteller des Stickers privat, dass er ihn löschen soll, um ihn nicht vor der Gruppe bloßzustellen.","C":"Du ignorierst die Nachricht einfach, um kein Spielverderber zu sein, aber benutzt den Sticker selbst nicht."},"correctOption":"B","explanation":"Privates Feedback ist oft effektiver, da der Ersteller sich nicht vor der Gruppe verteidigen muss (Face-Saving) und eher bereit ist, den Sticker zu entfernen, ohne dass die Situation eskaliert."},{"id":22,"category":"Discord","scenario":"Du bist Mod auf einem Gaming-Server. Ein neuer User wird von den 'Stammgästen' im Voice-Chat hart angegangen, weil er im Spiel einen Fehler gemacht hat. Die Stimmung wird toxisch.","options":{"A":"Du bannst die Stammgäste sofort für 24 Stunden, um ein klares Zeichen gegen Toxizität zu setzen.","B":"Du gehst in den Channel und sagst: 'Leute, kriegt euch ein. Wir waren alle mal neu. Konstruktive Tipps statt Hate, bitte.'","C":"Du schreibst dem neuen User privat, dass er die anderen einfach muten soll, weil die immer so drauf sind."},"correctOption":"B","explanation":"Als Mod ist es wichtig, die Kultur aktiv zu moderieren. Eine direkte Ansage im Channel setzt den Standard für das Verhalten auf dem Server, ohne sofort durch Bans die Community zu spalten."},{"id":23,"category":"TikTok","scenario":"Du siehst ein Video von jemandem, der sichtlich Mühe in seinen Tanz gesteckt hat, aber die Kommentare sind voll mit 'L' und Bodyshaming. Du willst helfen.","options":{"A":"Du antwortest auf jeden Hate-Kommentar mit einer Beleidigung gegen die Hater.","B":"Du meldest die schlimmsten Kommentare und schreibst selbst ein nettes, konstruktives Kommentar zum Video.","C":"Du machst ein Duett, in dem du die Hater auslachst, um Aufmerksamkeit auf das Problem zu lenken."},"correctOption":"B","explanation":"Hater zu beleidigen oder Duette zu machen steigert oft nur deren Reichweite (Algorithmus). Melden entfernt den Content, und positive Kommentare stärken den Creator direkt."},{"id":24,"category":"Instagram","scenario":"Eine Freundin postet einen 'Photo Dump' und auf dem vierten Bild bist du im Hintergrund zu sehen, wie du gerade weinst. Sie findet das Bild 'ästhetisch', dir ist es unangenehm.","options":{"A":"Du kommentierst öffentlich unter das Bild: 'Lösch das sofort, das geht gar nicht!'","B":"Du meldest das Bild bei Instagram wegen einer Verletzung deiner Privatsphäre.","C":"Du schreibst ihr eine DM: 'Hey, das vierte Bild ist mir zu privat. Kannst du den Post bitte bearbeiten oder neu hochladen?'"},"correctOption":"C","explanation":"Unter Freunden sollte der direkte, private Weg die erste Wahl sein. Oft ist den Leuten nicht bewusst, dass sie eine Grenze überschritten haben, und eine DM klärt das ohne Drama."},{"id":25,"category":"BeReal","scenario":"Die BeReal-Benachrichtigung kommt genau während einer Beerdigung eines Verwandten. Deine Freunde pushen dich, 'on time' zu posten.","options":{"A":"Du machst ein schnelles Foto vom Boden, damit man nichts sieht, aber du 'on time' bist.","B":"Du ignorierst das BeReal komplett und postest erst Stunden später oder gar nicht.","C":"Du machst ein Foto, postest es aber nur für 'Enge Freunde', um die Privatsphäre zu wahren."},"correctOption":"B","explanation":"Netiquette bedeutet auch Respekt vor der realen Situation. Ein Smartphone hat bei einer Beerdigung nichts zu suchen; 'Realness' rechtfertigt keine Taktlosigkeit."},{"id":26,"category":"Gaming","scenario":"In einer Runde Valorant hast du einen Mitspieler, der extrem schlecht spielt und das Team den Sieg kostet. Er entschuldigt sich ständig im Chat.","options":{"A":"Du schreibst 'gg wp' und suchst dir für die nächste Runde einfach neue Mates.","B":"Du schreibst: 'Passt schon, jeder hat mal einen schlechten Tag. Probier nächstes Mal vielleicht [Tipp].'","C":"Du ignorierst seine Entschuldigungen komplett, um nicht noch mehr Zeit zu verschwenden."},"correctOption":"B","explanation":"Konstruktives Feedback kombiniert mit Empathie verhindert, dass die Gaming-Community noch toxischer wird und hilft dem Spieler, sich wirklich zu verbessern."},{"id":27,"category":"WhatsApp","scenario":"Du hast jemanden kennengelernt und ihr schreibt viel. Plötzlich antwortet die Person seit zwei Tagen nicht mehr, obwohl sie online ist. Du fühlst dich geghostet.","options":{"A":"Du schickst ein '?' oder ein sarkastisches 'Danke für die Antwort', um Druck aufzubauen.","B":"Du wartest ab und schreibst nach ein paar Tagen: 'Hey, alles okay bei dir? Hatte das Gefühl, die Funkstille war ein Zeichen.'","C":"Du blockierst die Person sofort, um deine eigene Würde zu bewahren und das Ghosting zu beenden."},"correctOption":"B","explanation":"Nachzufragen ohne Vorwürfe zu machen ('I-Botschaften') ist der reifste Weg. Es gibt oft Gründe für Funkstille, die nichts mit dir zu tun haben."},{"id":28,"category":"Discord","scenario":"Jemand postet ein Meme, das eine rassistische Beleidigung als 'Witz' getarnt enthält. Die anderen schreiben 'lol' oder 'basiert'.","options":{"A":"Du schreibst: 'Leute, das ist kein Humor, sondern einfach nur rassistisch. Lasst den Mist.'","B":"Du verlässt wortlos den Server, weil du mit solchen Leuten nichts zu tun haben willst.","C":"Du reagierst mit einem 'Neutral'-Emoji, um zu zeigen, dass du es nicht lustig findest, aber keinen Streit willst."},"correctOption":"A","explanation":"Zivilcourage im Netz bedeutet, Grenzen aufzuzeigen. Schweigen wird oft als Zustimmung gewertet, daher ist eine klare Positionierung wichtig."},{"id":29,"category":"Instagram","scenario":"Du möchtest einem kleinen Artist Feedback zu seinem neuen Bild geben. Du findest die Proportionen der Arme aber ziemlich misslungen.","options":{"A":"Du schreibst: 'Die Arme sehen echt weird aus, das hättest du besser machen können.'","B":"Du schreibst: 'Cooler Style! Ein kleiner Tipp: Wenn du die Arme etwas kürzer machst, wirkt es noch realistischer. Weiter so!'","C":"Du likest das Bild nur, weil negatives Feedback auf Insta nur Hate schürt."},"correctOption":"B","explanation":"Die 'Sandwich-Methode' (Lob-Kritik-Lob) ist die beste Form der Feedback-Kultur. Sie motiviert den Creator, anstatt ihn zu entmutigen."},{"id":30,"category":"TikTok","scenario":"Ein Trend verlangt, dass man heimlich Fremde in der Bahn filmt, die sich 'seltsam' verhalten. Du findest eine Situation perfekt für ein virales Video.","options":{"A":"Du filmst es, machst aber das Gesicht der Person mit einem Emoji unkenntlich.","B":"Du lässt es bleiben, weil das Filmen von Fremden ohne Erlaubnis deren Persönlichkeitsrechte verletzt.","C":"Du filmst es nur für deine privaten Freunde und postest es nicht öffentlich."},"correctOption":"B","explanation":"Recht am eigenen Bild ist ein hohes Gut. Auch mit Emojis oder in privaten Gruppen bleibt es ein Übergriff auf die Privatsphäre der gefilmten Person."},{"id":31,"category":"WhatsApp","scenario":"Du bist in einer WhatsApp-Gruppe für ein Bio-Referat. Ein Mitschüler schreibt dich ständig privat an, auch nach 22 Uhr, weil er wegen der Quellen panisch ist. Du fühlst dich gestresst.","options":{"A":"Ihn blockieren und erst am nächsten Morgen in der Gruppe antworten.","B":"Ihm freundlich sagen, dass du ab 20 Uhr keine Schulsachen mehr machst und er Fragen in die Gruppe stellen soll.","C":"Einfach nicht antworten (Ghosting), bis er von selbst aufhört zu schreiben."},"correctOption":"B","explanation":"Klare Kommunikation von Grenzen ist besser als Ghosting oder Blockieren, da es das Arbeitsverhältnis schützt und Missverständnisse vermeidet."},{"id":32,"category":"Discord","scenario":"In deinem Gaming-Discord fangen Leute an, einen neuen User wegen seines schlechten Mikros und seines Gameplays hart zu 'roasten'. Es wird langsam echt beleidigend.","options":{"A":"Mitlachen, damit die Stimmung im Voice-Chat nicht kippt, aber dem Neuen danach privat schreiben.","B":"Den Voice-Chat wortlos verlassen, um dich nicht an dem Mobbing zu beteiligen.","C":"Sachlich einschreiten und sagen, dass der Roast nicht mehr witzig ist und man sich wieder aufs Game konzentrieren sollte."},"correctOption":"C","explanation":"Zivilcourage in digitalen Räumen bedeutet, Grenzen aufzuzeigen, wenn aus Spaß Ernst wird, anstatt wegzusehen oder mitzulaufen."},{"id":33,"category":"TikTok","scenario":"Du siehst ein Video, in dem ein Mitschüler beim Schlafen im Bus gefilmt wurde. Das Video geht gerade an deiner Schule viral und hat viele lachende Kommentare.","options":{"A":"Das Video liken, aber nicht teilen, um den Algorithmus nicht weiter zu füttern.","B":"Den Ersteller privat anschreiben und ihn bitten, das Video zu löschen, weil es die Privatsphäre verletzt.","C":"Einen lustigen Kommentar schreiben, um bei den anderen Mitschülern gut anzukommen."},"correctOption":"B","explanation":"Das Recht am eigenen Bild gilt auch bei 'lustigen' Snaps. Den Ersteller direkt auf das Fehlverhalten hinzuweisen, ist der effektivste Weg zur Schadensbegrenzung."},{"id":34,"category":"Instagram","scenario":"Eine Freundin postet ein Selfie. Ein Klassenkamerad kommentiert darunter eine fiese Anspielung auf eine Sache, die sie dir im Vertrauen erzählt hat.","options":{"A":"Den Kommentar sofort melden und die Freundin anrufen, um sie zu unterstützen.","B":"Den Klassenkameraden öffentlich unter dem Post konfrontieren und ihn als Verräter bezeichnen.","C":"Die Freundin bitten, den Kommentar zu löschen und den User einzuschränken."},"correctOption":"A","explanation":"Schnelle Unterstützung für das Opfer und das Melden von Grenzüberschreitungen sind wichtiger als eine öffentliche Eskalation, die nur mehr Aufmerksamkeit erzeugt."},{"id":35,"category":"BeReal","scenario":"Der BeReal-Alarm geht los. Du bist gerade mit einer Freundin zusammen, die weint, weil sie Liebeskummer hat. Du willst den Moment posten.","options":{"A":"Ein Foto von deinem Gesicht machen und sie komplett aus dem Bild lassen.","B":"Sie kurz fragen, ob es okay ist, wenn man sie im Hintergrund sieht, weil BeReal ja 'echt' sein soll.","C":"Den Moment ignorieren und erst später ein 'Late' BeReal machen, wenn es ihr besser geht."},"correctOption":"C","explanation":"Empathie geht vor Social Media. In emotionalen Krisenmomenten ist es respektvoller, das Handy wegzulegen, anstatt die Situation für Content zu nutzen."},{"id":36,"category":"Gaming","scenario":"Du spielst eine Runde Valorant und ein Teammitglied fängt an, dich sexistisch oder rassistisch zu beleidigen, weil du einen Fehler gemacht hast.","options":{"A":"Genauso hart zurückbeleidigen, damit die Person merkt, dass du dich wehren kannst.","B":"Die Person sofort stummschalten (Mute), das Match zu Ende spielen und sie danach reporten.","C":"Versuchen, mit Logik zu argumentieren, warum solche Beleidigungen falsch sind."},"correctOption":"B","explanation":"Bei Hate Speech im Gaming bringt Diskutieren meist nichts. Muten schützt die eigene Psyche, Reporten hilft der Community langfristig."},{"id":37,"category":"WhatsApp","scenario":"Jemand hat dich ungefragt in eine riesige Gruppe für eine Party hinzugefügt. Es kommen sekündlich Nachrichten und du kennst die meisten Leute gar nicht.","options":{"A":"Die Gruppe sofort kommentarlos verlassen.","B":"Kurz schreiben, dass du kein Interesse hast, und dann die Gruppe verlassen.","C":"Die Gruppe auf 'stumm' schalten und drin bleiben, um keine Infos zu verpassen."},"correctOption":"B","explanation":"Eine kurze Nachricht verhindert, dass Leute dich erneut hinzufügen oder sich wundern. Es gehört zum guten Ton, sich kurz abzumelden."},{"id":38,"category":"TikTok","scenario":"Du möchtest ein Video posten, in dem du eine Choreografie tanzt, die du bei einem anderen Creator gesehen hast.","options":{"A":"Das Video posten und den Original-Creator in der Caption mit 'DC' markieren.","B":"Nichts dazu schreiben, da Trends auf TikTok sowieso jedem gehören.","C":"Den Creator privat um Erlaubnis fragen, bevor du das Video hochlädst."},"correctOption":"A","explanation":"In der TikTok-Kultur ist es Standard, 'Dance Credits' (DC) zu geben. Das zeigt Respekt vor der kreativen Arbeit anderer."},{"id":39,"category":"Instagram","scenario":"Du hast aus Versehen ein privates Detail über einen Kumpel in deiner Story erwähnt (z.B. dass er Hausarrest hat). Er hat es noch nicht gesehen.","options":{"A":"Die Story sofort löschen und hoffen, dass es niemand gesehen hat.","B":"Die Story löschen und dem Kumpel direkt Bescheid sagen, dass dir ein Fehler unterlaufen ist.","C":"Die Story online lassen, aber die Einstellungen so ändern, dass er sie nicht sehen kann."},"correctOption":"B","explanation":"Ehrlichkeit ist hier wichtig. Wenn es doch jemand gesehen hat, ist es besser, wenn er es von dir erfährt als durch Gerüchte."},{"id":40,"category":"Discord","scenario":"Ein Freund schickt dir per DM einen Link zu einem angeblich kostenlosen Skin-Pack. Du vermutest, dass es ein Scam oder Virus ist.","options":{"A":"Den Link ignorieren und die Nachricht löschen.","B":"Deinem Freund sofort schreiben, dass sein Account vermutlich gehackt wurde und er sein Passwort ändern soll.","C":"Den Link anklicken, um zu prüfen, ob er wirklich gefährlich ist, bevor du ihn warnst."},"correctOption":"B","explanation":"Schnelle Warnung ist essenziell, da sich Scams auf Discord oft über gehackte Accounts verbreiten. Den Link niemals selbst anklicken."},{"id":41,"category":"WhatsApp","scenario":"In deinem Klassenchat eskaliert die Situation: Ein Mitschüler wird wegen seiner neuen Frisur mit Stickern und Sprüchen massiv aufgezogen. Du merkst, dass er sich gar nicht mehr wehrt und offline gegangen ist. Wie reagierst du am besten?","options":{"A":"Du schreibst privat eine Nachricht an den Mitschüler und fragst, ob alles okay ist, hältst dich im Gruppenchat aber raus.","B":"Du postest im Gruppenchat ein kurzes 'Leute, jetzt ist auch mal wieder gut' und wechselst danach sofort das Thema.","C":"Du meldest die schlimmsten Sticker direkt bei WhatsApp und wartest ab, ob die Admins des Chats reagieren."},"correctOption":"B","explanation":"Zivilcourage im Gruppenchat ist wichtig. Durch ein klares Signal in der Gruppe setzt du eine Grenze für alle sichtbar, ohne den Konflikt unnötig anzuheizen. Eine private Nachricht ist zwar nett, beendet aber das Mobbing in der Gruppe nicht."},{"id":42,"category":"Discord","scenario":"Ein Freund postet im 'Art-Channel' eures Discord-Servers eine Zeichnung, in die er viel Zeit gesteckt hat. Du findest die Proportionen aber ziemlich misslungen. Wie gibst du Feedback?","options":{"A":"Du schreibst: 'Nicht böse gemeint, aber die Arme sind viel zu lang. Schau dir mal ein Tutorial dazu an.'","B":"Du reagierst nur mit einem Herz-Emoji, um ihn nicht zu verletzen, obwohl du das Bild eigentlich nicht magst.","C":"Du schreibst: 'Coole Farbwahl! Wenn du magst, kann ich dir zeigen, wie ich das mit den Proportionen gelernt habe.'"},"correctOption":"C","explanation":"Gute Netiquette im Bereich Feedback folgt der Sandwich-Methode: Erst etwas Positives, dann konstruktive Kritik als Angebot verpackt. Das ist respektvoll und motivierend."},{"id":43,"category":"TikTok","scenario":"Du siehst ein Video, in dem sich jemand über eine Person mit Behinderung lustig macht. In den Kommentaren feiern viele den 'schwarzen Humor'. Was ist die richtige Reaktion?","options":{"A":"Du schreibst einen wütenden Kommentar unter das Video, um die Ersteller zur Rede zu stellen.","B":"Du meldest das Video wegen Hassrede und interagierst ansonsten gar nicht damit, um den Algorithmus nicht zu füttern.","C":"Du teilst das Video in deiner Story, um deine Follower davor zu warnen, wie schlimm manche Creator sind."},"correctOption":"B","explanation":"Interaktion (auch negative wie Wut-Kommentare oder Teilen) pusht das Video im Algorithmus. Melden ist der effektivste Weg, gegen Diskriminierung vorzugehen, ohne dem Content mehr Reichweite zu verschaffen."},{"id":44,"category":"Instagram","scenario":"Du hast ein Gruppenfoto von einer Party gemacht. Du siehst darauf super aus, aber eine Freundin im Hintergrund hat die Augen halb zu und sieht unvorteilhaft aus. Was tust du?","options":{"A":"Du postest es in deiner Story, markierst sie aber ganz klein in der Ecke, damit sie es sieht.","B":"Du schickst ihr das Bild erst per DM und fragst kurz nach, ob es für sie okay ist, wenn du es postest.","C":"Du bearbeitest das Bild mit einem Emoji über ihrem Gesicht und postest es dann direkt."},"correctOption":"B","explanation":"Privatsphäre und das Recht am eigenen Bild sind heilig. Auch wenn es 'nur' eine Story ist, gehört es zum guten Ton, bei unvorteilhaften Aufnahmen kurz das Okay der anderen einzuholen."},{"id":45,"category":"Gaming","scenario":"Du spielst ein kompetitives Match (z.B. Valorant oder LoL). Ein Mitspieler in deinem Team macht einen dummen Fehler, wodurch ihr die Runde verliert. Dein Team fängt an, ihn im Chat zu flamen.","options":{"A":"Du schreibst 'nt' (nice try) in den Chat und gibst ein kurzes Callout für die nächste Runde.","B":"Du schweigst einfach, um dich nicht in den Toxic-Chat hineinziehen zu lassen.","C":"Du verteidigst ihn offensiv gegen die anderen, auch wenn das Teamklima dadurch noch hitziger wird."},"correctOption":"A","explanation":"Deeskalation ist im Gaming entscheidend. Ein kurzes 'nt' signalisiert dem Spieler Unterstützung und lenkt den Fokus sofort wieder auf das Spiel, ohne die Flamer unnötig zu provozieren."},{"id":46,"category":"BeReal","scenario":"Der BeReal-Alarm geht los, während du gerade mit Freunden in der Stadt bist. Eine Person aus der Gruppe hat gerade erst Schluss gemacht und sieht total verheult aus.","options":{"A":"Du machst das BeReal, achtest aber penibel darauf, dass die Person absolut nicht im Bild zu sehen ist.","B":"Du wartest mit dem BeReal einfach zwei Stunden, bis die Situation entspannter ist, auch wenn es dann 'late' ist.","C":"Du fragst in die Runde: 'Leute, BeReal, ist das gerade okay oder eher unpassend?'"},"correctOption":"B","explanation":"Empathie geht vor Realness. In emotionalen Ausnahmesituationen ist es höflicher, den Moment nicht digital festzuhalten, selbst wenn die App Zeitdruck suggeriert."},{"id":47,"category":"WhatsApp","scenario":"Du bist in einer neuen Projektgruppe für die Schule. Ein Mitglied antwortet tagelang nicht auf Nachrichten (Ghosting), obwohl die Deadline näher rückt. Wie gehst du vor?","options":{"A":"Du markierst die Person mit @Name und fragst sachlich, bis wann man mit den Ergebnissen rechnen kann.","B":"Du schreibst eine Nachricht direkt an den Lehrer und erklärst, dass die Person nichts beiträgt.","C":"Du rufst die Person ohne Vorwarnung mehrmals an, um sie zur Rede zu stellen."},"correctOption":"A","explanation":"Bevor man eskaliert, sollte man eine sachliche Aufforderung innerhalb der Gruppe senden. Das schafft Verbindlichkeit und dokumentiert den Versuch der Kommunikation, ohne direkt 'zu verpetzen'."},{"id":48,"category":"Instagram","scenario":"Jemand, den du flüchtig aus der Schule kennst, antwortet auf jede deiner Stories mit eher nervigen oder leicht unangemessenen Kommentaren. Du willst aber keinen Beef.","options":{"A":"Du blockierst die Person sofort, damit sie keinen Zugriff mehr auf dein Profil hat.","B":"Du nutzt die 'Einschränken'-Funktion, damit nur du und die Person die Kommentare sehen können.","C":"Du antwortest einmal freundlich, aber bestimmt per DM, dass dir die Kommentare zu viel werden."},"correctOption":"C","explanation":"Direkte, aber freundliche Kommunikation ist der erste Schritt der Netiquette. Oft merken Leute gar nicht, dass sie nerven. Erst wenn das nicht hilft, sind technische Einschränkungen sinnvoll."},{"id":49,"category":"Gaming","scenario":"Du bist in einem Voice-Channel auf Discord und jemand fängt an, ständig laut Musik abzuspielen oder ins Mikro zu schreien (Earrape).","options":{"A":"Du mutest die Person für dich persönlich und sagst den anderen im Chat Bescheid, dass du es getan hast.","B":"Du brüllst zurück, damit die Person merkt, wie nervig das für die anderen ist.","C":"Du bittest die Person einmal freundlich, das zu lassen, und nutzt ansonsten die Server-Mute-Funktion, falls du Rechte hast."},"correctOption":"C","explanation":"In einem Voice-Chat sollte man erst das Gespräch suchen. Wenn das nicht hilft, ist die Nutzung von Moderations-Tools die sauberste Lösung, um die Ruhe für alle wiederherzustellen."},{"id":50,"category":"TikTok","scenario":"Du siehst ein Meme, das ein aktuelles politisches Thema sehr überspitzt und fast schon beleidigend darstellt. Du findest es eigentlich lustig, bist aber unsicher.","options":{"A":"Du likest es nur, damit es nicht in deinem Profil für andere sichtbar ist (wie beim Repost).","B":"Du schickst es nur deinen besten Freunden privat, von denen du weißt, dass sie den Humor teilen.","C":"Du hinterfragst kurz die Quelle und die Absicht des Memes und entscheidest dich im Zweifel gegen eine Interaktion."},"correctOption":"C","explanation":"Netiquette bedeutet auch Verantwortung für geteilte Inhalte. Memes können Desinformation oder Hass transportieren. Wer unsicher ist, ob ein Inhalt verletzt, sollte ihn nicht durch Likes oder Shares unterstützen."},{"id":51,"category":"WhatsApp","scenario":"Dein bester Freund hat dich seit drei Tagen auf 'Gelesen' gelassen, obwohl du ihn etwas Wichtiges für die Schule gefragt hast. Du siehst aber, dass er in anderen Gruppen aktiv ist.","options":{"A":"Du postest ein passiv-aggressives Meme in deinen Status, das auf unzuverlässige Freunde anspielt.","B":"Du schreibst ihm eine sachliche Nachricht: 'Hey, hast du meine Frage gesehen? Brauche die Info für die Hausaufgabe.'","C":"Du ignorierst ihn jetzt auch für die nächsten drei Tage, um ihm eine Lektion zu erteilen."},"correctOption":"B","explanation":"Ghosting oder Ignorieren erzeugt oft Missverständnisse. Eine direkte, aber höfliche Nachfrage ist der beste Weg, um das Problem ohne unnötiges Drama zu lösen."},{"id":52,"category":"Discord","scenario":"Ein User auf deinem Stamm-Server postet im Coding-Channel ein selbstgeschriebenes Skript. Der Code ist extrem unübersichtlich und fehlerhaft.","options":{"A":"Du schreibst öffentlich: 'Lern erst mal die Basics, bevor du hier so einen Müll postest.'","B":"Du ignorierst den Post komplett, damit du ihn nicht beleidigen musst.","C":"Du gibst konstruktives Feedback und weist ihn privat auf spezifische Fehler hin, um ihn nicht vor der Gruppe bloßzustellen."},"correctOption":"C","explanation":"Feedback-Kultur bedeutet, anderen beim Wachsen zu helfen. Konstruktive Kritik unter vier Augen ist respektvoller als öffentliches 'Blaming'."},{"id":53,"category":"TikTok","scenario":"Eine Freundin postet ein Video von einer Party, auf dem du im Hintergrund total unvorteilhaft aussiehst und gerade etwas Peinliches machst. Das Video geht viral.","options":{"A":"Du meldest das Video sofort bei TikTok wegen Verletzung der Privatsphäre, ohne sie vorher zu fragen.","B":"Du schreibst ihr privat, dass dir das Video unangenehm ist und bittest sie, es offline zu nehmen oder dich unkenntlich zu machen.","C":"Du kommentierst unter dem Video: 'Lösch das sofort, du Fake-Friend!', damit alle sehen, wie sie ist."},"correctOption":"B","explanation":"Kommunikation ist der Schlüssel. Oft merken Freunde gar nicht, dass ein Post für andere peinlich ist. Ein privates Gespräch schützt die Freundschaft besser als ein öffentlicher Streit."},{"id":54,"category":"Gaming","scenario":"In einer Runde Valorant fängt ein Teammitglied an, dich massiv zu beleidigen ('Trash-Aim', 'Delete the game'), weil du einen Schuss verpasst hast.","options":{"A":"Du schlägst verbal zurück und erklärst ihm, warum seine Stats eigentlich viel schlechter sind als deine.","B":"Du mutest den Spieler sofort, reportest ihn nach dem Match und konzentrierst dich weiter auf dein Spiel.","C":"Du verlässt das Match sofort (Rage-Quit), damit er ohne dich weiterspielen muss."},"correctOption":"B","explanation":"Gegen Trolle zu argumentieren füttert deren Verhalten nur. Muten und Reporten sind die effektivsten Werkzeuge der Netiquette im Gaming, um die eigene Psyche zu schützen."},{"id":55,"category":"Instagram","scenario":"Du siehst in deinem Feed ein Meme, das zwar lustig ist, aber auf Kosten einer religiösen Minderheit geht. Viele deiner Freunde haben es schon geliked.","options":{"A":"Du likest es auch, weil es 'nur schwarzer Humor' ist und du nicht als Spaßverderber gelten willst.","B":"Du teilst es nur in deiner privaten 'Best Friends'-Story, damit es keine Fremden sehen.","C":"Du likest es nicht und überlegst kritisch, ob der 'Witz' Diskriminierung fördert, bevor du ihn weiter verbreitest."},"correctOption":"C","explanation":"Verantwortungsvolles Teilen bedeutet zu erkennen, wo Humor aufhört und Hetze anfängt. Auch 'stilles' Liken unterstützt Algorithmen, die solche Inhalte verbreiten."},{"id":56,"category":"BeReal","scenario":"Die BeReal-Notification kommt genau in dem Moment, als du mit einer Freundin ein sehr ernstes Gespräch über ihre Trennung führst. Sie weint gerade.","options":{"A":"Du machst schnell das Foto, achtest aber darauf, dass man ihr verweintes Gesicht nicht sieht, um 'real' zu sein.","B":"Du ignorierst die Notification und postest erst später ein 'Late', wenn die Situation vorbei ist und es ihr besser geht.","C":"Du fragst sie kurz: 'Darf ich schnell das BeReal machen?', während du ihr ein Taschentuch reichst."},"correctOption":"B","explanation":"Empathie im echten Leben geht immer vor Social-Media-Zwang. In sensiblen Momenten ist es unhöflich und unangebracht, das Handy für ein Foto rauszuholen."},{"id":57,"category":"WhatsApp","scenario":"In deiner Klassengruppe fangen einige an, Sticker mit dem Gesicht eines Mitschülers zu posten, die ihn lächerlich machen. Er schreibt nichts dazu.","options":{"A":"Du schreibst in die Gruppe: 'Leute, kommt mal klar, das ist nicht witzig' und unterbrichst die Dynamik.","B":"Du hältst dich raus und löschst die Sticker einfach für dich selbst, um keinen Stress zu bekommen.","C":"Du schreibst dem Mitschüler privat, dass du die Sticker auch doof findest, sagst aber in der Gruppe nichts."},"correctOption":"A","explanation":"Cybermobbing-Prävention erfordert Zivilcourage. Ein klares Statement in der Gruppe zeigt den Tätern Grenzen auf und signalisiert dem Opfer Solidarität."},{"id":58,"category":"Discord","scenario":"Ein User, den du flüchtig von einem Server kennst, schickt dir eine DM: 'Hey, kannst du mal mein neues Game testen? Hier ist der Link zum Download.'","options":{"A":"Du klickst auf den Link, weil du nett sein willst, achtest aber darauf, keine Passwörter einzugeben.","B":"Du ignorierst die Nachricht und klickst nichts an, da es sich um eine bekannte Scam-Methode handeln könnte.","C":"Du antwortest: 'Klar, mach ich später', um Zeit zu schinden, klickst aber nie."},"correctOption":"B","explanation":"Sicherheit geht vor Höflichkeit. Unaufgeforderte Download-Links von flüchtigen Bekannten sind oft Malware oder Phishing-Versuche."},{"id":59,"category":"TikTok","scenario":"Jemand hat ein Video gepostet, in dem er seine Meinung zu einem Thema sagt, die du absolut nicht teilst. Du findest seine Argumente dumm.","options":{"A":"Du kommentierst: 'Lösch dich einfach, keine Ahnung von gar nichts!', um deine Meinung klarzumachen.","B":"Du machst ein Stitch-Video, in dem du ihn sachlich widerlegst, ohne ihn persönlich zu beleidigen.","C":"Du meldest das Video als 'Hassrede', damit es gesperrt wird, obwohl es nur eine andere Meinung ist."},"correctOption":"B","explanation":"Andere Meinungen auszuhalten gehört zur Netiquette. Wenn man widerspricht, sollte man dies auf der Sachebene tun, anstatt die Person anzugreifen."},{"id":60,"category":"Instagram","scenario":"Du hast einen Screenshot von einem Chat mit deinem Ex-Freund gemacht, der zeigt, wie cringe er sich verhält. Du willst ihn in deiner Story posten.","options":{"A":"Du postest den Screenshot, schwärzt aber seinen Namen und sein Profilbild komplett unkenntlich.","B":"Du postest es unverändert, weil er dich auch schlecht behandelt hat und es verdient.","C":"Du lässt es ganz bleiben, da private Chats privat sind und das Veröffentlichen rechtliche Probleme geben kann."},"correctOption":"C","explanation":"Das Briefgeheimnis gilt auch digital. Private Nachrichten ohne Zustimmung zu veröffentlichen ist ein Vertrauensbruch und kann sogar gegen das Persönlichkeitsrecht verstoßen."},{"id":61,"category":"WhatsApp","scenario":"Dein Kumpel antwortet seit zwei Tagen nicht auf deine Nachricht wegen der Kinoplanung am Freitag, obwohl er in anderen Gruppen aktiv ist. Du fühlst dich geghostet.","options":{"A":"Du schreibst in die gemeinsame Gruppe: 'Echt nice, dass manche Leute es nicht hinkriegen zu antworten.' und markierst ihn.","B":"Du schreibst ihm eine kurze private Nachricht: 'Hey, alles fit? Gib mal kurz Bescheid wegen Freitag, damit ich planen kann.'","C":"Du rufst ihn sofort fünfmal hintereinander an, bis er rangeht, um die Sache direkt zu klären."},"correctOption":"B","explanation":"Privates Nachfragen ist respektvoller als 'Public Shaming' in der Gruppe. Es gibt oft Gründe für verzögerte Antworten, die nichts mit Desinteresse zu tun haben."},{"id":62,"category":"Discord","scenario":"Auf deinem Lieblings-Server hat ein Moderator eine neue Regel eingeführt, die du absolut unlogisch findest. Die Stimmung im Chat ist aufgeheizt.","options":{"A":"Du verfasst im #feedback-Channel eine sachliche Nachricht, warum die Regel den Spielfluss stört, und schlägst eine Alternative vor.","B":"Du schreibst dem Moderator eine DM mit: 'Was ist das für eine L-Regel? Mach das rückgängig, sonst gehen alle.'","C":"Du ignorierst die Regel einfach demonstrativ und wartest darauf, dass dich jemand bannt, um eine Diskussion zu erzwingen."},"correctOption":"A","explanation":"Konstruktives Feedback in den dafür vorgesehenen Kanälen ist effektiver als Drohungen oder Provokation. Es zeigt Respekt gegenüber der Arbeit der Mods."},{"id":63,"category":"TikTok","scenario":"Du siehst ein Video von jemandem aus deiner Stufe, der einen Trend-Tanz macht, sich dabei aber ziemlich ungeschickt anstellt. Die Kommentare machen sich bereits lustig.","options":{"A":"Du schreibst 'Mutig von dir, das hochzuladen 💀', um ironisch zu sein.","B":"Du likest das Video nicht, schreibst aber auch keinen Kommentar, um die Hate-Welle nicht zu füttern.","C":"Du postest ein positives Emoji oder ein 'Hauptsache es macht Spaß', um dem Hate etwas entgegenzusetzen."},"correctOption":"C","explanation":"Aktive Cybermobbing-Prävention bedeutet, die Zielperson durch positive Kommentare zu unterstützen, anstatt passiv zuzusehen oder ironische Kommentare zu hinterlassen."},{"id":64,"category":"Instagram","scenario":"Du hast ein Gruppenfoto vom Wochenende gepostet. Eine Freundin schreibt dir privat, dass sie sich auf dem Bild 'echt hässlich' findet und bittet dich, es zu löschen.","options":{"A":"Du bearbeitest den Post und schneidest sie raus oder setzt einen Sticker über ihr Gesicht.","B":"Du löschst das Bild sofort, weil das Recht am eigenen Bild und das Wohlbefinden deiner Freundin wichtiger sind als Likes.","C":"Du schreibst ihr: 'Stell dich nicht so an, du siehst top aus!' und lässt das Bild online."},"correctOption":"B","explanation":"Privatsphäre und das Einverständnis der abgebildeten Personen stehen an erster Stelle. Wenn sich jemand unwohl fühlt, ist das Löschen die einzig respektvolle Reaktion."},{"id":65,"category":"BeReal","scenario":"Das BeReal geht los, während du mit deiner Clique in der Cafeteria sitzt. Im Hintergrund sieht man deutlich zwei Lehrer, die gerade vertraulich miteinander sprechen.","options":{"A":"Du machst das Foto so, dass die Lehrer nicht erkennbar sind oder wartest, bis sie weggehen, auch wenn du dann 'late' bist.","B":"Du machst das Foto einfach. BeReal ist für Schnappschüsse da und wer in der Öffentlichkeit steht, muss damit rechnen.","C":"Du postest es und verpixelst die Gesichter der Lehrer nachträglich mit der Bearbeitungsfunktion deines Handys."},"correctOption":"A","explanation":"Auch bei 'echten' Momenten gilt die Privatsphäre Dritter. Unbeteiligte Personen (besonders Lehrer im Dienst) sollten ohne Erlaubnis nicht auf Social Media landen."},{"id":66,"category":"Gaming","scenario":"In einer Runde Valorant macht ein Teammitgleid einen massiven Fehler, wodurch ihr die Runde verliert. Ein anderer Spieler fängt an, ihn im Voice-Chat heftig zu beleidigen.","options":{"A":"Du sagst: 'Chillt mal, war nur ein Spiel. Lass uns auf die nächste Runde konzentrieren' und mutest den Beleidiger.","B":"Du schweigst, um nicht selbst zur Zielscheibe zu werden, und konzentrierst dich aufs Weiterspielen.","C":"Du stimmst dem Beleidiger zu, damit er sich beruhigt und ihr als Team wieder zusammenfindet."},"correctOption":"A","explanation":"Deeskalation und das Setzen von Grenzen gegen toxisches Verhalten fördern eine bessere Gaming-Kultur und helfen dem Team mehr als Schweigen oder Mitmachen."},{"id":67,"category":"WhatsApp","scenario":"Ein Mitschüler hat dir eine Sprachnachricht geschickt, in der er sich über seinen Crush ausheult. Du findest die Story so lustig, dass du sie eigentlich deinem Bestie weiterleiten willst.","options":{"A":"Du leitest die Nachricht weiter, sagst aber dazu: 'Bitte nicht weitergeben, ist privat!'","B":"Du erzählst deinem Bestie die Story nur mündlich, ohne die Sprachnachricht weiterzuleiten.","C":"Du behältst die Info komplett für dich, da sie dir im Vertrauen geschickt wurde."},"correctOption":"C","explanation":"Vertraulichkeit ist die Basis digitaler Freundschaft. Das Weiterleiten von privaten Sprachnachrichten ohne Erlaubnis ist ein Vertrauensbruch und kann rechtliche Folgen haben."},{"id":68,"category":"Discord","scenario":"Jemand postet ein Meme im Chat, das eine rassistische Unterstellung als 'schwarzen Humor' tarnt. Viele schreiben 'LMAO' oder '💀'.","options":{"A":"Du schreibst: 'Find ich jetzt nicht so witzig, ist eher grenzwertig' und meldest den Post bei den Admins.","B":"Du ignorierst es, weil du keine Lust auf eine Grundsatzdiskussion über Humor hast.","C":"Du postest ein Facepalm-Emoji, um deine Ablehnung zu zeigen, ohne viel Text zu schreiben."},"correctOption":"A","explanation":"Hate Speech hinter 'Humor' zu verstecken ist eine gängige Taktik. Eine klare Positionierung und die Meldung an Admins schützen die Community-Standards."},{"id":69,"category":"TikTok","scenario":"Du siehst ein Lern-Tutorial zu einem Thema, das du gut kennst. Der Creator erklärt eine Sache faktisch falsch.","options":{"A":"Du machst ein Stitch-Video und machst dich über die Unwissenheit des Creators lustig.","B":"Du kommentierst höflich: 'Gutes Video! Bei Minute 0:45 hat sich ein Fehler eingeschlichen: [Korrektur]. Schau mal nach!'","C":"Du schreibst nur 'Falsch.' in die Kommentare, damit andere gewarnt sind."},"correctOption":"B","explanation":"Feedback-Kultur bedeutet, Fehler sachlich und respektvoll zu benennen. Das hilft dem Creator und den Zuschauern mehr als Bloßstellung."},{"id":70,"category":"Gaming","scenario":"Ihr habt ein knappes Match gewonnen. Dein Team-Captain schreibt 'GG EZ' in den All-Chat, um die Gegner zu provozieren.","options":{"A":"Du schreibst 'GG WP' (Well Played) hinterher, um Sportsgeist zu zeigen und die Provokation zu neutralisieren.","B":"Du schreibst deinem Captain im Team-Chat, dass er ein Idiot ist, weil er so unhöflich ist.","C":"Du verlässt sofort die Lobby, damit du mit dem Verhalten nicht in Verbindung gebracht wirst."},"correctOption":"A","explanation":"'GG EZ' gilt als unsportlich. Durch ein eigenes 'GG WP' signalisierst du Respekt gegenüber den Gegnern, ohne den eigenen Teamfrieden durch direkte Beleidigung zu zerstören."},{"id":71,"category":"WhatsApp","scenario":"Ein Freund ist seit Stunden online, antwortet aber nicht auf deine Nachricht bezüglich der Gruppenarbeit für morgen. Du siehst, dass er in anderen Gruppen chattet. Wie reagierst du, ohne die Freundschaft zu belasten?","options":{"A":"Du schickst mehrere Fragezeichen und rufst ihn direkt über WhatsApp-Call an, um Druck zu machen.","B":"Du schreibst ihm privat: 'Hey, hab gesehen du bist busy. Gib mir bitte bis 20 Uhr kurz Bescheid wegen der Arbeit, damit ich planen kann.'","C":"Du postest in die gemeinsame Gruppe, dass er alle hängen lässt, damit die anderen ihn auch anschreiben."},"correctOption":"B","explanation":"Druck oder öffentliches 'Anprangern' führt meist zu Abwehrreaktionen. Eine sachliche Nachricht mit einer Deadline respektiert seine Zeit und kommuniziert trotzdem klar dein Bedürfnis."},{"id":72,"category":"Discord","scenario":"Jemand in deinem Stamm-Server postet im #creative-channel eine Zeichnung, die offensichtlich viel Mühe gekostet hat, aber anatomisch echt schief aussieht. Alle schreiben 'Sieht super aus!'. Was tust du?","options":{"A":"Du schreibst ehrlich: 'Die Proportionen sind echt weird, das musst du nochmal üben.'","B":"Du schreibst: 'Voll gut geworden! Besonders die Schattierung mag ich. Wenn du willst, hab ich ein Tutorial für die Arme gefunden.'","C":"Du schreibst gar nichts, um die Person nicht zu lügen, aber auch nicht zu verletzen."},"correctOption":"B","explanation":"Gute Netiquette im Bereich Feedback folgt der Sandwich-Methode: Erst etwas Positives, dann konstruktive Kritik mit Hilfestellung, statt nur zu kritisieren."},{"id":73,"category":"TikTok","scenario":"Du hast ein Video von deinem Kumpel gemacht, wie er beim Sport hinfällt. Es ist super lustig und könnte viral gehen. Er hat im Moment des Sturzes gelacht, weiß aber nicht, dass du gefilmt hast.","options":{"A":"Du postest es sofort mit einem lustigen Sound, weil er ja im Moment selbst gelacht hat.","B":"Du schickst es ihm erst privat und fragst: 'Safe für TikTok oder eher nur für uns?'","C":"Du bearbeitest das Video so, dass man sein Gesicht nicht sieht, und postest es dann ohne zu fragen."},"correctOption":"B","explanation":"Privatsphäre und Einverständnis sind online essenziell. Auch wenn er im Moment gelacht hat, möchte er vielleicht nicht, dass Tausende Fremde ihn so sehen."},{"id":74,"category":"Instagram","scenario":"In deiner Story-Timeline taucht eine 'Beichten'-Seite deiner Schule auf, auf der ein Gerücht über eine Mitschülerin verbreitet wird. Viele aus deiner Klasse reposten das mit lachenden Emojis.","options":{"A":"Du meldest die Seite bei Instagram und schreibst der betroffenen Person privat, dass du das nicht okay findest.","B":"Du ignorierst es komplett, um dem Algorithmus der Seite nicht noch mehr Reichweite zu geben.","C":"Du kommentierst unter dem Post: 'Leute, das ist echt asozial, hört mal auf', um Zivilcourage zu zeigen."},"correctOption":"A","explanation":"Melden ist der effektivste Weg gegen solche Seiten. Direkter Support für das Opfer hilft mehr als eine öffentliche Diskussion, die den Post nur noch bekannter macht."},{"id":75,"category":"Gaming","scenario":"In einer Runde 'Valorant' spielt ein Teammitgleid extrem schlecht und macht Anfängerfehler. Die anderen im Voice-Chat fangen an, die Person heftig zu beleidigen ('Lern spielen', 'Lösch das Game').","options":{"A":"Du schweigst und konzentrierst dich auf dein Spiel, um nicht selbst Ziel der Beleidigungen zu werden.","B":"Du sagst: 'Leute, chillt mal. Wir haben alle mal angefangen. Gib ihm lieber Tipps statt ihn zu flamen.'","C":"Du mutest alle Beteiligten sofort, damit du die Negativität nicht hörst, und spielst alleine weiter."},"correctOption":"B","explanation":"Aktives Eingreifen gegen Toxizität verbessert das Klima für alle. Den Angreifern die Stirn zu bieten, ohne selbst beleidigend zu werden, ist der Goldstandard der Gaming-Etiquette."},{"id":76,"category":"BeReal","scenario":"Der BeReal-Alarm geht los, während du gerade in der Umkleidekabine nach dem Schulsport bist. Deine Freunde drängen dich, jetzt sofort zu posten, damit du 'On Time' bist.","options":{"A":"Du machst das Foto schnell, achtest aber darauf, dass nur dein Gesicht zu sehen ist.","B":"Du wartest, bis du aus der Umkleide raus bist, und postest 'Late', weil Umkleiden Tabuzonen für Kameras sind.","C":"Du hältst die Kamera gegen den Boden, damit man nichts sieht, aber du trotzdem als 'On Time' giltst."},"correctOption":"B","explanation":"In sensiblen Bereichen wie Umkleiden oder Toiletten herrscht absolutes Kameraverbot. Der Schutz der Privatsphäre anderer geht immer vor den Status 'On Time'."},{"id":77,"category":"WhatsApp","scenario":"Du bist in einer Klassengruppe. Ein Mitschüler schickt versehentlich ein sehr privates Foto, das eigentlich für seine Freundin gedacht war, und löscht es sofort für alle. Du hast es aber schon gesehen.","options":{"A":"Du schreibst ihm privat: 'Hab's gesehen, keine Sorge, ich sag's niemandem und hab keinen Screenshot gemacht.'","B":"Du ignorierst es komplett und tust so, als hättest du es nie gesehen, um die Peinlichkeit nicht zu vergrößern.","C":"Du machst einen Witz in der Gruppe, um die Spannung zu lockern, damit alle drüber lachen können."},"correctOption":"B","explanation":"In hochgradig peinlichen Situationen ist 'Ignorieren' oft die höflichste Form der Netiquette, da jede weitere Erwähnung (auch privat) die Scham des Absenders vergrößern kann."},{"id":78,"category":"Discord","scenario":"Ein neuer User joint eurem Server und stellt Fragen, die eigentlich in den 'FAQ' oder den 'Rules' stehen. Einige alteingesessene User reagieren genervt und schreiben 'Wer lesen kann, ist klar im Vorteil'.","options":{"A":"Du kopierst die Antwort direkt aus den FAQ und postest sie ohne Kommentar.","B":"Du schreibst: 'Willkommen! Schau mal in #rules vorbei, da steht das meiste drin. Wenn du dann noch Fragen hast, helf ich dir gern.'","C":"Du stimmst den anderen zu, damit der Neue lernt, dass man erst lesen muss, bevor man fragt."},"correctOption":"B","explanation":"'Gatekeeping' schreckt neue Leute ab. Ein freundlicher Hinweis auf die Regeln ist konstruktiver und sorgt für eine bessere Community-Atmosphäre."},{"id":79,"category":"Instagram","scenario":"Du möchtest einen kleinen Creator fragen, ob er Lust auf ein gemeinsames Projekt hat. Wie kontaktierst du ihn am professionellsten per DM?","options":{"A":"'Hey, Lust auf Collab? Meld dich mal.'","B":"'Hi, ich feier deinen Content, besonders das Video zu [Thema]. Hättest du Lust auf ein gemeinsames Projekt? Hier ist meine Idee...'","C":"Du kommentierst unter seinen letzten 5 Posts: 'Check mal deine DMs!!! Wichtig!!!'"},"correctOption":"B","explanation":"Personalisierte Nachrichten, die echtes Interesse zeigen und direkt einen Mehrwert bieten, sind höflich und erhöhen die Chance auf eine Antwort enorm."},{"id":80,"category":"TikTok","scenario":"Du siehst ein Video mit einer Meinung, der du absolut nicht zustimmst. Du möchtest einen Kommentar hinterlassen.","options":{"A":"Du schreibst: 'L + Ratio + dein Take ist Müll.'","B":"Du postest nur ein Clown-Emoji, um deine Meinung ohne viele Worte auszudrücken.","C":"Du schreibst sachlich: 'Ich sehe das anders, weil [Grund]. Aber interessanter Punkt.'"},"correctOption":"C","explanation":"Auch bei Meinungsverschiedenheiten bleibt man sachlich. 'L + Ratio' oder Emojis sind destruktiv und fördern keine echte Diskussion."},{"id":81,"category":"WhatsApp","scenario":"Du merkst, dass ein Crush dich seit drei Tagen ghostet, obwohl die Person online ist. Deine Freunde raten dir, 'Terror' zu machen oder eine beleidigte Story zu posten.","options":{"A":"Du schickst eine letzte, sachliche Nachricht, dass du das Ghosting schade findest, und lässt es dann gut sein.","B":"Du wartest genau so lange, wie die Person zum Antworten braucht, um Überlegenheit zu zeigen.","C":"Du löschst den Chat und die Nummer sofort, um ein klares Zeichen zu setzen, falls die Person doch noch schreibt."},"correctOption":"A","explanation":"Reife Kommunikation bedeutet, Gefühle offen anzusprechen, ohne Druck auszuüben. Ein 'Abschluss-Statement' hilft dir, abzuschließen, während Spielchen oder Rache-Aktionen nur unnötigen Stress erzeugen."},{"id":82,"category":"Discord","scenario":"Ein Freund teilt im 'Art-Channel' seine neueste Zeichnung. Du findest die Proportionen echt misslungen, aber er wirkt sehr stolz darauf.","options":{"A":"Du schreibst nur 'Sieht gut aus!', um seine Gefühle nicht zu verletzen.","B":"Du fragst erst, ob er Feedback möchte, und nennst dann einen positiven Punkt sowie einen konkreten Verbesserungsvorschlag.","C":"Du postest ein Tutorial-Video für Anatomie als Reaktion, damit er selbst sieht, was falsch ist."},"correctOption":"B","explanation":"Gute Feedback-Kultur (Sandwich-Methode) respektiert den Ersteller. Ungefragte Kritik kann demotivieren, während reines Lob nicht beim Lernen hilft. Die Nachfrage zeigt Respekt."},{"id":83,"category":"TikTok","scenario":"Ein Meme-Trend geht viral, der sich über die Tollpatschigkeit einer Mitschülerin lustig macht. Alle teilen es. Du findest es eigentlich auch lustig, weißt aber, dass sie sensibel ist.","options":{"A":"Du likest es nur, anstatt es zu teilen, damit der Algorithmus es pusht, du aber nicht als Urheber giltst.","B":"Du teilst es nur in einer privaten Gruppe mit engen Freunden, wo sie es sicher nicht sieht.","C":"Du postest es nicht und schreibst in die Kommentare oder der Gruppe, dass der Trend auf Kosten einer Person geht und uncool ist."},"correctOption":"C","explanation":"Cybermobbing-Prävention beginnt beim Nicht-Mitmachen. Auch passives Liken oder privates Teilen unterstützt die Dynamik. Zivilcourage im Netz schützt das Opfer."},{"id":84,"category":"Instagram","scenario":"Du postest ein Gruppenfoto vom Wochenende. Du siehst mega aus, aber deine beste Freundin hat die Augen halb zu und eine komische Pose.","options":{"A":"Du postest es trotzdem, markierst sie aber nicht, damit es in ihrem Feed nicht auftaucht.","B":"Du fragst sie vorher, ob das Bild für sie okay ist oder ob du ihr Gesicht mit einem Emoji verdecken sollst.","C":"Du bearbeitest ihr Gesicht mit einem Filter, damit es besser aussieht, und postest es dann."},"correctOption":"B","explanation":"Das Recht am eigenen Bild ist wichtig. Auch wenn du gut aussiehst, ist es respektlos, Freunde in unvorteilhaften Momenten ungefragt zu veröffentlichen."},{"id":85,"category":"Gaming","scenario":"In einem Ranked-Match unterläuft einem Teammitgleid ein dummer Fehler, woraufhin ein anderer Spieler anfängt, ihn im Voice-Chat massiv zu beleidigen.","options":{"A":"Du ignorierst beide und konzentrierst dich aufs Spiel, um nicht selbst Zielscheibe zu werden.","B":"Du sagst dem Beleidiger sachlich, dass sein Verhalten nicht hilft, und mutest ihn dann konsequent.","C":"Du verteidigst das Opfer, indem du den Beleidiger ebenfalls als 'Noob' bezeichnest, damit er merkt, wie das ist."},"correctOption":"B","explanation":"Gegen Toxizität hilft keine Gegengewalt. Eine klare Ansage mit anschließendem Mute schützt deine Konzentration und setzt eine Grenze, ohne die Situation eskalieren zu lassen."},{"id":86,"category":"BeReal","scenario":"Der BeReal-Alarm geht los, während du gerade in der Umkleidekabine beim Sport stehst. Im Hintergrund sind andere Leute halb angezogen zu sehen.","options":{"A":"Du machst das Foto schnell, versuchst aber, die anderen mit deinem Kopf zu verdecken.","B":"Du wartest, bis du aus der Umkleide raus bist, und postest ein 'Late' BeReal.","C":"Du machst das Foto, stellst es aber auf 'Nur Freunde', damit es nicht öffentlich wird."},"correctOption":"B","explanation":"Privatsphäre geht vor Pünktlichkeit. In sensiblen Bereichen wie Umkleiden ist das Fotografieren absolut tabu, da du die Intimsphäre anderer massiv verletzen würdest."},{"id":87,"category":"WhatsApp","scenario":"In eurer Klassengruppe wird ein Sticker erstellt, der ein peinliches Foto eines Lehrers zeigt. Fast alle feiern es mit Lach-Emojis.","options":{"A":"Du löschst den Sticker sofort aus deinem Handy-Speicher und beteiligst dich nicht an der Diskussion.","B":"Du weist darauf hin, dass das Erstellen und Verbreiten solcher Sticker rechtliche Konsequenzen haben kann.","C":"Du schreibst privat dem Ersteller, dass er den Sticker lieber löschen soll, bevor es Ärger gibt."},"correctOption":"B","explanation":"Das Recht am Bild gilt auch für Lehrer. Die Warnung in der Gruppe kann andere davor bewahren, sich durch Weiterleiten strafbar zu machen oder Schulverweise zu riskieren."},{"id":88,"category":"Discord","scenario":"Zwei Freunde streiten sich im öffentlichen 'General'-Channel deines Servers über ein privates Thema. Die Stimmung wird für alle anderen unangenehm.","options":{"A":"Du bannst beide temporär vom Server, um ein Exempel für die Regeln zu statuieren.","B":"Du bittest sie freundlich, den Streit in die DMs (Privatnachrichten) zu verlegen, da es nicht in den Channel gehört.","C":"Du versuchst öffentlich zu vermitteln und fragst beide Seiten nach ihrer Sicht der Dinge."},"correctOption":"B","explanation":"Privatstreits gehören nicht in öffentliche Kanäle. Als Moderator oder Freund ist es am besten, den Raum für alle anderen sauber zu halten und die Konfliktparteien ins Private zu lenken."},{"id":89,"category":"Instagram","scenario":"Ein Kumpel fängt an, sehr 'cringe' Motivations-Videos zu posten. In den Kommentaren fangen Leute an, ihn zu trollen.","options":{"A":"Du schreibst einen positiven Kommentar, um die Trolle auszugleichen, auch wenn du die Videos selbst nicht magst.","B":"Du ignorierst die Posts komplett, um ihm keine falsche Hoffnung zu machen, dass der Content gut ist.","C":"Du schreibst ihm privat, dass er die Kommentare einschränken sollte, weil die Leute gerade fies werden."},"correctOption":"C","explanation":"Echte Freunde schützen einander vor öffentlicher Bloßstellung. Ein privater Hinweis auf die Trolle ist hilfreicher als ein ironischer oder mitleidiger Kommentar."},{"id":90,"category":"TikTok","scenario":"Du willst ein Video zu einem neuen Song aufnehmen. Im Hintergrund im Park ist eine Familie beim Picknick deutlich zu erkennen.","options":{"A":"Du nimmst das Video auf und nutzt einen Blur-Effekt für den Hintergrund, bevor du es hochlädst.","B":"Du fragst die Familie kurz, ob es sie stört, wenn sie im Hintergrund deines TikToks zu sehen sind.","C":"Du suchst dir einen anderen Platz, an dem keine fremden Personen ungefragt im Bild sind."},"correctOption":"C","explanation":"Auch wenn Blur-Effekte existieren, ist es am sichersten und höflichsten, den Ort zu wechseln. So vermeidest du Konflikte und respektierst den öffentlichen Raum anderer Menschen."},{"id":91,"category":"WhatsApp","scenario":"Dein bester Freund hat deine Nachricht vor zwei Tagen gelesen (blaue Haken), aber nicht geantwortet. In seiner Story siehst du jedoch, dass er mit anderen unterwegs ist. Du fühlst dich geghostet. Wie reagierst du angemessen?","options":{"A":"Du postest eine kryptische Story, die auf Unzuverlässigkeit anspielt, damit er es merkt.","B":"Du schreibst ihm nach ein paar Tagen ganz entspannt: 'Hey, alles fit? Wollte nur kurz nachhören, ob wir wegen der Sache noch planen.'","C":"Du schreibst sofort: 'Echt nett, dass du Zeit für andere hast, aber mir nicht antworten kannst.'"},"correctOption":"B","explanation":"Direkte Vorwürfe oder passiv-aggressives Verhalten führen oft zu unnötigem Stress. Jeder hat mal eine soziale Batterie, die leer ist, oder vergisst eine Antwort. Eine freundliche Nachfrage lässt dem anderen Raum, ohne ihn anzugreifen."},{"id":92,"category":"TikTok","scenario":"Du nimmst in der Schulpause ein Tanz-Video für TikTok auf. Im Hintergrund sind deutlich Mitschüler zu sehen, die gerade essen oder sich unterhalten. Was ist der richtige Move vor dem Posten?","options":{"A":"Du postest es einfach, da es ein öffentlicher Raum ist und sie nur zufällig im Bild sind.","B":"Du setzt einen Sticker über die Gesichter der Leute, damit man sie nicht direkt erkennt.","C":"Du fragst die Personen im Hintergrund kurz, ob es für sie okay ist, oder nutzt einen Filter, der den Hintergrund komplett unkenntlich macht."},"correctOption":"C","explanation":"Das 'Recht am eigenen Bild' gilt auch in der Schule. Nur weil jemand im Hintergrund ist, darf er nicht ungefragt auf einer Plattform mit Millionenreichweite landen. Fragen oder Unkenntlichmachen ist Pflicht."},{"id":93,"category":"Discord","scenario":"Auf einem Gaming-Server postet jemand ein Meme, das du ziemlich grenzwertig und beleidigend gegenüber einer Minderheit findest. Die anderen im Chat schreiben 'lol' oder 'safe'. Was tust du?","options":{"A":"Du schreibst sachlich in den Chat, dass du den Witz unpassend findest und erklärst kurz, warum.","B":"Du ignorierst es, um kein 'Spielverderber' zu sein, da es ja nur ein Meme ist.","C":"Du meldest den User direkt beim Support von Discord, ohne vorher etwas zu sagen."},"correctOption":"A","explanation":"Zivilcourage im Netz bedeutet, Grenzen aufzuzeigen. Oft merken Leute gar nicht, dass sie verletzend sind, bis jemand sachlich Kontra gibt. Ein direkter Report ist bei schweren Verstößen gut, aber für die Lernkurve der Community ist ein Kommentar oft effektiver."},{"id":94,"category":"Instagram","scenario":"Eine Mitschülerin postet ein Bild, auf dem sie sich sehr schick gemacht hat. In den Kommentaren fangen einige an, mit 'Overdressed' oder 'Pick-me' zu sticheln. Du willst sie unterstützen.","options":{"A":"Du antwortest den Hatern direkt und beleidigst sie, damit sie sehen, wie das ist.","B":"Du schreibst ein ehrliches Kompliment unter das Bild, um das positive Feedback zu stärken.","C":"Du schreibst ihr eine DM: 'Lösch lieber die Kommentare, das sieht sonst peinlich aus.'"},"correctOption":"B","explanation":"Hater wollen Aufmerksamkeit. Wenn du sie beleidigst, fütterst du den Algorithmus und den Streit. Ein positives Gegengewicht in den Kommentaren hilft der Erstellerin mehr und setzt ein Zeichen für eine gute Feedback-Kultur."},{"id":95,"category":"BeReal","scenario":"Der BeReal-Alarm geht los, während du gerade mit deinen Eltern ein sehr ernstes Gespräch über deine Noten führst. Du willst deinen Streak nicht verlieren.","options":{"A":"Du machst schnell das Foto, achtest aber darauf, dass man nur den Boden sieht.","B":"Du lässt das Handy in der Tasche und postest später ('Late'), wenn die Situation vorbei ist.","C":"Du machst das Foto heimlich unter dem Tisch, um die Echtheit des Moments zu bewahren."},"correctOption":"B","explanation":"Privatsphäre und Respekt gegenüber den Anwesenden gehen vor. BeReal wirbt zwar mit Echtheit, aber private Krisengespräche gehören nicht ins Netz. Ein 'Late BeReal' ist völlig akzeptabel und zeigt digitale Reife."},{"id":96,"category":"Gaming","scenario":"In einer Runde 'Valorant' spielt ein Teammitglied extrem schlecht und verursacht fast die Niederlage. Das Team fängt an, ihn im Voice-Chat hart zu flamen.","options":{"A":"Du sagst: 'Leute, beruhigt euch, Flamen macht ihn auch nicht besser. Fokus aufs Game.'","B":"Du mutest einfach alle, damit du deine Ruhe hast und konzentrierst dich auf dich selbst.","C":"Du schreibst 'Diff' in den All-Chat, damit wenigstens das Gegner-Team weiß, dass du nicht schuld bist."},"correctOption":"A","explanation":"Toxic Behavior zerstört die Team-Moral und führt meistens erst recht zum Loose. Deeskalation hilft, die Konzentration zurückzugewinnen. Muten ist eine Notlösung, aber aktives Eingreifen schützt das Opfer."},{"id":97,"category":"WhatsApp","scenario":"In eurer Klassengruppe wird ein Sticker-Paket geteilt, das Sticker von Lehrern in unvorteilhaften Situationen enthält. Alle feiern es. Wie verhältst du dich?","options":{"A":"Du speicherst die besten Sticker, benutzt sie aber nur in privaten Chats mit engen Freunden.","B":"Du schreibst in die Gruppe, dass das rechtlich problematisch sein kann und man das lieber lassen sollte.","C":"Du verlässt kommentarlos die Gruppe, um damit nichts zu tun zu haben."},"correctOption":"B","explanation":"Das Erstellen und Verbreiten von Stickern ohne Einverständnis (besonders bei Lehrern) kann rechtliche Konsequenzen haben (Recht am eigenen Bild). Ein kurzer Hinweis schützt dich und deine Mitschüler vor Ärger."},{"id":98,"category":"Discord","scenario":"Du bist Admin auf einem kleinen Community-Server. Ein User postet ständig ungefragt Links zu seinem eigenen YouTube-Kanal, obwohl es einen extra Channel für Eigenwerbung gibt.","options":{"A":"Du bannst ihn sofort ohne Vorwarnung, da er die Regeln nicht liest.","B":"Du löschst die Nachrichten und schreibst ihm eine freundliche DM, in der du ihn auf den richtigen Channel hinweist.","C":"Du änderst seinen Nickname in 'Spammer', damit er sieht, dass es nervt."},"correctOption":"B","explanation":"Gute Moderation setzt auf Kommunikation vor Bestrafung. Ein freundlicher Hinweis löst das Problem meistens sofort, ohne die Community-Atmosphäre durch unnötige Härte zu vergiften."},{"id":99,"category":"Instagram","scenario":"Du siehst ein Video von einem Creator, das inhaltlich totalen Quatsch erzählt (Fake News). Du möchtest das richtigstellen.","options":{"A":"Du schreibst: 'Lösch dich, du hast keine Ahnung!'","B":"Du postest einen Kommentar mit einer seriösen Quelle, die die Fakten widerlegt, ohne persönlich zu werden.","C":"Du ignorierst es, weil Korrekturen den Post durch Interaktion nur noch bekannter machen."},"correctOption":"B","explanation":"Sachliche Korrekturen mit Quellen sind der beste Weg gegen Desinformation. Beleidigungen führen nur zu Blockierungen, während Fakten anderen Usern helfen, die Wahrheit zu erkennen."},{"id":100,"category":"Gaming","scenario":"Du hast gerade ein 1vs1 gegen jemanden gewonnen, der dich das ganze Spiel über provoziert hat. Am Ende schreibst du...","options":{"A":"'GG WP' (Good Game, Well Played), um Größe zu zeigen.","B":"'Easy' oder 'L', um es ihm heimzuzahlen.","C":"Gar nichts, du verlässt sofort die Lobby."},"correctOption":"A","explanation":"Sportsmanship (Sportlichkeit) zeigt sich besonders dann, wenn man trotz Provokation höflich bleibt. Ein 'GG' signalisiert, dass du über der Toxizität stehst und nimmt dem Provokateur den Wind aus den Segeln."}];
+      var PLATFORMS = ["WhatsApp", "Instagram", "Discord", "TikTok", "Gaming", "BeReal"];
+      var PLATFORM_META = {
+        WhatsApp: { sub: "Gruppenchats, Ghosting und Direktnachrichten", topics: "Recht am eigenen Bild bei Stickern, respektvolle Kommunikation, Zivilcourage im Klassenchat" },
+        Instagram: { sub: "Stories, DMs und Kommentarspalten", topics: "Einverständnis vor dem Posten, Umgang mit Hasskommentaren, Schutz vor Fake-Scouts" },
+        Discord: { sub: "Server-Moderation, Voice-Chats und Feedback", topics: "Konstruktive Kritik (Sandwich-Methode), faire Regeln durchsetzen, Scam-Links erkennen" },
+        TikTok: { sub: "Öffentlicher Raum, Trends und Algorithmus", topics: "Persönlichkeitsrechte im Hintergrund, Dance Credits, sachliche Gegenrede" },
+        Gaming: { sub: "Teamplay, Voice-Chat und Sportsmanship", topics: "Muten und Reporten bei Toxizität, Neulinge unterstützen, Deeskalation und GG WP" },
+        BeReal: { sub: "Authentizität versus Privatsphäre", topics: "Empathie in Krisensituationen, Tabuzonen wie Umkleiden, Timing mit Late-Posts" }
+      };
+
+      var STORAGE_KEY = "netiquette_master_100_offline_v1";
+      var ALL_IDS = QUESTIONS.map(function (q) { return q.id; });
+      var memoryAnswers = {};
+
+      function loadAnswers() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          return memoryAnswers;
+        }
+      }
+
+      function saveAnswers(obj) {
+        memoryAnswers = obj;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+        } catch (e) {}
+      }
+
+      var state = {
+        view: "quiz",
+        answers: loadAnswers(),
+        mode: "all",
+        category: "Alle",
+        questionIds: ALL_IDS.slice(),
+        currentIndex: 0,
+        shuffled: false,
+        catalogSearch: "",
+        catalogPlatform: "Alle",
+        catalogStatus: "all",
+        showAllSolutions: false,
+        expandedIds: {},
+        confirmReset: false
+      };
+
+      function shuffle(arr) {
+        var copy = arr.slice();
+        for (var i = copy.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = copy[i]; copy[i] = copy[j]; copy[j] = tmp;
+        }
+        return copy;
+      }
+
+      function esc(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function getQuestion(id) {
+        for (var i = 0; i < QUESTIONS.length; i++) {
+          if (QUESTIONS[i].id === id) return QUESTIONS[i];
+        }
+        return null;
+      }
+
+      function getOverallStats() {
+        var answered = 0, correct = 0, incorrect = 0;
+        var list = [];
+        for (var i = 0; i < QUESTIONS.length; i++) {
+          var r = state.answers[QUESTIONS[i].id];
+          if (r) {
+            answered++;
+            if (r.isCorrect) correct++;
+            else incorrect++;
+            list.push(r);
+          }
+        }
+        list.sort(function (a, b) { return a.answeredAt - b.answeredAt; });
+        var curStreak = 0;
+        for (var j = list.length - 1; j >= 0; j--) {
+          if (list[j].isCorrect) curStreak++;
+          else break;
+        }
+        var bestStreak = 0, run = 0;
+        for (var k = 0; k < list.length; k++) {
+          if (list[k].isCorrect) { run++; if (run > bestStreak) bestStreak = run; }
+          else run = 0;
+        }
+        return {
+          total: QUESTIONS.length,
+          answered: answered,
+          correct: correct,
+          incorrect: incorrect,
+          accuracy: answered > 0 ? Math.round((correct / answered) * 100) : 0,
+          completionPct: Math.round((answered / QUESTIONS.length) * 100),
+          currentStreak: curStreak,
+          bestStreak: bestStreak
+        };
+      }
+
+      function startMode(mode, category, shouldShuffle) {
+        var pool = category === "Alle"
+          ? ALL_IDS.slice()
+          : QUESTIONS.filter(function (q) { return q.category === category; }).map(function (q) { return q.id; });
+        if (mode === "mistakes") {
+          pool = pool.filter(function (id) { return !state.answers[id] || !state.answers[id].isCorrect; });
+        }
+        if (mode === "sprint") {
+          var unanswered = pool.filter(function (id) { return !state.answers[id]; });
+          pool = shuffle(unanswered.length >= 10 ? unanswered : pool).slice(0, 10);
+          shouldShuffle = true;
+        } else if (shouldShuffle) {
+          pool = shuffle(pool);
+        }
+        state.mode = mode;
+        state.category = category;
+        state.questionIds = pool;
+        state.currentIndex = 0;
+        state.shuffled = Boolean(shouldShuffle);
+        state.view = "quiz";
+        render();
+      }
+
+      function syncNav() {
+        var btns = document.querySelectorAll(".nav-btn[data-view]");
+        for (var i = 0; i < btns.length; i++) {
+          var b = btns[i];
+          if (b.getAttribute("data-view") === state.view) b.classList.add("active");
+          else b.classList.remove("active");
+        }
+      }
+
+      function renderQuiz() {
+        var overall = getOverallStats();
+        var qId = state.questionIds[state.currentIndex];
+        var q = qId ? getQuestion(qId) : null;
+        var rec = q ? state.answers[q.id] : null;
+        var sesAns = state.questionIds.filter(function (id) { return Boolean(state.answers[id]); }).length;
+        var sesCor = state.questionIds.filter(function (id) { return state.answers[id] && state.answers[id].isCorrect; }).length;
+
+        var html = "";
+        html += "<section class=\"toolbar\">";
+        html += "<div class=\"toolbar-row\">";
+        html += "<div class=\"segmented\">";
+        html += "<button type=\"button\" class=\"seg-btn " + (state.mode === "all" && state.category === "Alle" ? "active" : "") + "\" data-mode=\"all\">Alle 100</button>";
+        html += "<button type=\"button\" class=\"seg-btn " + (state.mode === "sprint" ? "active" : "") + "\" data-mode=\"sprint\">10er-Sprint</button>";
+        html += "<button type=\"button\" class=\"seg-btn " + (state.mode === "mistakes" ? "active" : "") + "\" data-mode=\"mistakes\">Offen &amp; Fehler</button>";
+        html += "</div>";
+        html += "<button type=\"button\" id=\"shuffleBtn\" class=\"chip-toggle " + (state.shuffled ? "active" : "") + "\">" + (state.shuffled ? "Gemischt" : "Mischen") + "</button>";
+        html += "</div>";
+
+        html += "<div class=\"segmented\">";
+        html += "<button type=\"button\" class=\"seg-btn " + (state.category === "Alle" && state.mode !== "sprint" && state.mode !== "mistakes" ? "active" : "") + "\" data-cat=\"Alle\">Alle</button>";
+        for (var p = 0; p < PLATFORMS.length; p++) {
+          var cat = PLATFORMS[p];
+          html += "<button type=\"button\" class=\"seg-btn " + (state.category === cat ? "active" : "") + "\" data-cat=\"" + cat + "\">" + cat + "</button>";
+        }
+        html += "</div>";
+        html += "</section>";
+
+        if (!q) {
+          html += "<div class=\"beige-card\" style=\"text-align:center;padding:36px\">";
+          html += "<h2 style=\"margin:0;font-size:20px\">Keine offenen oder fehlerhaften Aufgaben vorhanden</h2>";
+          html += "<p style=\"color:var(--text-muted);font-size:14px\">Alle Aufgaben in dieser Auswahl sind bereits richtig gelöst.</p>";
+          html += "<div style=\"margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap\">";
+          html += "<button type=\"button\" class=\"btn-primary\" id=\"openAllBtn\">Alle 100 Aufgaben öffnen</button>";
+          html += "<button type=\"button\" class=\"btn-secondary\" id=\"openResBtn\">Auswertung ansehen</button>";
+          html += "</div></div>";
+          return html;
+        }
+
+        html += "<div class=\"quiz-grid\">";
+        // Scenario Card
+        html += "<div class=\"scenario-card\">";
+        html += "<div class=\"meta-row\">";
+        html += "<div class=\"meta-left\"><span class=\"mono\" style=\"font-weight:600;color:var(--text)\">Aufgabe " + String(q.id).padStart(2, "0") + " / " + QUESTIONS.length + "</span><span aria-hidden=\"true\">&middot;</span><span style=\"font-weight:600;color:#3F5E4E\">" + esc(q.category) + "</span>" + (state.mode === "sprint" ? "<span aria-hidden=\"true\">&middot;</span><span>10er-Sprint</span>" : "") + "</div>";
+        html += "<span class=\"mono\">Schritt " + (state.currentIndex + 1) + " von " + state.questionIds.length + "</span>";
+        html += "</div>";
+
+        html += "<h1 class=\"scenario-title\">" + esc(q.scenario) + "</h1>";
+
+        html += "<div class=\"options-list\">";
+        var keys = ["A", "B", "C"];
+        for (var k = 0; k < keys.length; k++) {
+          var key = keys[k];
+          var cls = "option-btn";
+          var tag = "";
+          if (rec) {
+            if (rec.selected === key && q.correctOption === key) {
+              cls += " correct-selected";
+              tag = "<span class=\"option-tag\">&#10003; Richtig</span>";
+            } else if (rec.selected === key && q.correctOption !== key) {
+              cls += " wrong-selected";
+              tag = "<span class=\"option-tag\">&#10005; Deine Wahl</span>";
+            } else if (q.correctOption === key) {
+              cls += " correct-reveal";
+              tag = "<span class=\"option-tag\">&#10003; Lösung</span>";
+            } else {
+              cls += " dimmed";
+            }
+          }
+          html += "<button type=\"button\" class=\"" + cls + "\" data-opt=\"" + key + "\" " + (rec ? "disabled" : "") + ">";
+          html += "<span class=\"option-key mono\">" + key + "</span>";
+          html += "<span class=\"option-text\">" + esc(q.options[key]) + "</span>";
+          html += tag;
+          html += "</button>";
+        }
+        html += "</div>";
+
+        if (rec) {
+          html += "<div class=\"feedback-box\">";
+          html += "<div class=\"feedback-head " + (rec.isCorrect ? "ok" : "err") + "\">";
+          html += "<span>" + (rec.isCorrect ? "&#10003; Richtig gelöst &mdash; starke Entscheidung" : "&#9888; Nicht optimal &mdash; beste Antwort ist Option " + q.correctOption) + "</span>";
+          html += "<button type=\"button\" class=\"retry-link\" id=\"retryOneBtn\">Neu versuchen</button>";
+          html += "</div>";
+          html += "<p class=\"explanation\">" + esc(q.explanation) + "</p>";
+          html += "</div>";
+        }
+
+        html += "<div class=\"card-footer\">";
+        html += "<button type=\"button\" class=\"btn-secondary\" id=\"prevBtn\" " + (state.currentIndex === 0 ? "disabled" : "") + ">&larr; Vorherige</button>";
+        if (state.currentIndex < state.questionIds.length - 1) {
+          html += "<button type=\"button\" class=\"btn-primary\" id=\"nextBtn\">Nächste Aufgabe &rarr;</button>";
+        } else {
+          html += "<button type=\"button\" class=\"btn-primary\" id=\"finishBtn\">Auswertung ansehen &rarr;</button>";
+        }
+        html += "</div>";
+        html += "</div>";
+
+        // Sidebar Deck
+        html += "<aside class=\"deck\">";
+        html += "<div class=\"deck-card\">";
+        html += "<div class=\"deck-head\"><h2 class=\"deck-title\">Dein Fortschritt</h2><span class=\"mono\" style=\"font-size:12px;color:var(--text-muted)\">" + overall.answered + " / " + overall.total + " gesamt</span></div>";
+        html += "<div class=\"progress-track\"><div class=\"progress-fill\" style=\"width:" + overall.completionPct + "%\"></div></div>";
+        html += "<div class=\"metrics-3\">";
+        html += "<div><div class=\"metric-val mono\">" + sesAns + "/" + state.questionIds.length + "</div><div class=\"metric-lbl\">Runde</div></div>";
+        html += "<div><div class=\"metric-val mono\" style=\"color:var(--ok-text)\">" + overall.accuracy + "%</div><div class=\"metric-lbl\">Quote</div></div>";
+        html += "<div><div class=\"metric-val mono\">" + overall.currentStreak + "</div><div class=\"metric-lbl\">Serie</div></div>";
+        html += "</div></div>";
+
+        html += "<div class=\"deck-card\">";
+        html += "<div class=\"deck-head\"><h2 class=\"deck-title\">Aufgabenübersicht</h2><span class=\"mono\" style=\"font-size:12px;color:var(--text-muted)\">" + sesCor + " richtig</span></div>";
+        html += "<div class=\"matrix " + (state.questionIds.length <= 20 ? "compact" : "") + "\">";
+        for (var idx = 0; idx < state.questionIds.length; idx++) {
+          var id = state.questionIds[idx];
+          var r = state.answers[id];
+          var mCls = "m-cell mono";
+          if (r && r.isCorrect) mCls += " ok";
+          else if (r && !r.isCorrect) mCls += " err";
+          if (idx === state.currentIndex) mCls += " current";
+          html += "<button type=\"button\" class=\"" + mCls + "\" data-jump-idx=\"" + idx + "\">" + id + "</button>";
+        }
+        html += "</div>";
+        html += "<div class=\"legend\"><span style=\"color:var(--ok-text)\">&#10003; Richtig</span><span style=\"color:var(--err-text)\">&#10005; Falsch</span><span>&#9633; Offen</span></div>";
+        html += "</div>";
+        html += "<p style=\"margin:0 4px;font-size:12px;color:var(--text-soft)\">Tastatur: A, B, C (oder 1&ndash;3) &middot; Pfeiltasten zum Blättern.</p>";
+        html += "</aside>";
+
+        html += "</div>";
+        return html;
+      }
+
+      function renderPlatforms() {
+        var html = "<h1 class=\"page-title\">Sechs digitale Lebenswelten</h1>";
+        html += "<p class=\"page-sub\">Wähle eine Plattform aus, um gezielt die dort typischen Netiquette-Situationen zu trainieren.</p>";
+        html += "<div class=\"cards-grid\">";
+        for (var i = 0; i < PLATFORMS.length; i++) {
+          var cat = PLATFORMS[i];
+          var meta = PLATFORM_META[cat];
+          var items = QUESTIONS.filter(function (q) { return q.category === cat; });
+          var ans = 0, cor = 0, err = 0;
+          for (var j = 0; j < items.length; j++) {
+            var r = state.answers[items[j].id];
+            if (r) { ans++; if (r.isCorrect) cor++; else err++; }
+          }
+          var pct = Math.round((ans / items.length) * 100);
+          var acc = ans > 0 ? Math.round((cor / ans) * 100) + "% Quote" : "Noch offen";
+          html += "<article class=\"beige-card\"><div>";
+          html += "<div class=\"meta-row mono\"><span>" + items.length + " Aufgaben</span><span>" + ans + " / " + items.length + " gelöst</span></div>";
+          html += "<h2 style=\"margin:10px 0 4px;font-size:20px\">" + cat + "</h2>";
+          html += "<p style=\"margin:0;font-size:14px;font-weight:600;color:#44403C\">" + esc(meta.sub) + "</p>";
+          html += "<p style=\"margin:10px 0 0;font-size:14px;color:var(--text-muted)\">" + esc(meta.topics) + "</p>";
+          html += "</div><div style=\"margin-top:20px;padding-top:14px;border-top:1px solid #E6DDD0\">";
+          html += "<div class=\"meta-row mono\"><span><span style=\"color:var(--ok-text)\">&#10003; " + cor + "</span> &nbsp; <span style=\"color:var(--err-text)\">&#10005; " + err + "</span></span><strong style=\"color:var(--text)\">" + acc + "</strong></div>";
+          html += "<div class=\"progress-track\" style=\"height:6px;margin-top:10px\"><div class=\"progress-fill\" style=\"width:" + pct + "%\"></div></div>";
+          html += "<button type=\"button\" class=\"btn-secondary\" style=\"width:100%;margin-top:14px\" data-start-cat=\"" + cat + "\">" + cat + " trainieren &rarr;</button>";
+          html += "</div></article>";
+        }
+        html += "</div>";
+        return html;
+      }
+
+      function renderCatalog() {
+        var query = state.catalogSearch.trim().toLowerCase();
+        var filtered = QUESTIONS.filter(function (q) {
+          if (state.catalogPlatform !== "Alle" && q.category !== state.catalogPlatform) return false;
+          var r = state.answers[q.id];
+          if (state.catalogStatus === "unanswered" && r) return false;
+          if (state.catalogStatus === "correct" && (!r || !r.isCorrect)) return false;
+          if (state.catalogStatus === "incorrect" && (!r || r.isCorrect)) return false;
+          if (!query) return true;
+          if (String(q.id) === query || ("#" + q.id) === query) return true;
+          return (
+            q.scenario.toLowerCase().indexOf(query) !== -1 ||
+            q.category.toLowerCase().indexOf(query) !== -1 ||
+            q.explanation.toLowerCase().indexOf(query) !== -1 ||
+            q.options.A.toLowerCase().indexOf(query) !== -1 ||
+            q.options.B.toLowerCase().indexOf(query) !== -1 ||
+            q.options.C.toLowerCase().indexOf(query) !== -1
+          );
+        });
+
+        var html = "<div style=\"display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px\">";
+        html += "<div><h1 class=\"page-title\">Alle 100 Aufgaben &amp; Lösungen</h1><p class=\"page-sub\">Suche nach Stichworten, Plattform oder Bearbeitungsstatus.</p></div>";
+        html += "<button type=\"button\" class=\"btn-secondary\" id=\"toggleAllSolBtn\">" + (state.showAllSolutions ? "Lösungen ausblenden" : "Alle Lösungen einblenden") + "</button>";
+        html += "</div>";
+
+        html += "<div class=\"beige-card\" style=\"margin-top:18px;gap:12px\">";
+        html += "<div style=\"display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center\">";
+        html += "<input type=\"search\" class=\"search-input\" id=\"catSearchInput\" value=\"" + esc(state.catalogSearch) + "\" placeholder=\"Suchen nach Thema, Stichwort oder Nr. ...\" />";
+        html += "<div class=\"segmented\">";
+        var statuses = [["all", "Alle"], ["unanswered", "Offen"], ["correct", "Richtig"], ["incorrect", "Falsch"]];
+        for (var s = 0; s < statuses.length; s++) {
+          html += "<button type=\"button\" class=\"seg-btn " + (state.catalogStatus === statuses[s][0] ? "active" : "") + "\" data-cstatus=\"" + statuses[s][0] + "\">" + statuses[s][1] + "</button>";
+        }
+        html += "</div></div>";
+        html += "<div style=\"display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;border-top:1px solid #E6DDD0;padding-top:12px\">";
+        html += "<div class=\"segmented\">";
+        html += "<button type=\"button\" class=\"seg-btn " + (state.catalogPlatform === "Alle" ? "active" : "") + "\" data-cplat=\"Alle\">Alle</button>";
+        for (var p = 0; p < PLATFORMS.length; p++) {
+          html += "<button type=\"button\" class=\"seg-btn " + (state.catalogPlatform === PLATFORMS[p] ? "active" : "") + "\" data-cplat=\"" + PLATFORMS[p] + "\">" + PLATFORMS[p] + "</button>";
+        }
+        html += "</div>";
+        html += "<span class=\"mono\" style=\"font-size:12px;color:var(--text-muted)\">" + filtered.length + " von " + QUESTIONS.length + " Aufgaben</span>";
+        html += "</div></div>";
+
+        for (var i = 0; i < filtered.length; i++) {
+          var q = filtered[i];
+          var r = state.answers[q.id];
+          var open = state.showAllSolutions || Boolean(state.expandedIds[q.id]);
+          html += "<article class=\"catalog-item\">";
+          html += "<div style=\"display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:flex-start\">";
+          html += "<div style=\"flex:1;min-width:220px\">";
+          html += "<div class=\"meta-left\" style=\"font-size:12px;color:var(--text-muted)\"><strong class=\"mono\" style=\"color:var(--text)\">Aufgabe " + q.id + "</strong><span>&middot;</span><span style=\"color:#3F5E4E;font-weight:600\">" + esc(q.category) + "</span>";
+          if (r) {
+            html += "<span>&middot;</span><span style=\"font-weight:600;color:" + (r.isCorrect ? "var(--ok-text)" : "var(--err-text)") + "\">" + (r.isCorrect ? "&#10003; Richtig" : "&#10005; Falsch (" + r.selected + ")") + "</span>";
+          }
+          html += "</div>";
+          html += "<h2 style=\"margin:6px 0 0;font-size:16px;font-weight:500;line-height:1.5;max-width:75ch\">" + esc(q.scenario) + "</h2>";
+          html += "</div>";
+          html += "<div style=\"display:flex;gap:8px;flex-shrink:0\">";
+          html += "<button type=\"button\" class=\"btn-secondary\" data-jump-q=\"" + q.id + "\">Im Quiz öffnen</button>";
+          if (!state.showAllSolutions) {
+            html += "<button type=\"button\" class=\"btn-secondary\" data-expand-q=\"" + q.id + "\">" + (open ? "Weniger" : "Lösung") + "</button>";
+          }
+          html += "</div></div>";
+
+          if (open) {
+            html += "<div style=\"margin-top:14px;padding-top:14px;border-top:1px solid #ECE4D7\">";
+            var keys = ["A", "B", "C"];
+            for (var k = 0; k < keys.length; k++) {
+              var key = keys[k];
+              var isCor = q.correctOption === key;
+              html += "<div style=\"display:flex;gap:10px;padding:9px 12px;margin-bottom:6px;border-radius:8px;font-size:14px;border:1px solid " + (isCor ? "#8EB89D;background:#E5F0E6;font-weight:600" : "#ECE5D8;background:#F7F2E9;color:var(--text-muted)") + "\">";
+              html += "<span class=\"mono\" style=\"font-size:12px\">" + key + ")</span>";
+              html += "<span style=\"flex:1\">" + esc(q.options[key]) + "</span>";
+              if (isCor) html += "<span style=\"color:var(--ok-text);font-size:12px\">&#10003; Lösung</span>";
+              html += "</div>";
+            }
+            html += "<p style=\"margin:10px 0 0;font-size:14px;color:#44403C;max-width:75ch\"><strong>Erklärung: </strong>" + esc(q.explanation) + "</p>";
+            html += "</div>";
+          }
+          html += "</article>";
+        }
+        return html;
+      }
+
+      function renderResults() {
+        var o = getOverallStats();
+        var missed = QUESTIONS.filter(function (q) {
+          var r = state.answers[q.id];
+          return r && !r.isCorrect;
+        });
+
+        var html = "<div style=\"display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px\">";
+        html += "<div><h1 class=\"page-title\">Deine Auswertung</h1><p class=\"page-sub\">Überblick über deinen Lernstand aus allen 100 Herausforderungen.</p></div>";
+        if (!state.confirmReset) {
+          html += "<button type=\"button\" class=\"btn-secondary\" id=\"askResetBtn\" " + (o.answered === 0 ? "disabled" : "") + ">Fortschritt zurücksetzen</button>";
+        } else {
+          html += "<div style=\"display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;border:1px solid #DFA5A1;background:#F9EAE8\">";
+          html += "<span style=\"font-size:12px;font-weight:600;color:#7D322E\">Alle Antworten löschen?</span>";
+          html += "<button type=\"button\" class=\"btn-primary\" style=\"background:#B95D58;min-height:32px;padding:4px 10px\" id=\"confirmResetBtn\">Löschen</button>";
+          html += "<button type=\"button\" class=\"btn-secondary\" style=\"min-height:32px;padding:4px 10px\" id=\"cancelResetBtn\">Abbrechen</button>";
+          html += "</div>";
+        }
+        html += "</div>";
+
+        html += "<div class=\"kpi-grid\">";
+        html += "<div class=\"beige-card\"><div style=\"font-size:12px;color:var(--text-soft)\">Beantwortet</div><div class=\"mono\" style=\"font-size:24px;font-weight:700;margin-top:6px\">" + o.answered + " / " + o.total + "</div><div style=\"font-size:12px;color:var(--text-soft)\">" + o.completionPct + "% abgeschlossen</div></div>";
+        html += "<div class=\"beige-card\"><div style=\"font-size:12px;color:var(--text-soft)\">Richtig gelöst</div><div class=\"mono\" style=\"font-size:24px;font-weight:700;margin-top:6px;color:var(--ok-text)\">" + o.correct + "</div><div style=\"font-size:12px;color:var(--text-soft)\">" + o.incorrect + " nicht optimal</div></div>";
+        html += "<div class=\"beige-card\"><div style=\"font-size:12px;color:var(--text-soft)\">Trefferquote</div><div class=\"mono\" style=\"font-size:24px;font-weight:700;margin-top:6px;color:#3F5E4E\">" + (o.answered > 0 ? o.accuracy + "%" : "—") + "</div><div style=\"font-size:12px;color:var(--text-soft)\">Gelöste Fragen</div></div>";
+        html += "<div class=\"beige-card\"><div style=\"font-size:12px;color:var(--text-soft)\">Beste Serie</div><div class=\"mono\" style=\"font-size:24px;font-weight:700;margin-top:6px\">" + o.bestStreak + "</div><div style=\"font-size:12px;color:var(--text-soft)\">Aktuell: " + o.currentStreak + "</div></div>";
+        html += "</div>";
+
+        html += "<div class=\"catalog-item\" style=\"margin-top:22px;padding:24px\"><h2 style=\"margin:0 0 16px;font-size:18px\">Kompetenz nach Plattform</h2>";
+        for (var i = 0; i < PLATFORMS.length; i++) {
+          var cat = PLATFORMS[i];
+          var items = QUESTIONS.filter(function (q) { return q.category === cat; });
+          var ans = 0, cor = 0, err = 0;
+          for (var j = 0; j < items.length; j++) {
+            var r = state.answers[items[j].id];
+            if (r) { ans++; if (r.isCorrect) cor++; else err++; }
+          }
+          var pctCor = (cor / items.length) * 100;
+          var pctErr = (err / items.length) * 100;
+          html += "<div style=\"margin-bottom:14px\"><div class=\"meta-row\"><strong style=\"font-size:14px;color:var(--text)\">" + cat + "</strong><span class=\"mono\">" + ans + "/" + items.length + " (" + (ans > 0 ? Math.round((cor / ans) * 100) + "%" : "—") + ")</span></div>";
+          html += "<div style=\"height:8px;border-radius:999px;background:#EAE2D4;overflow:hidden;display:flex;margin-top:6px\"><div style=\"background:#669679;width:" + pctCor + "%\"></div><div style=\"background:#D88B86;width:" + pctErr + "%\"></div></div></div>";
+        }
+        html += "</div>";
+
+        html += "<div class=\"catalog-item\" style=\"margin-top:20px;padding:24px\">";
+        html += "<div style=\"display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px\">";
+        html += "<h2 style=\"margin:0;font-size:18px\">Aufgaben zum Nachlesen (" + missed.length + ")</h2>";
+        if (missed.length > 0) {
+          html += "<button type=\"button\" class=\"btn-primary\" id=\"practiceMistakesBtn\">Fehler wiederholen &rarr;</button>";
+        }
+        html += "</div>";
+        if (missed.length === 0) {
+          html += "<p style=\"margin-top:14px;font-size:14px;color:var(--text-muted)\">" + (o.answered === 0 ? "Beantworte zuerst einige Aufgaben im Quiz." : "Stark! Aktuell keine falsch beantworteten Aufgaben.") + "</p>";
+        } else {
+          for (var m = 0; m < missed.length; m++) {
+            var mq = missed[m];
+            var mr = state.answers[mq.id];
+            html += "<div style=\"padding:14px 0;border-top:1px solid #ECE4D7;margin-top:12px\">";
+            html += "<div class=\"meta-row\"><span><strong class=\"mono\">Aufgabe " + mq.id + "</strong> &middot; " + esc(mq.category) + " &middot; <span style=\"color:var(--err-text)\">Gewählt: " + mr.selected + " / Lösung: " + mq.correctOption + "</span></span><button type=\"button\" class=\"retry-link\" data-jump-q=\"" + mq.id + "\">Erneut lösen</button></div>";
+            html += "<p style=\"margin:6px 0;font-size:14px;font-weight:600\">" + esc(mq.scenario) + "</p>";
+            html += "<p style=\"margin:0;font-size:14px;color:var(--text-muted)\"><strong style=\"color:var(--ok-text)\">Richtig (" + mq.correctOption + "): </strong>" + esc(mq.options[mq.correctOption]) + " &mdash; " + esc(mq.explanation) + "</p>";
+            html += "</div>";
+          }
+        }
+        html += "</div>";
+        return html;
+      }
+
+      function render() {
+        syncNav();
+        var root = document.getElementById("appRoot");
+        if (state.view === "quiz") root.innerHTML = renderQuiz();
+        else if (state.view === "platforms") root.innerHTML = renderPlatforms();
+        else if (state.view === "catalog") root.innerHTML = renderCatalog();
+        else root.innerHTML = renderResults();
+        bindEvents();
+      }
+
+      function bindEvents() {
+        var root = document.getElementById("appRoot");
+        root.querySelectorAll("[data-mode]").forEach(function (btn) {
+          btn.onclick = function () {
+            var m = btn.getAttribute("data-mode");
+            if (m === "all") startMode("all", "Alle", false);
+            else if (m === "sprint") startMode("sprint", state.category, true);
+            else startMode("mistakes", "Alle", false);
+          };
+        });
+        root.querySelectorAll("[data-cat]").forEach(function (btn) {
+          btn.onclick = function () {
+            var c = btn.getAttribute("data-cat");
+            startMode(c === "Alle" ? "all" : "category", c, false);
+          };
+        });
+        var shuf = document.getElementById("shuffleBtn");
+        if (shuf) shuf.onclick = function () {
+          state.shuffled = !state.shuffled;
+          state.questionIds = state.shuffled ? shuffle(state.questionIds) : state.questionIds.slice().sort(function (a, b) { return a - b; });
+          state.currentIndex = 0;
+          render();
+        };
+        root.querySelectorAll("[data-opt]").forEach(function (btn) {
+          btn.onclick = function () {
+            var qId = state.questionIds[state.currentIndex];
+            var q = getQuestion(qId);
+            if (!q || state.answers[qId]) return;
+            var sel = btn.getAttribute("data-opt");
+            state.answers[qId] = { selected: sel, isCorrect: sel === q.correctOption, answeredAt: Date.now() };
+            saveAnswers(state.answers);
+            render();
+          };
+        });
+        var retry = document.getElementById("retryOneBtn");
+        if (retry) retry.onclick = function () {
+          delete state.answers[state.questionIds[state.currentIndex]];
+          saveAnswers(state.answers);
+          render();
+        };
+        var prev = document.getElementById("prevBtn");
+        if (prev) prev.onclick = function () { if (state.currentIndex > 0) { state.currentIndex--; render(); } };
+        var next = document.getElementById("nextBtn");
+        if (next) next.onclick = function () { if (state.currentIndex < state.questionIds.length - 1) { state.currentIndex++; render(); } };
+        var fin = document.getElementById("finishBtn");
+        if (fin) fin.onclick = function () { state.view = "results"; render(); };
+        var openAll = document.getElementById("openAllBtn");
+        if (openAll) openAll.onclick = function () { startMode("all", "Alle", false); };
+        var openRes = document.getElementById("openResBtn");
+        if (openRes) openRes.onclick = function () { state.view = "results"; render(); };
+
+        root.querySelectorAll("[data-jump-idx]").forEach(function (btn) {
+          btn.onclick = function () {
+            state.currentIndex = Number(btn.getAttribute("data-jump-idx"));
+            render();
+          };
+        });
+        root.querySelectorAll("[data-start-cat]").forEach(function (btn) {
+          btn.onclick = function () {
+            startMode("category", btn.getAttribute("data-start-cat"), false);
+          };
+        });
+        root.querySelectorAll("[data-jump-q]").forEach(function (btn) {
+          btn.onclick = function () {
+            var id = Number(btn.getAttribute("data-jump-q"));
+            var idx = state.questionIds.indexOf(id);
+            if (idx === -1) {
+              state.mode = "all"; state.category = "Alle"; state.questionIds = ALL_IDS.slice(); state.shuffled = false;
+              idx = ALL_IDS.indexOf(id);
+            }
+            state.currentIndex = idx;
+            state.view = "quiz";
+            render();
+          };
+        });
+        root.querySelectorAll("[data-expand-q]").forEach(function (btn) {
+          btn.onclick = function () {
+            var id = Number(btn.getAttribute("data-expand-q"));
+            state.expandedIds[id] = !state.expandedIds[id];
+            render();
+          };
+        });
+        var toggleAllSol = document.getElementById("toggleAllSolBtn");
+        if (toggleAllSol) toggleAllSol.onclick = function () { state.showAllSolutions = !state.showAllSolutions; render(); };
+        var searchInp = document.getElementById("catSearchInput");
+        if (searchInp) {
+          searchInp.oninput = function (e) {
+            state.catalogSearch = e.target.value;
+            var pos = e.target.selectionStart;
+            render();
+            var again = document.getElementById("catSearchInput");
+            if (again) { again.focus(); again.setSelectionRange(pos, pos); }
+          };
+        }
+        root.querySelectorAll("[data-cstatus]").forEach(function (btn) {
+          btn.onclick = function () { state.catalogStatus = btn.getAttribute("data-cstatus"); render(); };
+        });
+        root.querySelectorAll("[data-cplat]").forEach(function (btn) {
+          btn.onclick = function () { state.catalogPlatform = btn.getAttribute("data-cplat"); render(); };
+        });
+        var askReset = document.getElementById("askResetBtn");
+        if (askReset) askReset.onclick = function () { state.confirmReset = true; render(); };
+        var cancelReset = document.getElementById("cancelResetBtn");
+        if (cancelReset) cancelReset.onclick = function () { state.confirmReset = false; render(); };
+        var confirmReset = document.getElementById("confirmResetBtn");
+        if (confirmReset) confirmReset.onclick = function () {
+          state.answers = {};
+          saveAnswers({});
+          state.confirmReset = false;
+          startMode("all", "Alle", false);
+          state.view = "results";
+          render();
+        };
+        var pm = document.getElementById("practiceMistakesBtn");
+        if (pm) pm.onclick = function () { startMode("mistakes", "Alle", false); };
+      }
+
+      document.getElementById("brandBtn").onclick = function () { state.view = "quiz"; render(); };
+      document.getElementById("sprintBtn").onclick = function () { startMode("sprint", "Alle", true); };
+      document.querySelectorAll(".nav-btn[data-view]").forEach(function (btn) {
+        btn.onclick = function () { state.view = btn.getAttribute("data-view"); render(); };
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (state.view !== "quiz") return;
+        var tag = e.target && e.target.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA") return;
+        var qId = state.questionIds[state.currentIndex];
+        var q = qId ? getQuestion(qId) : null;
+        if (!q) return;
+        var rec = state.answers[qId];
+        var k = e.key.toLowerCase();
+        if (!rec && (k === "a" || k === "1" || k === "b" || k === "2" || k === "c" || k === "3")) {
+          e.preventDefault();
+          var opt = (k === "a" || k === "1") ? "A" : (k === "b" || k === "2") ? "B" : "C";
+          state.answers[qId] = { selected: opt, isCorrect: opt === q.correctOption, answeredAt: Date.now() };
+          saveAnswers(state.answers);
+          render();
+          return;
+        }
+        if ((e.key === "ArrowRight" || (e.key === "Enter" && rec)) && state.currentIndex < state.questionIds.length - 1) {
+          e.preventDefault(); state.currentIndex++; render();
+        } else if (e.key === "ArrowLeft" && state.currentIndex > 0) {
+          e.preventDefault(); state.currentIndex--; render();
+        }
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
