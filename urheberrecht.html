@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Urheberrecht und Datenschutz — Offline-Quiz</title>
+  <style>
+    :root {
+      --bg: #FAF6EF;
+      --surface-header: #FDFBF7;
+      --surface-card: #F5EFE5;
+      --surface-deck: #F4F2EA;
+      --surface-scenario: #EDF3EC;
+      --border: #E4DAC9;
+      --border-scenario: #D4E0D2;
+      --text: #292524;
+      --text-muted: #57534E;
+      --text-soft: #78716C;
+      --accent: #5B826E;
+      --accent-hover: #4B6E5C;
+      --ok-bg: #E1EFE4;
+      --ok-border: #649678;
+      --ok-text: #315841;
+      --err-bg: #F9EAE8;
+      --err-border: #CF7A75;
+      --err-text: #9E4540;
+      --radius: 14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; touch-action: manipulation; }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    header {
+      background: var(--surface-header);
+      border-bottom: 1px solid var(--border);
+    }
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; padding: 14px 0;
+    }
+    .brand {
+      background: none; border: 0; padding: 4px 0;
+      font-size: 18px; font-weight: 700; letter-spacing: -0.01em;
+      white-space: nowrap; color: var(--text);
+    }
+    .nav-desktop { display: none; align-items: center; gap: 24px; }
+    .nav-btn {
+      background: none; border: 0; padding: 6px 2px;
+      font-size: 14px; font-weight: 500; color: var(--text-muted);
+      position: relative; white-space: nowrap;
+    }
+    .nav-btn.active { color: var(--text); font-weight: 600; }
+    .nav-btn.active::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -2px;
+      height: 2px; background: var(--accent);
+    }
+    .nav-mobile {
+      display: flex; gap: 6px; padding: 8px 0 10px;
+      border-top: 1px solid #EFE8DB; overflow-x: auto;
+    }
+    .nav-mobile .nav-btn { padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+    .nav-mobile .nav-btn.active { background: #E8F0E8; color: #3F5E4E; }
+    .nav-mobile .nav-btn.active::after { display: none; }
+    .btn-primary {
+      background: var(--accent); color: #fff; border: 0; border-radius: 10px;
+      padding: 10px 16px; font-size: 13px; font-weight: 600; min-height: 40px;
+      white-space: nowrap; transition: background 0.15s ease;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      background: var(--surface-header); color: var(--text);
+      border: 1px solid #DDD4C3; border-radius: 10px;
+      padding: 9px 14px; font-size: 13px; font-weight: 600; min-height: 40px;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover { background: var(--surface-card); }
+    .btn-secondary:disabled { opacity: 0.4; cursor: default; }
+
+    main { padding: 24px 0 48px; min-height: calc(100vh - 130px); }
+    .toolbar {
+      display: flex; flex-direction: column; gap: 12px;
+      padding-bottom: 18px; margin-bottom: 22px; border-bottom: 1px solid var(--border);
+    }
+    .toolbar-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .segmented {
+      display: inline-flex; flex-wrap: nowrap; gap: 4px;
+      background: #EFE8DB; padding: 4px; border-radius: 10px;
+      overflow-x: auto; max-width: 100%;
+    }
+    .seg-btn {
+      background: transparent; border: 0; border-radius: 7px;
+      padding: 8px 12px; font-size: 12px; font-weight: 500;
+      color: var(--text-muted); white-space: nowrap; min-height: 36px;
+    }
+    .seg-btn.active {
+      background: var(--surface-header); color: var(--text);
+      font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .chip-toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      border: 1px solid #E0D6C6; background: var(--surface-header);
+      color: var(--text); border-radius: 10px; padding: 8px 12px;
+      font-size: 12px; font-weight: 600; min-height: 40px; white-space: nowrap;
+    }
+    .chip-toggle.active { border-color: #8FB39E; background: #E8F0E8; color: #2F4E3E; }
+
+    .quiz-grid { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: start; }
+    .scenario-card {
+      background: var(--surface-scenario); border: 1px solid var(--border-scenario);
+      border-radius: var(--radius); padding: 24px;
+    }
+    .meta-row {
+      display: flex; flex-wrap: wrap; justify-content: space-between;
+      gap: 8px; font-size: 12px; color: var(--text-muted);
+    }
+    .meta-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .scenario-title {
+      margin: 18px 0 0; font-size: clamp(19px, 2.4vw, 24px);
+      font-weight: 600; line-height: 1.38; color: var(--text); max-width: 65ch;
+    }
+    .options-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .option-btn {
+      display: flex; align-items: flex-start; gap: 14px; width: 100%;
+      text-align: left; padding: 18px 16px; min-height: 68px; border-radius: 12px;
+      border: 1px solid #D9D5C9; background: var(--surface-header);
+      color: var(--text); transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .option-btn:hover:not(:disabled) { border-color: #789D88; background: #fff; }
+    .option-btn:disabled { cursor: default; }
+    .option-key {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; flex-shrink: 0; border-radius: 7px;
+      border: 1px solid #DDD5C6; background: #F5EFE5;
+      font-size: 12px; font-weight: 600; margin-top: 2px;
+    }
+    .option-body { flex: 1; min-width: 0; }
+    .option-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .option-title { font-size: 16px; font-weight: 700; }
+    .option-sub { margin: 2px 0 0; font-size: 12px; color: var(--text-soft); }
+    .option-tag { font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .option-btn.correct-selected { border-color: var(--ok-border); background: var(--ok-bg); }
+    .option-btn.correct-selected .option-key { background: #4B795E; border-color: #4B795E; color: #fff; }
+    .option-btn.correct-selected .option-tag { color: var(--ok-text); }
+    .option-btn.wrong-selected { border-color: var(--err-border); background: var(--err-bg); }
+    .option-btn.wrong-selected .option-key { background: #B95D58; border-color: #B95D58; color: #fff; }
+    .option-btn.wrong-selected .option-tag { color: var(--err-text); }
+    .option-btn.correct-reveal { border-color: #7FA98F; background: #E8F2E9; }
+    .option-btn.correct-reveal .option-key { background: #D1E5D5; border-color: #6B9B7E; color: #264634; }
+    .option-btn.correct-reveal .option-tag { color: var(--ok-text); }
+    .option-btn.dimmed { border-color: #DFDAD0; background: rgba(250, 247, 242, 0.75); color: var(--text-soft); }
+
+    .feedback-box { margin-top: 24px; padding-top: 20px; border-top: 1px solid #CFDCD0; }
+    .feedback-head {
+      display: flex; flex-wrap: wrap; justify-content: space-between;
+      align-items: center; gap: 8px; font-size: 14px; font-weight: 600;
+    }
+    .feedback-head.ok { color: var(--ok-text); }
+    .feedback-head.err { color: var(--err-text); }
+    .retry-link {
+      background: none; border: 0; padding: 4px 6px;
+      font-size: 12px; font-weight: 600; color: var(--text-muted);
+    }
+    .retry-link:hover { color: var(--text); }
+    .explanation { margin: 10px 0 0; font-size: 15px; line-height: 1.6; color: #44403C; max-width: 65ch; }
+    .card-footer {
+      margin-top: 28px; padding-top: 18px; border-top: 1px solid #CFDCD0;
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;
+    }
+
+    .deck { display: flex; flex-direction: column; gap: 18px; }
+    .deck-card {
+      background: var(--surface-deck); border: 1px solid #DFD8C8;
+      border-radius: var(--radius); padding: 20px;
+    }
+    .deck-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .deck-title { margin: 0; font-size: 14px; font-weight: 600; }
+    .progress-track {
+      margin-top: 12px; height: 8px; border-radius: 999px;
+      background: #E5DFD2; overflow: hidden;
+    }
+    .progress-fill { height: 100%; background: var(--accent); transition: width 0.25s ease; }
+    .metrics-3 {
+      margin-top: 16px; padding-top: 14px; border-top: 1px solid #E4DDD0;
+      display: grid; grid-template-columns: repeat(3, 1fr); text-align: center;
+    }
+    .metrics-3 > div + div { border-left: 1px solid #DFD8C8; }
+    .metric-val { font-size: 18px; font-weight: 600; }
+    .metric-lbl { font-size: 12px; color: var(--text-muted); }
+    .matrix { margin-top: 14px; display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+    .matrix.compact { grid-template-columns: repeat(5, 1fr); }
+    .m-cell {
+      height: 34px; border-radius: 6px; border: 1px solid #DCD5C5;
+      background: var(--surface-header); color: var(--text); font-size: 12px; font-weight: 500;
+      display: flex; align-items: center; justify-content: center; padding: 0;
+    }
+    .m-cell.ok { border-color: #77A387; background: #DCEBDD; color: #244532; }
+    .m-cell.err { border-color: #D68B86; background: #F7E3E1; color: #8B3B36; }
+    .m-cell.current { outline: 2px solid var(--accent); outline-offset: 1px; font-weight: 700; }
+    .legend {
+      margin-top: 14px; padding-top: 12px; border-top: 1px solid #E4DDD0;
+      display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--text-muted);
+    }
+
+    .page-title { margin: 0; font-size: clamp(22px, 3vw, 30px); font-weight: 700; }
+    .page-sub { margin: 8px 0 0; color: var(--text-muted); font-size: 15px; max-width: 62ch; }
+    .cards-grid {
+      margin-top: 24px; display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px;
+    }
+    .beige-card {
+      background: var(--surface-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 22px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .kpi-grid { margin-top: 22px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .catalog-item {
+      background: var(--surface-header); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px; margin-top: 12px;
+    }
+    .search-input {
+      width: 100%; max-width: 420px; padding: 10px 14px; border-radius: 10px;
+      border: 1px solid #DFD5C5; background: var(--surface-header); font-size: 14px; min-height: 42px;
+    }
+    footer {
+      border-top: 1px solid #E6DDD0; background: var(--surface-header);
+      padding: 16px 0; font-size: 12px; color: var(--text-soft);
+    }
+    .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+
+    @media (min-width: 600px) {
+      .options-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 768px) {
+      .nav-desktop { display: flex; }
+      .nav-mobile { display: none; }
+      .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (min-width: 960px) {
+      .toolbar { flex-direction: row; align-items: center; justify-content: space-between; }
+      .quiz-grid { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); }
+      .scenario-card { padding: 32px; }
+    }
+  </style>
+<script src="/_aistudio-iframe.js?v=29045eb3"></script></head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <button type="button" class="brand" id="brandBtn">Urheberrecht und Datenschutz</button>
+        <nav class="nav-desktop" aria-label="Hauptnavigation">
+          <button type="button" class="nav-btn active" data-view="quiz">Quiz</button>
+          <button type="button" class="nav-btn" data-view="topics">Themen</button>
+          <button type="button" class="nav-btn" data-view="catalog">Katalog</button>
+          <button type="button" class="nav-btn" data-view="results">Auswertung</button>
+        </nav>
+        <button type="button" class="btn-primary" id="sprintBtn">10er-Sprint</button>
+      </div>
+      <nav class="nav-mobile" aria-label="Mobile Navigation">
+        <button type="button" class="nav-btn active" data-view="quiz">Quiz</button>
+        <button type="button" class="nav-btn" data-view="topics">Themen</button>
+        <button type="button" class="nav-btn" data-view="catalog">Katalog</button>
+        <button type="button" class="nav-btn" data-view="results">Auswertung</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" id="appRoot"></div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>Urheberrecht und Datenschutz &middot; Offline-Version für PC, Laptop &amp; iPad</span>
+      <span class="mono">99 Fragen (URG)</span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var QUESTIONS = [{"id":1,"category":"Privatgebrauch","question":"Darf ich ein Lied von Spotify für meine private Geburtstagsparty zu Hause abspielen?","correctAnswer":"JA","explanation":"Ja. Wir sind im privaten Bereich."},{"id":2,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich einen Film in meiner Bar zeigen, wenn ich die DVD privat gekauft habe?","correctAnswer":"NEIN","explanation":"Nein. Öffentliche Vorführungen benötigen zwingend eine Lizenz (z.B. von der Suissimage)."},{"id":3,"category":"Privatgebrauch","question":"Darf ich ein gekauftes E-Book kopieren und die Datei einem Freund per WhatsApp schicken?","correctAnswer":"NEIN","explanation":"Nein. Die Weitergabe digitaler Kopien ist auch privat unzulässig, da hier das Verbreitungsrecht des Urhebers verletzt wird."},{"id":4,"category":"Zitate, Bildung & Kultur","question":"Darf ich ein Foto einer Statue auf einem öffentlichen Platz für meine geschäftliche Webseite nutzen?","correctAnswer":"JA","explanation":"Ja. Die Panoramafreiheit (Art. 27 URG) erlaubt Abbildungen von Werken, die sich bleibend auf öffentlichem Grund befinden."},{"id":5,"category":"Software & Kopierschutz","question":"Darf ich eine Software-CD eines Freundes kopieren und bei mir installieren?","correctAnswer":"NEIN","explanation":"Nein. Computerprogramme sind vom Recht auf Privatkopie explizit ausgeschlossen (Art. 19 Abs. 4 URG)."},{"id":6,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich im Wartezimmer meiner Arztpraxis Radio laufen lassen, ohne die SUISA zu informieren?","correctAnswer":"NEIN","explanation":"Nein. Ein Wartezimmer gilt als öffentlicher Raum. Hier fällt eine Vergütungspflicht an."},{"id":7,"category":"Zitate, Bildung & Kultur","question":"Darf eine Lehrerin einen aktuellen Zeitungsartikel für ihre gesamte Schulklasse kopieren?","correctAnswer":"JA","explanation":"Ja. Die Verwendung für den Unterricht ist gesetzlich als Eigengebrauch im weiteren Sinne privilegiert."},{"id":8,"category":"Zitate, Bildung & Kultur","question":"Darf ich ein kurzes Zitat aus einem Fachbuch in meiner Masterarbeit verwenden?","correctAnswer":"JA","explanation":"Ja. Das Zitatrecht (Art. 25 URG) erlaubt dies, sofern das Zitat der Erläuterung dient und die Quelle angegeben wird."},{"id":9,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich ein YouTube-Video herunterladen, um es bei einer öffentlichen Vereinsversammlung zu zeigen?","correctAnswer":"NEIN","explanation":"Nein. Eine Vereinsversammlung ohne engen privaten Bezug gilt als öffentlich und ist lizenzpflichtig."},{"id":10,"category":"Internet & Social Media","question":"Darf ich ein Foto, das ich im Internet gefunden habe, als mein Profilbild auf LinkedIn nutzen?","correctAnswer":"NEIN","explanation":"Nein. LinkedIn ist ein geschäftliches Umfeld. Ohne Rechte am Bild ist dies eine Urheberrechtsverletzung."},{"id":11,"category":"Software & Kopierschutz","question":"Darf ich eine Sicherheitskopie meiner legal erworbenen Software erstellen?","correctAnswer":"JA","explanation":"Ja. Das Erstellen einer Sicherungskopie durch den rechtmässigen Nutzer ist gesetzlich erlaubt (Art. 24 URG)."},{"id":12,"category":"Software & Kopierschutz","question":"Darf ich den Kopierschutz eines E-Books umgehen, um es auf ein anderes Gerät zu übertragen?","correctAnswer":"NEIN","explanation":"Nein. Das Umgehen von wirksamen technischen Massnahmen zum Schutz von Werken ist verboten."},{"id":13,"category":"Internet & Social Media","question":"Darf ich ein Meme mit einem urheberrechtlich geschützten Filmausschnitt auf Instagram posten?","correctAnswer":"NEIN","explanation":"Rechtlich gesehen nein, ausser es erfüllt die strengen Kriterien einer Parodie. Privatprofile sind oft öffentlich zugänglich."},{"id":14,"category":"Privatgebrauch","question":"Darf ich einen Screenshot eines News-Artikels in einem privaten Familien-Chat teilen?","correctAnswer":"JA","explanation":"Ja. Im engsten privaten Kreis ist das Teilen von Kopien zu Informationszwecken erlaubt."},{"id":15,"category":"Internet & Social Media","question":"Darf ich die Zugangsdaten meiner Musik-Streaming-Cloud meiner ganzen Fussballmannschaft geben?","correctAnswer":"NEIN","explanation":"Nein. Eine Mannschaft bildet keinen 'eng verbundenen Personenkreis' im Sinne des Privatgebrauchs."},{"id":16,"category":"Privatgebrauch","question":"Darf ich TV-Sendungen mit einem Online-TV-Rekorder für mich selbst aufnehmen?","correctAnswer":"JA","explanation":"Ja. Solche Dienste sind für den persönlichen Eigengebrauch in der Schweiz legal."},{"id":17,"category":"Internet & Social Media","question":"Darf ich ein fremdes YouTube-Video auf meiner eigenen Webseite einbetten (Embedding)?","correctAnswer":"JA","explanation":"Ja, solange das Video auf YouTube legal hochgeladen wurde und die Webseite nicht den Eindruck erweckt, es sei das eigene Werk."},{"id":18,"category":"Internet & Social Media","question":"Darf ich ein KI-generiertes Bild ohne Namensnennung kommerziell verkaufen?","correctAnswer":"JA","explanation":"Ja. Rein KI-generierte Bilder haben in der Schweiz derzeit keinen Urheberrechtsschutz, da keine menschliche Schöpfung vorliegt."},{"id":19,"category":"Internet & Social Media","question":"Darf ich ein Foto einer Person ohne deren Einwilligung auf meine Facebook-Seite stellen?","correctAnswer":"NEIN","explanation":"Nein. Dies verletzt primär das Recht am eigenen Bild (Persönlichkeitsschutz)."},{"id":20,"category":"Privatgebrauch","question":"Darf ich Musik von einer offensichtlich illegalen Tauschbörse für mich privat herunterladen?","correctAnswer":"JA","answerDetail":"JA. Achtung, der Upload wäre nicht legal.","explanation":"Ja. In der Schweiz ist der Download zum Eigengebrauch derzeit nicht strafbar, auch wenn die Quelle illegal ist."},{"id":21,"category":"Privatgebrauch","question":"Darf ich Architekturpläne eines Hauses kopieren, um sie einem befreundeten Architekten privat zu zeigen?","correctAnswer":"JA","explanation":"Ja, im rein privaten Rahmen zum Ideenaustausch ist das zulässig."},{"id":22,"category":"Internet & Social Media","question":"Darf ich Songtexte vollständig auf meine private, aber öffentlich einsehbare Blogseite kopieren?","correctAnswer":"NEIN","explanation":"Nein. Sobald die Seite für jedermann zugänglich ist, gilt sie als öffentliche Publikation."},{"id":23,"category":"Privatgebrauch","question":"Darf ich eine Kopie einer gekauften Musik-CD für das Abspielen in meinem Auto erstellen?","correctAnswer":"JA","explanation":"Ja, das ist eine zulässige Vervielfältigung zum Eigengebrauch."},{"id":24,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich im Büro für alle meine Kollegen Musik über Lautsprecher laufen lassen?","correctAnswer":"NEIN","explanation":"Nein. Die Nutzung von Werken innerhalb eines Betriebs zur Unterhaltung der Mitarbeiter ist lizenzpflichtig."},{"id":25,"category":"Privatgebrauch","question":"Darf ich ein Logo einer bekannten Marke auf ein T-Shirt drucken, das ich nur zu Hause trage?","correctAnswer":"JA","explanation":"Ja. Der rein private Gebrauch tangiert weder Marken- noch Urheberrechte kommerziell."},{"id":26,"category":"Internet & Social Media","question":"Darf ich ein Kochrezept eins zu eins aus einem Buch auf meiner Webseite veröffentlichen?","correctAnswer":"NEIN","explanation":"Nein. Wenn die textliche Gestaltung des Rezepts eine gewisse Originalität aufweist, ist sie geschützt."},{"id":27,"category":"Internet & Social Media","question":"Darf ich ein Live-Konzert mit dem Handy filmen und das Video komplett auf YouTube hochladen?","correctAnswer":"NEIN","explanation":"Nein. Das verletzt die Urheberrechte der Komponisten und die Leistungsschutzrechte der Interpreten."},{"id":28,"category":"Zitate, Bildung & Kultur","question":"Darf ich eine Karikatur eines bekannten Künstlers zeichnen und diese in einer Schülerzeitung veröffentlichen?","correctAnswer":"JA","explanation":"Ja. Die Parodie ist im Schweizer Recht als Schranke des Urheberrechts anerkannt (Art. 11 URG)."},{"id":29,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich ein fremdes Gedicht in einer Traueranzeige in einer Tageszeitung abdrucken?","correctAnswer":"NEIN","explanation":"Nein. Eine Zeitungsanzeige ist eine öffentliche Nutzung, die die Erlaubnis der Erben oder des Autors benötigt."},{"id":30,"category":"Software & Kopierschutz","question":"Darf ich eine Software analysieren (Reverse Engineering), um sie mit meinem eigenen Programm kompatibel zu machen?","correctAnswer":"JA","explanation":"Ja, zur Erreichung der Interoperabilität ist dies unter engen Voraussetzungen erlaubt (Art. 21 URG)."},{"id":31,"category":"Zitate, Bildung & Kultur","question":"Darf ich in einer öffentlichen Bibliothek eine ganze Zeitschrift fotokopieren?","correctAnswer":"JA","answerDetail":"JA, unter Beachtung der Bibliotheksbestimmung.","explanation":"Ja, das Kopieren in Bibliotheken für den Eigengebrauch ist zulässig."},{"id":32,"category":"Privatgebrauch","question":"Darf ich eine digitale Kopie eines Films, den ich rechtmässig besitze, an meine Geschwister weitergeben?","correctAnswer":"NEIN","explanation":"Nein. Die Weitergabe von digitalen Dateien ist rechtlich eine Verbreitung und im digitalen Bereich meist untersagt."},{"id":33,"category":"Privatgebrauch","question":"Darf ich ein Filmplakat in meinem privaten Schlafzimmer aufhängen?","correctAnswer":"JA","explanation":"Ja, die private Verwendung ist immer erlaubt."},{"id":34,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich ein Filmplakat zur Dekoration im Schaufenster meines Ladens aufhängen?","correctAnswer":"NEIN","explanation":"Nein. Das ist eine öffentliche Nutzung zu kommerziellen Zwecken."},{"id":35,"category":"Privatgebrauch","question":"Darf ich eine Skulptur in einem Museum fotografieren und das Bild privat behalten?","correctAnswer":"JA","explanation":"Ja, privat ist das erlaubt, sofern die Hausordnung des Museums es nicht explizit verbietet."},{"id":36,"category":"Software & Kopierschutz","question":"Darf ich ein Programm entwickeln, dessen Hauptzweck das Knacken von Kopierschutzmechanismen ist?","correctAnswer":"NEIN","explanation":"Nein. Herstellung und Vertrieb von Umgehungswerkzeugen sind gesetzlich verboten."},{"id":37,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich Hintergrundmusik in einem Fitnesscenter für alle Trainierenden abspielen?","correctAnswer":"NEIN","explanation":"Nein, das ist eine öffentliche Nutzung und muss über die SUISA vergütet werden."},{"id":38,"category":"Zitate, Bildung & Kultur","question":"Darf ich Notenblätter für die Mitglieder meines privaten Nachbarschaftschors kopieren?","correctAnswer":"NEIN","explanation":"Nein. Notenblätter sind vom Recht auf Privatkopie ausserhalb des engsten Familienkreises ausgeschlossen. Faktisch wird das kaum überprüft. Je nach Lizenz ist es sogar erlaubt."},{"id":39,"category":"Zitate, Bildung & Kultur","question":"Darf ein Archiv zur Erhaltung seines Bestandes digitale Kopien von alten Zeitungen anlegen?","correctAnswer":"JA","explanation":"Ja, Gedächtnisinstitutionen haben besondere Privilegien zur Archivierung (Art. 22 URG)."},{"id":40,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich einen Fachartikel fotokopieren, um ihn meinem Chef für die Arbeit zu geben?","correctAnswer":"JA","explanation":"Ja, die Vervielfältigung für die betriebliche Information ist im URG erlaubt (Art. 19 Abs. 1 Bst. c)."},{"id":41,"category":"Privatgebrauch","question":"Darf ich mein Netflix-Passwort mit meinem Nachbarn teilen, der im Haus nebenan wohnt?","correctAnswer":"NEIN","explanation":"Nein. Dies widerspricht meist den AGB und rechtlich gehört der Nachbar nicht zum engsten privaten Kreis."},{"id":42,"category":"Privatgebrauch","question":"Darf ich einen urheberrechtlich geschützten Song als meinen privaten Klingelton nutzen?","correctAnswer":"JA","explanation":"Ja, das ist eine rein private Nutzung."},{"id":43,"category":"Privatgebrauch","question":"Darf ich ein Theaterstück im kleinen Kreis meiner Familie zu Hause aufführen?","correctAnswer":"JA","explanation":"Ja, private Aufführungen sind frei."},{"id":44,"category":"Zitate, Bildung & Kultur","question":"Darf eine Schulklasse ein Theaterstück vor den Eltern in der Aula aufführen?","correctAnswer":"JA","explanation":"Ja, Aufführungen im Rahmen des Schulunterrichts sind unter gewissen Bedingungen erlaubt."},{"id":45,"category":"Privatgebrauch","question":"Darf ich einen legalen Stream für 20 Freunde bei mir zu Hause zeigen?","correctAnswer":"JA","explanation":"Ja, solange der Kreis eng verbunden ist (Freunde), gilt dies als privat."},{"id":46,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich einen legalen Stream für 20 Unbekannte in einem gemieteten Saal zeigen?","correctAnswer":"NEIN","explanation":"Nein, das ist eine öffentliche Vorführung."},{"id":47,"category":"Privatgebrauch","question":"Darf ich einen Online-Artikel ausdrucken, um ihn im Zug offline zu lesen?","correctAnswer":"JA","explanation":"Ja, das ist eine klassische Privatkopie."},{"id":48,"category":"Software & Kopierschutz","question":"Darf ich ein Videospiel auf die Speicherkarte der Konsole eines Freundes kopieren?","correctAnswer":"NEIN","explanation":"Nein. Software/Spiele sind vom Privatkopie-Recht ausgenommen."},{"id":49,"category":"Internet & Social Media","question":"Darf ich Fan-Untertitel für einen ausländischen Film erstellen und im Internet verbreiten?","correctAnswer":"NEIN","explanation":"Nein. Das Erstellen von Übersetzungen und Bearbeitungen bedarf der Zustimmung des Urhebers."},{"id":50,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich den Namen eines Prominenten als Namen für meine neue Keks-Marke verwenden?","correctAnswer":"NEIN","explanation":"Nein, das verletzt Namens- und Persönlichkeitsrechte."},{"id":51,"category":"Zitate, Bildung & Kultur","question":"Darf ich 50% eines Buches in meinem eigenen Werk zitieren?","correctAnswer":"NEIN","explanation":"Nein. Ein Zitat muss durch den Zweck gerechtfertigt sein. 50% übersteigen diesen Rahmen massiv."},{"id":52,"category":"Zitate, Bildung & Kultur","question":"Darf ich eine Parodie eines bekannten Popsongs aufnehmen und auf YouTube stellen?","correctAnswer":"JA","explanation":"Ja, sofern die Parodie als solche erkennbar ist und einen eigenständigen Charakter hat (Art. 11 URG)."},{"id":53,"category":"Privatgebrauch","question":"Darf ich eine legal gekaufte Musik-CD auf dem Flohmarkt weiterverkaufen?","correctAnswer":"JA","explanation":"Ja. Mit dem ersten Verkauf des Werkstücks ist das Verbreitungsrecht erschöpft (Erschöpfungsgrundsatz)."},{"id":54,"category":"Internet & Social Media","question":"Darf ich eine legal gekaufte MP3-Datei auf einem Online-Portal weiterverkaufen?","correctAnswer":"NEIN","explanation":"Nein. Der Erschöpfungsgrundsatz gilt in der Schweiz (derzeit) nicht für digitale Dateien ohne Datenträger."},{"id":55,"category":"Zitate, Bildung & Kultur","question":"Darf ich in einer Unibibliothek einen ganzen Ausstellungskatalog fotokopieren?","correctAnswer":"JA","explanation":"Ja, für den Eigengebrauch ist das Kopieren in Bibliotheken zulässig."},{"id":56,"category":"Internet & Social Media","question":"Darf ich ein fremdes Porträtfoto als mein Bild in einer Dating-App verwenden?","correctAnswer":"NEIN","explanation":"Nein, du besitzt weder die Urheberrechte noch die Persönlichkeitsrechte an diesem Bild."},{"id":57,"category":"Software & Kopierschutz","question":"Darf ich Windows von einer CD auf 5 verschiedenen Computern in meiner Firma installieren?","correctAnswer":"NEIN","explanation":"Nein, das verletzt die Software-Lizenz und das Urheberrecht."},{"id":58,"category":"Privatgebrauch","question":"Darf ich eine Fernsehsendung für einen Freund aufnehmen, der keine Zeit zum Schauen hat?","correctAnswer":"NEIN","explanation":"Nein. Du darfst nur für dich selbst kopieren. Die Weitergabe ist kritisch."},{"id":59,"category":"Internet & Social Media","question":"Darf ich Screenshots aus einem Videospiel auf meinem öffentlichen Fan-Blog zeigen?","correctAnswer":"NEIN","explanation":"Rein rechtlich ist das eine öffentliche Zugänglichmachung und braucht die Erlaubnis des Herstellers."},{"id":60,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich ein geschütztes Kunstwerk als Hintergrund für einen Party-Flyer verwenden?","correctAnswer":"NEIN","explanation":"Nein, das ist eine öffentliche, grafische Nutzung."},{"id":61,"category":"Software & Kopierschutz","question":"Darf ich eine DVD, die keinen Kopierschutz hat, auf mein Tablet kopieren?","correctAnswer":"JA","explanation":"Ja, ohne Umgehung eines Schutzes ist die Privatkopie auf ein anderes Gerät legal."},{"id":62,"category":"Software & Kopierschutz","question":"Darf ich einen Audio-Loop aus einem gekauften Sample-Pack in meinem Song verwenden?","correctAnswer":"JA","explanation":"Ja, dafür kaufst du die Lizenz mit dem Sample-Pack meistens mit."},{"id":63,"category":"Zitate, Bildung & Kultur","question":"Darf ich ein Modell eines berühmten Gebäudes nachbauen und die Fotos davon verkaufen?","correctAnswer":"JA","explanation":"Ja, sofern das Gebäude von öffentlichem Grund aus sichtbar ist (Panoramafreiheit)."},{"id":64,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich in einem Coiffeur-Salon Radio laufen lassen, ohne Gebühren zu zahlen?","correctAnswer":"NEIN","explanation":"Nein, gewerbliche Räume gelten als öffentlich."},{"id":65,"category":"Internet & Social Media","question":"Darf ich ein Stockfoto nutzen, auf dem noch das Wasserzeichen des Anbieters zu sehen ist?","correctAnswer":"NEIN","explanation":"Nein, das Wasserzeichen zeigt meist an, dass die Lizenz noch nicht erworben wurde."},{"id":66,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich eine Fan-Fiction über Harry Potter schreiben und diese als Buch verkaufen?","correctAnswer":"NEIN","explanation":"Nein. Das Erstellen und Verkaufen von Ableitungen geschützter Charaktere ist verboten."},{"id":67,"category":"Software & Kopierschutz","question":"Darf ich einen Screenshot einer Software-Fehlermeldung in einem öffentlichen IT-Forum posten?","correctAnswer":"JA","explanation":"Ja, das fällt meist unter die Informationsfreiheit oder dient der Fehlerbehebung."},{"id":68,"category":"Zitate, Bildung & Kultur","question":"Darf ein Student Prüfungsfragen für seine Kommilitonen kopieren?","correctAnswer":"JA","explanation":"Ja, im Rahmen des Eigengebrauchs für das Studium ist das Kopieren erlaubt."},{"id":69,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich Zeichnungen von Disney-Figuren auf einer Messe verkaufen?","correctAnswer":"NEIN","explanation":"Nein, das verletzt die Urheber- und Markenrechte von Disney."},{"id":70,"category":"Zitate, Bildung & Kultur","question":"Darf ich im Schulunterricht ein kurzes TikTok-Video zeigen, um einen Trend zu erklären?","correctAnswer":"JA","explanation":"Ja, die Nutzung von Werken zur Erläuterung im Unterricht ist zulässig."},{"id":71,"category":"Privatgebrauch","question":"Darf ich einen Kartenausschnitt von Google Maps auf eine private Einladung drucken?","correctAnswer":"JA","explanation":"Ja, im privaten Kreis ist das unbedenklich."},{"id":72,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich einen Kartenausschnitt von Google Maps auf einen Firmenflyer drucken?","correctAnswer":"NEIN","explanation":"Nein, hierfür sind spezielle kommerzielle Lizenzen nötig."},{"id":73,"category":"Zitate, Bildung & Kultur","question":"Darf ich Noten für meine Schüler in einer staatlichen Musikschule kopieren?","correctAnswer":"JA","explanation":"Ja, Schulen haben hierfür Pauschalverträge und gesetzliche Privilegien."},{"id":74,"category":"Privatgebrauch","question":"Darf ich Noten für mein eigenes Üben zu Hause kopieren?","correctAnswer":"JA","explanation":"Ja, für das rein private Üben ist das erlaubt."},{"id":75,"category":"Zitate, Bildung & Kultur","question":"Darf ich Noten für einen Kirchenchor kopieren, der öffentlich auftritt?","correctAnswer":"NEIN","explanation":"Nein. Noten unterliegen einem besonderen Schutz bei öffentlichen Chören."},{"id":76,"category":"Privatgebrauch","question":"Darf ich Einzelbilder aus einem Film als Sticker für meinen privaten Laptop ausdrucken?","correctAnswer":"JA","explanation":"Ja, das ist privater Eigengebrauch."},{"id":77,"category":"Zitate, Bildung & Kultur","question":"Darf ich Bilder aus einem Film für eine Filmkritik auf YouTube verwenden?","correctAnswer":"JA","explanation":"Ja, sofern es als kurzes Zitat zur Untermauerung deiner Kritik dient."},{"id":78,"category":"Zitate, Bildung & Kultur","question":"Darf ich die Bachelorarbeit eines Mitstudenten ohne dessen Wissen fotokopieren?","correctAnswer":"NEIN","explanation":"Nein. Auch unveröffentlichte Werke sind ab dem Moment ihrer Schöpfung geschützt."},{"id":79,"category":"Software & Kopierschutz","question":"Darf ich eine Schriftart (Font) ohne Lizenz für meine kommerzielle Webseite nutzen?","correctAnswer":"NEIN","explanation":"Nein, Schriften sind als Software oder gestalterisches Werk geschützt."},{"id":80,"category":"Software & Kopierschutz","question":"Darf ich alle Daten einer fremden Immobiliendatenbank kopieren und selbst nutzen?","correctAnswer":"NEIN","explanation":"Nein. Datenbanken sind durch das Urheberrecht oder den Investitionsschutz geschützt."},{"id":81,"category":"Privatgebrauch","question":"Darf ich ein fremdsprachiges Buch für mich privat übersetzen, um es besser zu verstehen?","correctAnswer":"JA","explanation":"Ja, für den Eigengebrauch darfst du Werke bearbeiten."},{"id":82,"category":"Internet & Social Media","question":"Darf ich meine private Übersetzung eines Buches im Internet veröffentlichen?","correctAnswer":"NEIN","explanation":"Nein. Das Veröffentlichungsrecht der Übersetzung liegt beim Original-Urheber."},{"id":83,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich ein urheberrechtlich geschütztes Lied auf einem öffentlichen Strassenfest singen?","correctAnswer":"NEIN","explanation":"Nein, öffentliche Aufführungen sind anmeldepflichtig (SUISA)."},{"id":84,"category":"Privatgebrauch","question":"Darf ich einen Strassenmusiker für mein privates Archiv filmen?","correctAnswer":"JA","explanation":"Ja, privat ist das Aufnehmen erlaubt."},{"id":85,"category":"Internet & Social Media","question":"Darf ich das Video eines Strassenmusikers ohne dessen Erlaubnis auf TikTok hochladen?","correctAnswer":"NEIN","explanation":"Nein, das verletzt seine Leistungsschutzrechte und das Recht am eigenen Bild."},{"id":86,"category":"Privatgebrauch","question":"Darf ich Songzeilen in eine private Hochzeitseinladung drucken?","correctAnswer":"JA","explanation":"Ja, im privaten Kreis ist das eine zulässige Nutzung."},{"id":87,"category":"Software & Kopierschutz","question":"Darf ich eine Software-Lizenz gleichzeitig auf meinem Geschäfts-PC und meinem privaten Laptop nutzen?","correctAnswer":"NEIN","explanation":"Meist nein. Das hängt von der spezifischen Lizenz ab (Single-User vs. Multi-Device)."},{"id":88,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich ein berühmtes Filmzitat auf T-Shirts drucken und diese verkaufen?","correctAnswer":"NEIN","explanation":"Das kann problematisch sein, wenn das Zitat eine Schöpfungshöhe erreicht oder markenrechtlich geschützt ist."},{"id":89,"category":"Privatgebrauch","question":"Darf ich ein Foto vom Instagram-Account eines Freundes für einen privaten Ausdruck kopieren?","correctAnswer":"JA","explanation":"Ja, privat ist das Kopieren von öffentlich zugänglichen Werken erlaubt."},{"id":90,"category":"Privatgebrauch","question":"Darf ich eine ganze Webseite spiegeln (kopieren), um sie offline im Flugzeug zu lesen?","correctAnswer":"JA","explanation":"Ja, das ist eine zulässige Privatkopie."},{"id":91,"category":"Internet & Social Media","question":"Darf ich einen Soundeffekt aus einem Spiel für meinen öffentlichen Podcast nutzen?","correctAnswer":"NEIN","explanation":"Nein, das ist eine öffentliche Nutzung des Werks."},{"id":92,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich in einer Kneipe Karaoke singen, wenn der Wirt keine SUISA-Gebühren zahlt?","correctAnswer":"NEIN","explanation":"Nein, der Veranstalter/Wirt muss die öffentliche Aufführung lizenzieren."},{"id":93,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich die Bedienungsanleitung einer Maschine im Betrieb für alle Mitarbeiter kopieren?","correctAnswer":"JA","explanation":"Ja, die betriebliche Information über erworbene Produkte ist zulässig."},{"id":94,"category":"Internet & Social Media","question":"Darf ich ein Foto mit einer 'Creative Commons'-Lizenz auf meiner Webseite nutzen?","correctAnswer":"JA","explanation":"Ja, sofern du die Bedingungen der jeweiligen CC-Lizenz (z.B. Namensnennung) einhältst."},{"id":95,"category":"Privatgebrauch","question":"Darf ich ein Foto einer berühmten Person aus einer Bilddatenbank für meine private Collage nutzen?","correctAnswer":"JA","explanation":"Ja, privat ist die Nutzung von veröffentlichten Bildern erlaubt."},{"id":96,"category":"Zitate, Bildung & Kultur","question":"Darf ich ein Firmenlogo in einem Zeitungsbericht über diese Firma verwenden?","correctAnswer":"JA","explanation":"Ja, das ist durch die Berichterstattung über aktuelle Ereignisse gedeckt. Problem: Das ist nur für journalistische Berichterstattung korrekt. Werbung oder werbliche Berichte ohne Nachrichtenbezug sind nicht gedeckt."},{"id":97,"category":"Privatgebrauch","question":"Darf ich ein ganzes Schulbuch für meine jüngeren Geschwister fotokopieren?","correctAnswer":"NEIN","explanation":"Nein. Die vollständige Kopie von im Handel erhältlichen Werken ist auch privat verboten."},{"id":98,"category":"Software & Kopierschutz","question":"Darf ich meinen Lizenzschlüssel für ein Programm an jemanden ausserhalb meines Haushalts verschenken?","correctAnswer":"NEIN","explanation":"Nein, Softwarelizenzen sind meist personengebunden und nicht übertragbar."},{"id":99,"category":"Öffentlichkeit & Gewerbe","question":"Darf ich Twitch-Streams in einem kommerziellen Gaming-Café öffentlich zeigen?","correctAnswer":"NEIN","explanation":"Nein, das ist eine öffentliche Vorführung, die die Zustimmung der Streamer/Plattform benötigt."}];
+      var TOPICS = ["Privatgebrauch", "Öffentlichkeit & Gewerbe", "Internet & Social Media", "Software & Kopierschutz", "Zitate, Bildung & Kultur"];
+      var TOPIC_META = {
+        "Privatgebrauch": { sub: "Eigengebrauch, Privatkopie und enger Kreis", topics: "Häuslicher Bereich, Weitergabe digitaler Dateien, Streaming-Accounts im Freundeskreis" },
+        "Öffentlichkeit & Gewerbe": { sub: "Lizenzen, SUISA, Gastronomie und Betrieb", topics: "Öffentliche Vorführungen, Musik im Büro oder Laden, kommerzielle Nutzung und Marken" },
+        "Internet & Social Media": { sub: "Plattformen, Embedding, KI und Recht am Bild", topics: "Profilbilder, Instagram-Memes, YouTube-Einbettung, KI-Bilder und Persönlichkeitsschutz" },
+        "Software & Kopierschutz": { sub: "Programme, DRM, Lizenzen und Datenbanken", topics: "Sicherungskopien, Verbot der Kopierschutz-Umgehung, Reverse Engineering, Fonts und Spiele" },
+        "Zitate, Bildung & Kultur": { sub: "Unterricht, Zitatrecht, Parodie und Panorama", topics: "Schulgebrauch, wissenschaftliches Zitieren, Panoramafreiheit, Bibliotheken, Archive und Noten" }
+      };
+
+      var STORAGE_KEY = "urheberrecht_datenschutz_offline_v1";
+      var ALL_IDS = QUESTIONS.map(function (q) { return q.id; });
+      var memoryAnswers = {};
+
+      function loadAnswers() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          return memoryAnswers;
+        }
+      }
+
+      function saveAnswers(obj) {
+        memoryAnswers = obj;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+        } catch (e) {}
+      }
+
+      var state = {
+        view: "quiz",
+        answers: loadAnswers(),
+        mode: "all",
+        category: "Alle",
+        questionIds: ALL_IDS.slice(),
+        currentIndex: 0,
+        shuffled: false,
+        catalogSearch: "",
+        catalogTopic: "Alle",
+        catalogStatus: "all",
+        showAllSolutions: false,
+        expandedIds: {},
+        confirmReset: false
+      };
+
+      function shuffle(arr) {
+        var copy = arr.slice();
+        for (var i = copy.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = copy[i]; copy[i] = copy[j]; copy[j] = tmp;
+        }
+        return copy;
+      }
+
+      function esc(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function getQuestion(id) {
+        for (var i = 0; i < QUESTIONS.length; i++) {
+          if (QUESTIONS[i].id === id) return QUESTIONS[i];
+        }
+        return null;
+      }
+
+      function getOverallStats() {
+        var answered = 0, correct = 0, incorrect = 0;
+        var list = [];
+        for (var i = 0; i < QUESTIONS.length; i++) {
+          var r = state.answers[QUESTIONS[i].id];
+          if (r) {
+            answered++;
+            if (r.isCorrect) correct++;
+            else incorrect++;
+            list.push(r);
+          }
+        }
+        list.sort(function (a, b) { return a.answeredAt - b.answeredAt; });
+        var curStreak = 0;
+        for (var j = list.length - 1; j >= 0; j--) {
+          if (list[j].isCorrect) curStreak++;
+          else break;
+        }
+        var bestStreak = 0, run = 0;
+        for (var k = 0; k < list.length; k++) {
+          if (list[k].isCorrect) { run++; if (run > bestStreak) bestStreak = run; }
+          else run = 0;
+        }
+        return {
+          total: QUESTIONS.length,
+          answered: answered,
+          correct: correct,
+          incorrect: incorrect,
+          accuracy: answered > 0 ? Math.round((correct / answered) * 100) : 0,
+          completionPct: Math.round((answered / QUESTIONS.length) * 100),
+          currentStreak: curStreak,
+          bestStreak: bestStreak
+        };
+      }
+
+      function startMode(mode, category, shouldShuffle) {
+        var pool = category === "Alle"
+          ? ALL_IDS.slice()
+          : QUESTIONS.filter(function (q) { return q.category === category; }).map(function (q) { return q.id; });
+        if (mode === "mistakes") {
+          pool = pool.filter(function (id) { return !state.answers[id] || !state.answers[id].isCorrect; });
+        }
+        if (mode === "sprint") {
+          var unanswered = pool.filter(function (id) { return !state.answers[id]; });
+          pool = shuffle(unanswered.length >= 10 ? unanswered : pool).slice(0, 10);
+          shouldShuffle = true;
+        } else if (shouldShuffle) {
+          pool = shuffle(pool);
+        }
+        state.mode = mode;
+        state.category = category;
+        state.questionIds = pool;
+        state.currentIndex = 0;
+        state.shuffled = Boolean(shouldShuffle);
+        state.view = "quiz";
+        render();
+      }
+
+      function syncNav() {
+        var btns = document.querySelectorAll(".nav-btn[data-view]");
+        for (var i = 0; i < btns.length; i++) {
+          var b = btns[i];
+          if (b.getAttribute("data-view") === state.view) b.classList.add("active");
+          else b.classList.remove("active");
+        }
+      }
+
+      function renderQuiz() {
+        var overall = getOverallStats();
+        var qId = state.questionIds[state.currentIndex];
+        var q = qId ? getQuestion(qId) : null;
+        var rec = q ? state.answers[q.id] : null;
+        var sesAns = state.questionIds.filter(function (id) { return Boolean(state.answers[id]); }).length;
+        var sesCor = state.questionIds.filter(function (id) { return state.answers[id] && state.answers[id].isCorrect; }).length;
+
+        var html = "";
+        html += "<section class=\"toolbar\">";
+        html += "<div class=\"toolbar-row\">";
+        html += "<div class=\"segmented\">";
+        html += "<button type=\"button\" class=\"seg-btn " + (state.mode === "all" && state.category === "Alle" ? "active" : "") + "\" data-mode=\"all\">Alle " + QUESTIONS.length + "</button>";
+        html += "<button type=\"button\" class=\"seg-btn " + (state.mode === "sprint" ? "active" : "") + "\" data-mode=\"sprint\">10er-Sprint</button>";
+        html += "<button type=\"button\" class=\"seg-btn " + (state.mode === "mistakes" ? "active" : "") + "\" data-mode=\"mistakes\">Offen &amp; Fehler</button>";
+        html += "</div>";
+        html += "<button type=\"button\" id=\"shuffleBtn\" class=\"chip-toggle " + (state.shuffled ? "active" : "") + "\">" + (state.shuffled ? "Gemischt" : "Mischen") + "</button>";
+        html += "</div>";
+
+        html += "<div class=\"segmented\">";
+        html += "<button type=\"button\" class=\"seg-btn " + (state.category === "Alle" && state.mode !== "sprint" && state.mode !== "mistakes" ? "active" : "") + "\" data-cat=\"Alle\">Alle</button>";
+        for (var p = 0; p < TOPICS.length; p++) {
+          var cat = TOPICS[p];
+          html += "<button type=\"button\" class=\"seg-btn " + (state.category === cat ? "active" : "") + "\" data-cat=\"" + esc(cat) + "\">" + esc(cat) + "</button>";
+        }
+        html += "</div>";
+        html += "</section>";
+
+        if (!q) {
+          html += "<div class=\"beige-card\" style=\"text-align:center;padding:36px\">";
+          html += "<h2 style=\"margin:0;font-size:20px\">Keine offenen oder fehlerhaften Fragen vorhanden</h2>";
+          html += "<p style=\"color:var(--text-muted);font-size:14px\">Alle Fragen in dieser Auswahl sind bereits richtig gelöst.</p>";
+          html += "<div style=\"margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap\">";
+          html += "<button type=\"button\" class=\"btn-primary\" id=\"openAllBtn\">Alle " + QUESTIONS.length + " Fragen öffnen</button>";
+          html += "<button type=\"button\" class=\"btn-secondary\" id=\"openResBtn\">Auswertung ansehen</button>";
+          html += "</div></div>";
+          return html;
+        }
+
+        html += "<div class=\"quiz-grid\">";
+        html += "<div class=\"scenario-card\">";
+        html += "<div class=\"meta-row\">";
+        html += "<div class=\"meta-left\"><span class=\"mono\" style=\"font-weight:600;color:var(--text)\">Frage " + String(q.id).padStart(2, "0") + " / " + QUESTIONS.length + "</span><span aria-hidden=\"true\">&middot;</span><span style=\"font-weight:600;color:#3F5E4E\">" + esc(q.category) + "</span>" + (state.mode === "sprint" ? "<span aria-hidden=\"true\">&middot;</span><span>10er-Sprint</span>" : "") + "</div>";
+        html += "<span class=\"mono\">Schritt " + (state.currentIndex + 1) + " von " + state.questionIds.length + "</span>";
+        html += "</div>";
+
+        html += "<h1 class=\"scenario-title\">" + esc(q.question) + "</h1>";
+
+        html += "<div class=\"options-grid\">";
+        var opts = [
+          { key: "JA", sc: "J", title: "JA", sub: "Erlaubt bzw. zulässig" },
+          { key: "NEIN", sc: "N", title: "NEIN", sub: "Nicht erlaubt bzw. lizenzpflichtig" }
+        ];
+        for (var k = 0; k < opts.length; k++) {
+          var o = opts[k];
+          var cls = "option-btn";
+          var tag = "";
+          if (rec) {
+            if (rec.selected === o.key && q.correctAnswer === o.key) {
+              cls += " correct-selected";
+              tag = "<span class=\"option-tag\">&#10003; Richtig</span>";
+            } else if (rec.selected === o.key && q.correctAnswer !== o.key) {
+              cls += " wrong-selected";
+              tag = "<span class=\"option-tag\">&#10005; Deine Wahl</span>";
+            } else if (q.correctAnswer === o.key) {
+              cls += " correct-reveal";
+              tag = "<span class=\"option-tag\">&#10003; Lösung</span>";
+            } else {
+              cls += " dimmed";
+            }
+          }
+          html += "<button type=\"button\" class=\"" + cls + "\" data-opt=\"" + o.key + "\" " + (rec ? "disabled" : "") + ">";
+          html += "<span class=\"option-key mono\">" + o.sc + "</span>";
+          html += "<div class=\"option-body\"><div class=\"option-head\"><span class=\"option-title\">" + o.title + "</span>" + tag + "</div><p class=\"option-sub\">" + o.sub + "</p></div>";
+          html += "</button>";
+        }
+        html += "</div>";
+
+        if (rec) {
+          var ansText = q.answerDetail || q.correctAnswer;
+          html += "<div class=\"feedback-box\">";
+          html += "<div class=\"feedback-head " + (rec.isCorrect ? "ok" : "err") + "\">";
+          html += "<span>" + (rec.isCorrect ? "&#10003; Richtig &mdash; Antwort: " + esc(ansText) : "&#9888; Nicht optimal &mdash; richtige Antwort: " + esc(ansText)) + "</span>";
+          html += "<button type=\"button\" class=\"retry-link\" id=\"retryOneBtn\">Neu versuchen</button>";
+          html += "</div>";
+          html += "<p class=\"explanation\"><strong>Rechtliche Basis: </strong>" + esc(q.explanation) + "</p>";
+          html += "</div>";
+        }
+
+        html += "<div class=\"card-footer\">";
+        html += "<button type=\"button\" class=\"btn-secondary\" id=\"prevBtn\" " + (state.currentIndex === 0 ? "disabled" : "") + ">&larr; Vorherige</button>";
+        if (state.currentIndex < state.questionIds.length - 1) {
+          html += "<button type=\"button\" class=\"btn-primary\" id=\"nextBtn\">Nächste Frage &rarr;</button>";
+        } else {
+          html += "<button type=\"button\" class=\"btn-primary\" id=\"finishBtn\">Auswertung ansehen &rarr;</button>";
+        }
+        html += "</div>";
+        html += "</div>";
+
+        html += "<aside class=\"deck\">";
+        html += "<div class=\"deck-card\">";
+        html += "<div class=\"deck-head\"><h2 class=\"deck-title\">Dein Fortschritt</h2><span class=\"mono\" style=\"font-size:12px;color:var(--text-muted)\">" + overall.answered + " / " + overall.total + " gesamt</span></div>";
+        html += "<div class=\"progress-track\"><div class=\"progress-fill\" style=\"width:" + overall.completionPct + "%\"></div></div>";
+        html += "<div class=\"metrics-3\">";
+        html += "<div><div class=\"metric-val mono\">" + sesAns + "/" + state.questionIds.length + "</div><div class=\"metric-lbl\">Runde</div></div>";
+        html += "<div><div class=\"metric-val mono\" style=\"color:var(--ok-text)\">" + overall.accuracy + "%</div><div class=\"metric-lbl\">Quote</div></div>";
+        html += "<div><div class=\"metric-val mono\">" + overall.currentStreak + "</div><div class=\"metric-lbl\">Serie</div></div>";
+        html += "</div></div>";
+
+        html += "<div class=\"deck-card\">";
+        html += "<div class=\"deck-head\"><h2 class=\"deck-title\">Fragenübersicht</h2><span class=\"mono\" style=\"font-size:12px;color:var(--text-muted)\">" + sesCor + " richtig</span></div>";
+        html += "<div class=\"matrix " + (state.questionIds.length <= 20 ? "compact" : "") + "\">";
+        for (var idx = 0; idx < state.questionIds.length; idx++) {
+          var id = state.questionIds[idx];
+          var r = state.answers[id];
+          var mCls = "m-cell mono";
+          if (r && r.isCorrect) mCls += " ok";
+          else if (r && !r.isCorrect) mCls += " err";
+          if (idx === state.currentIndex) mCls += " current";
+          html += "<button type=\"button\" class=\"" + mCls + "\" data-jump-idx=\"" + idx + "\">" + id + "</button>";
+        }
+        html += "</div>";
+        html += "<div class=\"legend\"><span style=\"color:var(--ok-text)\">&#10003; Richtig</span><span style=\"color:var(--err-text)\">&#10005; Falsch</span><span>&#9633; Offen</span></div>";
+        html += "</div>";
+        html += "<p style=\"margin:0 4px;font-size:12px;color:var(--text-soft)\">Tastatur: J / 1 für JA, N / 2 für NEIN &middot; Pfeiltasten zum Blättern.</p>";
+        html += "</aside>";
+
+        html += "</div>";
+        return html;
+      }
+
+      function renderTopics() {
+        var html = "<h1 class=\"page-title\">Fünf Rechtsbereiche im Überblick</h1>";
+        html += "<p class=\"page-sub\">Wähle einen Themenbereich aus, um gezielt Regeln des Schweizer Urheberrechts (URG) und Datenschutzes zu trainieren.</p>";
+        html += "<div class=\"cards-grid\">";
+        for (var i = 0; i < TOPICS.length; i++) {
+          var cat = TOPICS[i];
+          var meta = TOPIC_META[cat];
+          var items = QUESTIONS.filter(function (q) { return q.category === cat; });
+          var ans = 0, cor = 0, err = 0;
+          for (var j = 0; j < items.length; j++) {
+            var r = state.answers[items[j].id];
+            if (r) { ans++; if (r.isCorrect) cor++; else err++; }
+          }
+          var pct = Math.round((ans / items.length) * 100);
+          var acc = ans > 0 ? Math.round((cor / ans) * 100) + "% Quote" : "Noch offen";
+          html += "<article class=\"beige-card\"><div>";
+          html += "<div class=\"meta-row mono\"><span>" + items.length + " Fragen</span><span>" + ans + " / " + items.length + " gelöst</span></div>";
+          html += "<h2 style=\"margin:10px 0 4px;font-size:20px\">" + esc(cat) + "</h2>";
+          html += "<p style=\"margin:0;font-size:14px;font-weight:600;color:#44403C\">" + esc(meta.sub) + "</p>";
+          html += "<p style=\"margin:10px 0 0;font-size:14px;color:var(--text-muted)\">" + esc(meta.topics) + "</p>";
+          html += "</div><div style=\"margin-top:20px;padding-top:14px;border-top:1px solid #E6DDD0\">";
+          html += "<div class=\"meta-row mono\"><span><span style=\"color:var(--ok-text)\">&#10003; " + cor + "</span> &nbsp; <span style=\"color:var(--err-text)\">&#10005; " + err + "</span></span><strong style=\"color:var(--text)\">" + acc + "</strong></div>";
+          html += "<div class=\"progress-track\" style=\"height:6px;margin-top:10px\"><div class=\"progress-fill\" style=\"width:" + pct + "%\"></div></div>";
+          html += "<button type=\"button\" class=\"btn-secondary\" style=\"width:100%;margin-top:14px\" data-start-cat=\"" + esc(cat) + "\">Bereich trainieren &rarr;</button>";
+          html += "</div></article>";
+        }
+        html += "</div>";
+        return html;
+      }
+
+      function renderCatalog() {
+        var query = state.catalogSearch.trim().toLowerCase();
+        var filtered = QUESTIONS.filter(function (q) {
+          if (state.catalogTopic !== "Alle" && q.category !== state.catalogTopic) return false;
+          var r = state.answers[q.id];
+          if (state.catalogStatus === "unanswered" && r) return false;
+          if (state.catalogStatus === "correct" && (!r || !r.isCorrect)) return false;
+          if (state.catalogStatus === "incorrect" && (!r || r.isCorrect)) return false;
+          if (!query) return true;
+          if (String(q.id) === query || ("#" + q.id) === query) return true;
+          return (
+            q.question.toLowerCase().indexOf(query) !== -1 ||
+            q.category.toLowerCase().indexOf(query) !== -1 ||
+            q.explanation.toLowerCase().indexOf(query) !== -1 ||
+            q.correctAnswer.toLowerCase().indexOf(query) !== -1
+          );
+        });
+
+        var html = "<div style=\"display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px\">";
+        html += "<div><h1 class=\"page-title\">Alle " + QUESTIONS.length + " Fragen &amp; Rechtsgrundlagen</h1><p class=\"page-sub\">Suche nach Stichworten, Themenbereich oder Bearbeitungsstatus.</p></div>";
+        html += "<button type=\"button\" class=\"btn-secondary\" id=\"toggleAllSolBtn\">" + (state.showAllSolutions ? "Lösungen ausblenden" : "Alle Lösungen einblenden") + "</button>";
+        html += "</div>";
+
+        html += "<div class=\"beige-card\" style=\"margin-top:18px;gap:12px\">";
+        html += "<div style=\"display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center\">";
+        html += "<input type=\"search\" class=\"search-input\" id=\"catSearchInput\" value=\"" + esc(state.catalogSearch) + "\" placeholder=\"Suchen nach Thema, Stichwort oder Nr. ...\" />";
+        html += "<div class=\"segmented\">";
+        var statuses = [["all", "Alle"], ["unanswered", "Offen"], ["correct", "Richtig"], ["incorrect", "Falsch"]];
+        for (var s = 0; s < statuses.length; s++) {
+          html += "<button type=\"button\" class=\"seg-btn " + (state.catalogStatus === statuses[s][0] ? "active" : "") + "\" data-cstatus=\"" + statuses[s][0] + "\">" + statuses[s][1] + "</button>";
+        }
+        html += "</div></div>";
+        html += "<div style=\"display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;border-top:1px solid #E6DDD0;padding-top:12px\">";
+        html += "<div class=\"segmented\">";
+        html += "<button type=\"button\" class=\"seg-btn " + (state.catalogTopic === "Alle" ? "active" : "") + "\" data-ctopic=\"Alle\">Alle</button>";
+        for (var p = 0; p < TOPICS.length; p++) {
+          html += "<button type=\"button\" class=\"seg-btn " + (state.catalogTopic === TOPICS[p] ? "active" : "") + "\" data-ctopic=\"" + esc(TOPICS[p]) + "\">" + esc(TOPICS[p]) + "</button>";
+        }
+        html += "</div>";
+        html += "<span class=\"mono\" style=\"font-size:12px;color:var(--text-muted)\">" + filtered.length + " von " + QUESTIONS.length + " Fragen</span>";
+        html += "</div></div>";
+
+        for (var i = 0; i < filtered.length; i++) {
+          var q = filtered[i];
+          var r = state.answers[q.id];
+          var open = state.showAllSolutions || Boolean(state.expandedIds[q.id]);
+          html += "<article class=\"catalog-item\">";
+          html += "<div style=\"display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:flex-start\">";
+          html += "<div style=\"flex:1;min-width:220px\">";
+          html += "<div class=\"meta-left\" style=\"font-size:12px;color:var(--text-muted)\"><strong class=\"mono\" style=\"color:var(--text)\">Frage " + q.id + "</strong><span>&middot;</span><span style=\"color:#3F5E4E;font-weight:600\">" + esc(q.category) + "</span>";
+          if (r) {
+            html += "<span>&middot;</span><span style=\"font-weight:600;color:" + (r.isCorrect ? "var(--ok-text)" : "var(--err-text)") + "\">" + (r.isCorrect ? "&#10003; Richtig" : "&#10005; Falsch (" + r.selected + ")") + "</span>";
+          }
+          html += "</div>";
+          html += "<h2 style=\"margin:6px 0 0;font-size:16px;font-weight:500;line-height:1.5;max-width:75ch\">" + esc(q.question) + "</h2>";
+          html += "</div>";
+          html += "<div style=\"display:flex;gap:8px;flex-shrink:0\">";
+          html += "<button type=\"button\" class=\"btn-secondary\" data-jump-q=\"" + q.id + "\">Im Quiz öffnen</button>";
+          if (!state.showAllSolutions) {
+            html += "<button type=\"button\" class=\"btn-secondary\" data-expand-q=\"" + q.id + "\">" + (open ? "Weniger" : "Lösung") + "</button>";
+          }
+          html += "</div></div>";
+
+          if (open) {
+            html += "<div style=\"margin-top:14px;padding-top:14px;border-top:1px solid #ECE4D7\">";
+            html += "<div style=\"font-size:14px;font-weight:700;color:" + (q.correctAnswer === "JA" ? "var(--ok-text)" : "var(--err-text)") + "\">Antwort: " + esc(q.answerDetail || q.correctAnswer) + "</div>";
+            html += "<p style=\"margin:8px 0 0;font-size:14px;color:#44403C;max-width:75ch\"><strong>Rechtliche Basis: </strong>" + esc(q.explanation) + "</p>";
+            html += "</div>";
+          }
+          html += "</article>";
+        }
+        return html;
+      }
+
+      function renderResults() {
+        var o = getOverallStats();
+        var missed = QUESTIONS.filter(function (q) {
+          var r = state.answers[q.id];
+          return r && !r.isCorrect;
+        });
+
+        var html = "<div style=\"display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px\">";
+        html += "<div><h1 class=\"page-title\">Deine Auswertung</h1><p class=\"page-sub\">Überblick über deinen Lernstand aus allen " + QUESTIONS.length + " Fragen zu Urheberrecht und Datenschutz.</p></div>";
+        if (!state.confirmReset) {
+          html += "<button type=\"button\" class=\"btn-secondary\" id=\"askResetBtn\" " + (o.answered === 0 ? "disabled" : "") + ">Fortschritt zurücksetzen</button>";
+        } else {
+          html += "<div style=\"display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;border:1px solid #DFA5A1;background:#F9EAE8\">";
+          html += "<span style=\"font-size:12px;font-weight:600;color:#7D322E\">Alle Antworten löschen?</span>";
+          html += "<button type=\"button\" class=\"btn-primary\" style=\"background:#B95D58;min-height:32px;padding:4px 10px\" id=\"confirmResetBtn\">Löschen</button>";
+          html += "<button type=\"button\" class=\"btn-secondary\" style=\"min-height:32px;padding:4px 10px\" id=\"cancelResetBtn\">Abbrechen</button>";
+          html += "</div>";
+        }
+        html += "</div>";
+
+        html += "<div class=\"kpi-grid\">";
+        html += "<div class=\"beige-card\"><div style=\"font-size:12px;color:var(--text-soft)\">Beantwortet</div><div class=\"mono\" style=\"font-size:24px;font-weight:700;margin-top:6px\">" + o.answered + " / " + o.total + "</div><div style=\"font-size:12px;color:var(--text-soft)\">" + o.completionPct + "% abgeschlossen</div></div>";
+        html += "<div class=\"beige-card\"><div style=\"font-size:12px;color:var(--text-soft)\">Richtig gelöst</div><div class=\"mono\" style=\"font-size:24px;font-weight:700;margin-top:6px;color:var(--ok-text)\">" + o.correct + "</div><div style=\"font-size:12px;color:var(--text-soft)\">" + o.incorrect + " nicht optimal</div></div>";
+        html += "<div class=\"beige-card\"><div style=\"font-size:12px;color:var(--text-soft)\">Trefferquote</div><div class=\"mono\" style=\"font-size:24px;font-weight:700;margin-top:6px;color:#3F5E4E\">" + (o.answered > 0 ? o.accuracy + "%" : "—") + "</div><div style=\"font-size:12px;color:var(--text-soft)\">Gelöste Fragen</div></div>";
+        html += "<div class=\"beige-card\"><div style=\"font-size:12px;color:var(--text-soft)\">Beste Serie</div><div class=\"mono\" style=\"font-size:24px;font-weight:700;margin-top:6px\">" + o.bestStreak + "</div><div style=\"font-size:12px;color:var(--text-soft)\">Aktuell: " + o.currentStreak + "</div></div>";
+        html += "</div>";
+
+        html += "<div class=\"catalog-item\" style=\"margin-top:22px;padding:24px\"><h2 style=\"margin:0 0 16px;font-size:18px\">Kompetenz nach Themenbereich</h2>";
+        for (var i = 0; i < TOPICS.length; i++) {
+          var cat = TOPICS[i];
+          var items = QUESTIONS.filter(function (q) { return q.category === cat; });
+          var ans = 0, cor = 0, err = 0;
+          for (var j = 0; j < items.length; j++) {
+            var r = state.answers[items[j].id];
+            if (r) { ans++; if (r.isCorrect) cor++; else err++; }
+          }
+          var pctCor = (cor / items.length) * 100;
+          var pctErr = (err / items.length) * 100;
+          html += "<div style=\"margin-bottom:14px\"><div class=\"meta-row\"><strong style=\"font-size:14px;color:var(--text)\">" + esc(cat) + "</strong><span class=\"mono\">" + ans + "/" + items.length + " (" + (ans > 0 ? Math.round((cor / ans) * 100) + "%" : "—") + ")</span></div>";
+          html += "<div style=\"height:8px;border-radius:999px;background:#EAE2D4;overflow:hidden;display:flex;margin-top:6px\"><div style=\"background:#669679;width:" + pctCor + "%\"></div><div style=\"background:#D88B86;width:" + pctErr + "%\"></div></div></div>";
+        }
+        html += "</div>";
+
+        html += "<div class=\"catalog-item\" style=\"margin-top:20px;padding:24px\">";
+        html += "<div style=\"display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px\">";
+        html += "<h2 style=\"margin:0;font-size:18px\">Fragen zum Nachlesen (" + missed.length + ")</h2>";
+        if (missed.length > 0) {
+          html += "<button type=\"button\" class=\"btn-primary\" id=\"practiceMistakesBtn\">Fehler wiederholen &rarr;</button>";
+        }
+        html += "</div>";
+        if (missed.length === 0) {
+          html += "<p style=\"margin-top:14px;font-size:14px;color:var(--text-muted)\">" + (o.answered === 0 ? "Beantworte zuerst einige Fragen im Quiz." : "Stark! Aktuell keine falsch beantworteten Fragen.") + "</p>";
+        } else {
+          for (var m = 0; m < missed.length; m++) {
+            var mq = missed[m];
+            var mr = state.answers[mq.id];
+            html += "<div style=\"padding:14px 0;border-top:1px solid #ECE4D7;margin-top:12px\">";
+            html += "<div class=\"meta-row\"><span><strong class=\"mono\">Frage " + mq.id + "</strong> &middot; " + esc(mq.category) + " &middot; <span style=\"color:var(--err-text)\">Gewählt: " + mr.selected + " / Lösung: " + mq.correctAnswer + "</span></span><button type=\"button\" class=\"retry-link\" data-jump-q=\"" + mq.id + "\">Erneut lösen</button></div>";
+            html += "<p style=\"margin:6px 0;font-size:14px;font-weight:600\">" + esc(mq.question) + "</p>";
+            html += "<p style=\"margin:0;font-size:14px;color:var(--text-muted)\"><strong style=\"color:var(--ok-text)\">Richtig (" + esc(mq.answerDetail || mq.correctAnswer) + "): </strong>" + esc(mq.explanation) + "</p>";
+            html += "</div>";
+          }
+        }
+        html += "</div>";
+        return html;
+      }
+
+      function render() {
+        syncNav();
+        var root = document.getElementById("appRoot");
+        if (state.view === "quiz") root.innerHTML = renderQuiz();
+        else if (state.view === "topics") root.innerHTML = renderTopics();
+        else if (state.view === "catalog") root.innerHTML = renderCatalog();
+        else root.innerHTML = renderResults();
+        bindEvents();
+      }
+
+      function bindEvents() {
+        var root = document.getElementById("appRoot");
+        root.querySelectorAll("[data-mode]").forEach(function (btn) {
+          btn.onclick = function () {
+            var m = btn.getAttribute("data-mode");
+            if (m === "all") startMode("all", "Alle", false);
+            else if (m === "sprint") startMode("sprint", state.category, true);
+            else startMode("mistakes", "Alle", false);
+          };
+        });
+        root.querySelectorAll("[data-cat]").forEach(function (btn) {
+          btn.onclick = function () {
+            var c = btn.getAttribute("data-cat");
+            startMode(c === "Alle" ? "all" : "category", c, false);
+          };
+        });
+        var shuf = document.getElementById("shuffleBtn");
+        if (shuf) shuf.onclick = function () {
+          state.shuffled = !state.shuffled;
+          state.questionIds = state.shuffled ? shuffle(state.questionIds) : state.questionIds.slice().sort(function (a, b) { return a - b; });
+          state.currentIndex = 0;
+          render();
+        };
+        root.querySelectorAll("[data-opt]").forEach(function (btn) {
+          btn.onclick = function () {
+            var qId = state.questionIds[state.currentIndex];
+            var q = getQuestion(qId);
+            if (!q || state.answers[qId]) return;
+            var sel = btn.getAttribute("data-opt");
+            state.answers[qId] = { selected: sel, isCorrect: sel === q.correctAnswer, answeredAt: Date.now() };
+            saveAnswers(state.answers);
+            render();
+          };
+        });
+        var retry = document.getElementById("retryOneBtn");
+        if (retry) retry.onclick = function () {
+          delete state.answers[state.questionIds[state.currentIndex]];
+          saveAnswers(state.answers);
+          render();
+        };
+        var prev = document.getElementById("prevBtn");
+        if (prev) prev.onclick = function () { if (state.currentIndex > 0) { state.currentIndex--; render(); } };
+        var next = document.getElementById("nextBtn");
+        if (next) next.onclick = function () { if (state.currentIndex < state.questionIds.length - 1) { state.currentIndex++; render(); } };
+        var fin = document.getElementById("finishBtn");
+        if (fin) fin.onclick = function () { state.view = "results"; render(); };
+        var openAll = document.getElementById("openAllBtn");
+        if (openAll) openAll.onclick = function () { startMode("all", "Alle", false); };
+        var openRes = document.getElementById("openResBtn");
+        if (openRes) openRes.onclick = function () { state.view = "results"; render(); };
+
+        root.querySelectorAll("[data-jump-idx]").forEach(function (btn) {
+          btn.onclick = function () {
+            state.currentIndex = Number(btn.getAttribute("data-jump-idx"));
+            render();
+          };
+        });
+        root.querySelectorAll("[data-start-cat]").forEach(function (btn) {
+          btn.onclick = function () {
+            startMode("category", btn.getAttribute("data-start-cat"), false);
+          };
+        });
+        root.querySelectorAll("[data-jump-q]").forEach(function (btn) {
+          btn.onclick = function () {
+            var id = Number(btn.getAttribute("data-jump-q"));
+            var idx = state.questionIds.indexOf(id);
+            if (idx === -1) {
+              state.mode = "all"; state.category = "Alle"; state.questionIds = ALL_IDS.slice(); state.shuffled = false;
+              idx = ALL_IDS.indexOf(id);
+            }
+            state.currentIndex = idx;
+            state.view = "quiz";
+            render();
+          };
+        });
+        root.querySelectorAll("[data-expand-q]").forEach(function (btn) {
+          btn.onclick = function () {
+            var id = Number(btn.getAttribute("data-expand-q"));
+            state.expandedIds[id] = !state.expandedIds[id];
+            render();
+          };
+        });
+        var toggleAllSol = document.getElementById("toggleAllSolBtn");
+        if (toggleAllSol) toggleAllSol.onclick = function () { state.showAllSolutions = !state.showAllSolutions; render(); };
+        var searchInp = document.getElementById("catSearchInput");
+        if (searchInp) {
+          searchInp.oninput = function (e) {
+            state.catalogSearch = e.target.value;
+            var pos = e.target.selectionStart;
+            render();
+            var again = document.getElementById("catSearchInput");
+            if (again) { again.focus(); again.setSelectionRange(pos, pos); }
+          };
+        }
+        root.querySelectorAll("[data-cstatus]").forEach(function (btn) {
+          btn.onclick = function () { state.catalogStatus = btn.getAttribute("data-cstatus"); render(); };
+        });
+        root.querySelectorAll("[data-ctopic]").forEach(function (btn) {
+          btn.onclick = function () { state.catalogTopic = btn.getAttribute("data-ctopic"); render(); };
+        });
+        var askReset = document.getElementById("askResetBtn");
+        if (askReset) askReset.onclick = function () { state.confirmReset = true; render(); };
+        var cancelReset = document.getElementById("cancelResetBtn");
+        if (cancelReset) cancelReset.onclick = function () { state.confirmReset = false; render(); };
+        var confirmReset = document.getElementById("confirmResetBtn");
+        if (confirmReset) confirmReset.onclick = function () {
+          state.answers = {};
+          saveAnswers({});
+          state.confirmReset = false;
+          startMode("all", "Alle", false);
+          state.view = "results";
+          render();
+        };
+        var pm = document.getElementById("practiceMistakesBtn");
+        if (pm) pm.onclick = function () { startMode("mistakes", "Alle", false); };
+      }
+
+      document.getElementById("brandBtn").onclick = function () { state.view = "quiz"; render(); };
+      document.getElementById("sprintBtn").onclick = function () { startMode("sprint", "Alle", true); };
+      document.querySelectorAll(".nav-btn[data-view]").forEach(function (btn) {
+        btn.onclick = function () { state.view = btn.getAttribute("data-view"); render(); };
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (state.view !== "quiz") return;
+        var tag = e.target && e.target.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA") return;
+        var qId = state.questionIds[state.currentIndex];
+        var q = qId ? getQuestion(qId) : null;
+        if (!q) return;
+        var rec = state.answers[qId];
+        var k = e.key.toLowerCase();
+        if (!rec && (k === "j" || k === "1" || k === "n" || k === "2")) {
+          e.preventDefault();
+          var opt = (k === "j" || k === "1") ? "JA" : "NEIN";
+          state.answers[qId] = { selected: opt, isCorrect: opt === q.correctAnswer, answeredAt: Date.now() };
+          saveAnswers(state.answers);
+          render();
+          return;
+        }
+        if ((e.key === "ArrowRight" || (e.key === "Enter" && rec)) && state.currentIndex < state.questionIds.length - 1) {
+          e.preventDefault(); state.currentIndex++; render();
+        } else if (e.key === "ArrowLeft" && state.currentIndex > 0) {
+          e.preventDefault(); state.currentIndex--; render();
+        }
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
