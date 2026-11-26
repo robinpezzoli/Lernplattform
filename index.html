@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Meine Lernplattform</title>
+    <title>💡 Hirntraining 🧠</title>
 
     <style>
         * {
@@ -20,14 +20,14 @@
         }
 
         header {
-            background: linear-gradient(135deg, #1e40af, #2563eb);
+            background: linear-gradient(135deg, #312e81, #2563eb);
             color: white;
             text-align: center;
             padding: 55px 20px;
         }
 
         header h1 {
-            font-size: 36px;
+            font-size: 38px;
             margin: 0 0 15px;
         }
 
@@ -36,9 +36,14 @@
         }
 
         main {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 40px auto;
             padding: 20px;
+        }
+
+        main > h2 {
+            text-align: center;
+            margin-bottom: 35px;
         }
 
         .karten {
@@ -54,24 +59,26 @@
             border-radius: 18px;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .karte:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.13);
         }
 
         .symbol {
-            font-size: 48px;
+            font-size: 52px;
         }
 
         .karte h2 {
             color: #1d4ed8;
+            font-size: 21px;
         }
 
         .karte p {
             line-height: 1.6;
-            min-height: 50px;
+            min-height: 65px;
         }
 
         .button {
@@ -100,18 +107,17 @@
 <body>
 
 <header>
-    <h1>🎓 Meine Lernplattform</h1>
-    <p>Entdecken, üben und besser werden!</p>
+    <h1>💡 Hirntraining 🧠</h1>
+    <p>Entdecken, üben, knobeln und besser werden!</p>
 </header>
 
 <main>
 
-    <h2 style="text-align:center; margin-bottom:30px;">
-        Wähle deine Lernübung
-    </h2>
+    <h2>🎯 Wähle dein Trainingsprogramm</h2>
 
     <div class="karten">
 
+        <!-- Mathe Master -->
         <div class="karte">
             <div class="symbol">🏆</div>
             <h2>Mathe-Master-Challenge</h2>
@@ -122,6 +128,7 @@
             </a>
         </div>
 
+        <!-- Pythagoras -->
         <div class="karte">
             <div class="symbol">🏔️</div>
             <h2>Alpenlift – Pythagoras</h2>
@@ -132,6 +139,7 @@
             </a>
         </div>
 
+        <!-- Multiplikation -->
         <div class="karte">
             <div class="symbol">✖️</div>
             <h2>Multiplikations-Duell</h2>
@@ -142,12 +150,23 @@
             </a>
         </div>
 
+        <!-- Detailhandel Kassentrainer -->
+        <div class="karte">
+            <div class="symbol">🛒</div>
+            <h2>Detailhandel-Kassentrainer Schweiz</h2>
+            <p>Trainiere Kassieren, Rückgeld und den Umgang mit Schweizer Franken!</p>
+            <a class="button"
+               href="Detailhandel_Kassentrainer_Schweiz.html">
+               Jetzt starten
+            </a>
+        </div>
+
     </div>
 
 </main>
 
 <footer>
-    <p>Viel Erfolg beim Lernen! 🚀</p>
+    <p>💡 Denken. Üben. Lernen. Wachsen. 🧠</p>
 </footer>
 
 </body>
