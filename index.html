@@ -2,162 +2,270 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>💡 Hirntraining 🧠</title>
+<title>💡 Hirntraining 🧠</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+:root {
+    --forest: #244b3b;
+    --deep: #17382d;
+    --sage: #789b83;
+    --mint: #dcebdd;
+    --pastel: #eff6ed;
+    --cream: #fafbf4;
+    --text: #294438;
+}
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        header {
-            background: linear-gradient(135deg, #312e81, #2563eb);
-            color: white;
-            text-align: center;
-            padding: 55px 20px;
-        }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--pastel);
+    color: var(--text);
+    overflow-x: hidden;
+}
 
-        header h1 {
-            font-size: 38px;
-            margin: 0 0 15px;
-        }
+/* KOPFBEREICH */
 
-        header p {
-            font-size: 18px;
-        }
+header {
+    background: linear-gradient(135deg, #244b3b, #527b60);
+    color: white;
+    text-align: center;
+    padding: 65px 20px 75px;
+    border-radius: 0 0 35px 35px;
+    position: relative;
+}
 
-        main {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 20px;
-        }
+header h1 {
+    font-size: clamp(30px, 5vw, 44px);
+    margin: 0 0 15px;
+}
 
-        main > h2 {
-            text-align: center;
-            margin-bottom: 35px;
-        }
+header p {
+    font-size: 18px;
+    color: #e4f1df;
+}
 
-        .karten {
-            display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-        }
+/* GEISSLEIN */
 
-        .karte {
-            background: white;
-            padding: 30px 20px;
-            border-radius: 18px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+.goat {
+    position: fixed;
+    z-index: 10;
+    top: 155px;
+    font-size: clamp(38px, 6vw, 65px);
+    pointer-events: none;
+    opacity: 0;
+}
 
-        .karte:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.13);
-        }
+.goat-left {
+    left: 0;
+    transform: translateX(-110%);
+    animation: peek-left 10s infinite;
+}
 
-        .symbol {
-            font-size: 52px;
-        }
+.goat-right {
+    right: 0;
+    transform: translateX(110%);
+    animation: peek-right 12s infinite;
+    animation-delay: 3s;
+}
 
-        .karte h2 {
-            color: #1d4ed8;
-            font-size: 21px;
-        }
+@keyframes peek-left {
+    0%, 10% {
+        opacity: 0;
+        transform: translateX(-110%);
+    }
+    15%, 27% {
+        opacity: 1;
+        transform: translateX(-12%);
+    }
+    32%, 100% {
+        opacity: 0;
+        transform: translateX(-110%);
+    }
+}
 
-        .karte p {
-            line-height: 1.6;
-            min-height: 65px;
-        }
+@keyframes peek-right {
+    0%, 12% {
+        opacity: 0;
+        transform: translateX(110%);
+    }
+    17%, 29% {
+        opacity: 1;
+        transform: translateX(12%);
+    }
+    34%, 100% {
+        opacity: 0;
+        transform: translateX(110%);
+    }
+}
 
-        .button {
-            display: inline-block;
-            background: #2563eb;
-            color: white;
-            padding: 13px 22px;
-            border-radius: 9px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 15px;
-        }
+/* INHALT */
 
-        .button:hover {
-            background: #1e40af;
-        }
+main {
+    max-width: 1100px;
+    margin: 45px auto;
+    padding: 20px;
+}
 
-        footer {
-            text-align: center;
-            padding: 25px;
-            color: #64748b;
-        }
-    </style>
+main > h2 {
+    text-align: center;
+    color: var(--forest);
+    font-size: 27px;
+    margin-bottom: 35px;
+}
+
+/* LERNKARTEN */
+
+.karten {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.karte {
+    background: var(--cream);
+    padding: 32px 22px;
+    border-radius: 22px;
+    text-align: center;
+    border: 1px solid #dce9da;
+    box-shadow: 0 5px 16px rgba(36,75,59,0.08);
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.karte:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 12px 25px rgba(36,75,59,0.16);
+}
+
+.symbol {
+    font-size: 52px;
+    margin-bottom: 10px;
+}
+
+.karte h2 {
+    color: var(--forest);
+    font-size: 21px;
+    min-height: 48px;
+}
+
+.karte p {
+    line-height: 1.6;
+    min-height: 65px;
+    color: #61766a;
+}
+
+.button {
+    display: inline-block;
+    background: var(--sage);
+    color: white;
+    padding: 13px 23px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: background 0.2s;
+}
+
+.button:hover {
+    background: var(--forest);
+}
+
+/* FUSSZEILE */
+
+footer {
+    background: #e1ecdf;
+    text-align: center;
+    padding: 30px 15px;
+    margin-top: 55px;
+    color: var(--forest);
+    border-radius: 30px 30px 0 0;
+}
+
+footer p {
+    margin: 5px;
+}
+
+/* ANIMATION AUF KLEINEN GERÄTEN REDUZIEREN */
+
+@media (prefers-reduced-motion: reduce) {
+    .goat {
+        animation: none;
+        display: none;
+    }
+
+    .karte {
+        transition: none;
+    }
+}
+</style>
 </head>
 
 <body>
+
+<!-- Neugierige Geisslein -->
+
+<div class="goat goat-left" aria-hidden="true">🐐</div>
+<div class="goat goat-right" aria-hidden="true">🐐</div>
+
+<!-- KOPFBEREICH -->
 
 <header>
     <h1>💡 Hirntraining 🧠</h1>
     <p>Entdecken, üben, knobeln und besser werden!</p>
 </header>
 
+<!-- LERNPROGRAMME -->
+
 <main>
 
-    <h2>🎯 Wähle dein Trainingsprogramm</h2>
+    <h2>🌿 Wähle dein Trainingsprogramm 🌿</h2>
 
     <div class="karten">
 
-        <!-- Mathe Master -->
         <div class="karte">
             <div class="symbol">🏆</div>
             <h2>Mathe-Master-Challenge</h2>
             <p>Stelle dein mathematisches Können unter Beweis!</p>
             <a class="button"
                href="Mathe-Master-Challenge-3.html">
-               Jetzt starten
+               Jetzt starten →
             </a>
         </div>
 
-        <!-- Pythagoras -->
         <div class="karte">
             <div class="symbol">🏔️</div>
             <h2>Alpenlift – Pythagoras</h2>
             <p>Entdecke den Satz des Pythagoras auf spielerische Weise!</p>
             <a class="button"
                href="alpenlift-pythagoras.html">
-               Jetzt starten
+               Jetzt starten →
             </a>
         </div>
 
-        <!-- Multiplikation -->
         <div class="karte">
             <div class="symbol">✖️</div>
             <h2>Multiplikations-Duell</h2>
             <p>Trainiere das Einmaleins und verbessere deine Geschwindigkeit!</p>
             <a class="button"
                href="multiplikations_duell.html">
-               Jetzt starten
+               Jetzt starten →
             </a>
         </div>
 
-        <!-- Detailhandel Kassentrainer -->
         <div class="karte">
             <div class="symbol">🛒</div>
             <h2>Detailhandel-Kassentrainer Schweiz</h2>
             <p>Trainiere Kassieren, Rückgeld und den Umgang mit Schweizer Franken!</p>
             <a class="button"
                href="Detailhandel_Kassentrainer_Schweiz.html">
-               Jetzt starten
+               Jetzt starten →
             </a>
         </div>
 
@@ -165,8 +273,11 @@
 
 </main>
 
+<!-- FUSSZEILE -->
+
 <footer>
-    <p>💡 Denken. Üben. Lernen. Wachsen. 🧠</p>
+    <p>🌲 Denken. Üben. Lernen. Wachsen. 🌲</p>
+    <p>Viel Erfolg beim Hirntraining! 🐐</p>
 </footer>
 
 </body>
