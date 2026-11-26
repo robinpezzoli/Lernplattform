@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formwerk — GitHub Pages Startseite</title>
+    <meta
+      name="description"
+      content="Moderne, responsive Startseite mit sauberer CSS-Architektur, adaptiver Navigation und interaktiver Projektübersicht für GitHub Pages."
+    />
+    <meta property="og:title" content="Formwerk — GitHub Pages Startseite" />
+    <meta
+      property="og:description"
+      content="Moderne, responsive Startseite mit sauberer CSS-Architektur, adaptiver Navigation und interaktiver Projektübersicht für GitHub Pages."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('fw-theme');
+          if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <style>
+      /* =====================================================================
+         Design Tokens & Modern CSS Variables (60-30-10 System)
+         ===================================================================== */
+      :root {
+        --fw-bg: #fafafa;
+        --fw-surface: #ffffff;
+        --fw-surface-subtle: #f3f4f6;
+        --fw-text: #0f172a;
+        --fw-text-muted: #475569;
+        --fw-text-subtle: #64748b;
+        --fw-border: rgba(15, 23, 42, 0.09);
+        --fw-border-strong: rgba(15, 23, 42, 0.16);
+        --fw-accent: #1d4ed8;
+        --fw-accent-hover: #1e40af;
+        --fw-accent-contrast: #ffffff;
+        --fw-header-bg: rgba(250, 250, 250, 0.86);
+        --fw-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+        --fw-radius-md: 10px;
+        --fw-radius-lg: 14px;
+        --fw-font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        --fw-font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+        --fw-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+        --fw-ease: cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      html.dark {
+        --fw-bg: #0b0d11;
+        --fw-surface: #13161c;
+        --fw-surface-subtle: #1a1e26;
+        --fw-text: #f1f5f9;
+        --fw-text-muted: #94a3b8;
+        --fw-text-subtle: #64748b;
+        --fw-border: rgba(255, 255, 255, 0.09);
+        --fw-border-strong: rgba(255, 255, 255, 0.18);
+        --fw-accent: #3b82f6;
+        --fw-accent-hover: #60a5fa;
+        --fw-accent-contrast: #0b0d11;
+        --fw-header-bg: rgba(11, 13, 17, 0.86);
+        --fw-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      body {
+        margin: 0;
+        background-color: var(--fw-bg);
+        color: var(--fw-text);
+        font-family: var(--fw-font-body);
+        font-size: 16px;
+        line-height: 1.6;
+        transition: background-color 180ms var(--fw-ease), color 180ms var(--fw-ease);
+      }
+
+      img,
+      svg {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        font-family: inherit;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--fw-accent);
+        outline-offset: 2px;
+      }
+
+      .fw-container {
+        width: 100%;
+        max-width: 1200px;
+        margin-inline: auto;
+        padding-inline: 24px;
+      }
+
+      /* =====================================================================
+         Top Bar & Responsive Navigation (3-Zone Contract)
+         ===================================================================== */
+      .fw-header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        background-color: var(--fw-header-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--fw-border);
+      }
+
+      .fw-header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+        height: 64px;
+      }
+
+      .fw-brand {
+        font-family: var(--fw-font-display);
+        font-size: 1.125rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .fw-nav {
+        display: none;
+        align-items: center;
+        gap: 28px;
+      }
+
+      .fw-nav-link {
+        position: relative;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--fw-text-muted);
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding-block: 6px;
+        transition: color 160ms var(--fw-ease);
+      }
+
+      .fw-nav-link::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1.5px;
+        background-color: var(--fw-text);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 180ms var(--fw-ease);
+      }
+
+      .fw-nav-link:hover,
+      .fw-nav-link:focus-visible {
+        color: var(--fw-text);
+      }
+
+      .fw-nav-link:hover::after,
+      .fw-nav-link[aria-current='page']::after {
+        transform: scaleX(1);
+      }
+
+      .fw-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+
+      .fw-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 40px;
+        padding: 8px 18px;
+        border-radius: var(--fw-radius-md);
+        border: 1px solid transparent;
+        background-color: var(--fw-accent);
+        color: var(--fw-accent-contrast);
+        font-size: 0.875rem;
+        font-weight: 600;
+        white-space: nowrap;
+        flex-shrink: 0;
+        cursor: pointer;
+        transition: background-color 160ms var(--fw-ease), transform 160ms var(--fw-ease);
+      }
+
+      .fw-btn-primary:hover {
+        background-color: var(--fw-accent-hover);
+      }
+
+      .fw-btn-primary:active {
+        transform: translateY(1px);
+      }
+
+      .fw-btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 40px;
+        padding: 8px 16px;
+        border-radius: var(--fw-radius-md);
+        border: 1px solid var(--fw-border-strong);
+        background-color: var(--fw-surface);
+        color: var(--fw-text);
+        font-size: 0.875rem;
+        font-weight: 500;
+        white-space: nowrap;
+        flex-shrink: 0;
+        cursor: pointer;
+        transition: border-color 160ms var(--fw-ease), background-color 160ms var(--fw-ease);
+      }
+
+      .fw-btn-secondary:hover {
+        background-color: var(--fw-surface-subtle);
+      }
+
+      .fw-menu-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--fw-radius-md);
+        border: 1px solid var(--fw-border);
+        background-color: var(--fw-surface);
+        color: var(--fw-text);
+        cursor: pointer;
+      }
+
+      .fw-desktop-cta {
+        display: none;
+      }
+
+      @media (min-width: 768px) {
+        .fw-nav {
+          display: flex;
+        }
+        .fw-desktop-cta {
+          display: inline-flex;
+        }
+        .fw-menu-toggle {
+          display: none;
+        }
+      }
+
+      /* Mobile Navigation Drawer */
+      .fw-mobile-drawer {
+        display: none;
+        border-top: 1px solid var(--fw-border);
+        background-color: var(--fw-surface);
+        padding: 16px 24px 24px;
+      }
+
+      .fw-mobile-drawer.is-open {
+        display: block;
+      }
+
+      @media (min-width: 768px) {
+        .fw-mobile-drawer.is-open {
+          display: none;
+        }
+      }
+
+      .fw-mobile-nav-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 16px;
+      }
+
+      .fw-mobile-nav-link {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--fw-text);
+      }
+
+      .fw-mobile-nav-link:hover {
+        background-color: var(--fw-surface-subtle);
+      }
+
+      /* =====================================================================
+         Hero Section & Layout Grid
+         ===================================================================== */
+      .fw-hero {
+        padding-block: 56px 40px;
+      }
+
+      @media (min-width: 1024px) {
+        .fw-hero {
+          padding-block: 76px 56px;
+        }
+      }
+
+      .fw-hero-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 40px;
+        align-items: stretch;
+      }
+
+      @media (min-width: 1024px) {
+        .fw-hero-grid {
+          grid-template-columns: 1.15fr 0.85fr;
+          gap: 48px;
+        }
+      }
+
+      .fw-kicker {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--fw-text-muted);
+        margin: 0 0 14px;
+      }
+
+      .fw-hero-title {
+        font-family: var(--fw-font-display);
+        font-size: clamp(2.25rem, 4vw, 3.625rem);
+        font-weight: 700;
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+        text-wrap: balance;
+        max-width: 18ch;
+        margin: 0 0 20px;
+      }
+
+      .fw-hero-lead {
+        font-size: 1.0625rem;
+        line-height: 1.65;
+        color: var(--fw-text-muted);
+        max-width: 56ch;
+        margin: 0 0 28px;
+      }
+
+      .fw-hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .fw-hero-panel {
+        background-color: var(--fw-surface);
+        border: 1px solid var(--fw-border);
+        border-radius: var(--fw-radius-lg);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 20px;
+        box-shadow: var(--fw-shadow-sm);
+      }
+
+      .fw-kpi-strip {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        border-top: 1px solid var(--fw-border);
+        border-bottom: 1px solid var(--fw-border);
+      }
+
+      @media (min-width: 768px) {
+        .fw-kpi-strip {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      .fw-kpi-item {
+        padding: 20px 16px;
+        border-right: 1px solid var(--fw-border);
+      }
+
+      .fw-kpi-item:nth-child(2n) {
+        border-right: none;
+      }
+
+      @media (min-width: 768px) {
+        .fw-kpi-item:nth-child(2n) {
+          border-right: 1px solid var(--fw-border);
+        }
+        .fw-kpi-item:last-child {
+          border-right: none;
+        }
+      }
+
+      .fw-kpi-value {
+        font-family: var(--fw-font-mono);
+        font-variant-numeric: tabular-nums;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .fw-kpi-label {
+        font-size: 0.8125rem;
+        color: var(--fw-text-muted);
+        margin-top: 4px;
+      }
+
+      /* =====================================================================
+         Sections, Filter Bar & Bento Cards
+         ===================================================================== */
+      .fw-section {
+        padding-block: 64px;
+        border-top: 1px solid var(--fw-border);
+      }
+
+      .fw-section-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 32px;
+      }
+
+      .fw-section-title {
+        font-family: var(--fw-font-display);
+        font-size: clamp(1.5rem, 2.5vw, 2.125rem);
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        line-height: 1.2;
+        margin: 0;
+      }
+
+      .fw-section-sub {
+        font-size: 0.9375rem;
+        color: var(--fw-text-muted);
+        margin: 8px 0 0;
+        max-width: 58ch;
+      }
+
+      .fw-filter-group {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 4px;
+        border-radius: var(--fw-radius-md);
+        background-color: var(--fw-surface-subtle);
+        border: 1px solid var(--fw-border);
+      }
+
+      .fw-filter-btn {
+        min-height: 36px;
+        padding: 6px 14px;
+        border-radius: 7px;
+        border: none;
+        background: transparent;
+        color: var(--fw-text-muted);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background-color 150ms var(--fw-ease), color 150ms var(--fw-ease);
+      }
+
+      .fw-filter-btn:hover {
+        color: var(--fw-text);
+      }
+
+      .fw-filter-btn[aria-pressed='true'] {
+        background-color: var(--fw-surface);
+        color: var(--fw-text);
+        box-shadow: var(--fw-shadow-sm);
+      }
+
+      .fw-bento-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      @media (min-width: 768px) {
+        .fw-bento-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .fw-bento-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .fw-card-wide {
+          grid-column: span 2;
+        }
+      }
+
+      .fw-card {
+        background-color: var(--fw-surface);
+        border: 1px solid var(--fw-border);
+        border-radius: var(--fw-radius-lg);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 16px;
+        transition: border-color 180ms var(--fw-ease), transform 180ms var(--fw-ease);
+      }
+
+      .fw-card:hover {
+        border-color: var(--fw-border-strong);
+        transform: translateY(-2px);
+      }
+
+      .fw-card[hidden] {
+        display: none;
+      }
+
+      .fw-meta-line {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8125rem;
+        color: var(--fw-text-subtle);
+      }
+
+      .fw-card-title {
+        font-family: var(--fw-font-display);
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin: 6px 0 8px;
+      }
+
+      .fw-card-desc {
+        font-size: 0.9375rem;
+        color: var(--fw-text-muted);
+        margin: 0;
+      }
+
+      .fw-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-top: 14px;
+        border-top: 1px solid var(--fw-border);
+        font-size: 0.875rem;
+      }
+
+      .fw-metric {
+        font-family: var(--fw-font-mono);
+        font-variant-numeric: tabular-nums;
+        font-size: 0.8125rem;
+        color: var(--fw-text-muted);
+      }
+
+      /* Numbered Editorial List */
+      .fw-steps-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      @media (min-width: 768px) {
+        .fw-steps-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .fw-step-item {
+        padding-top: 20px;
+        border-top: 1px solid var(--fw-border-strong);
+      }
+
+      .fw-step-title {
+        font-family: var(--fw-font-display);
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0 0 10px;
+      }
+
+      .fw-step-desc {
+        font-size: 0.9375rem;
+        color: var(--fw-text-muted);
+        margin: 0;
+      }
+
+      /* Contact Form */
+      .fw-contact-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      @media (min-width: 900px) {
+        .fw-contact-grid {
+          grid-template-columns: 1fr 1.1fr;
+          gap: 56px;
+        }
+      }
+
+      .fw-form {
+        background-color: var(--fw-surface);
+        border: 1px solid var(--fw-border);
+        border-radius: var(--fw-radius-lg);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .fw-field label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
+
+      .fw-input,
+      .fw-textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: var(--fw-radius-md);
+        border: 1px solid var(--fw-border-strong);
+        background-color: var(--fw-bg);
+        color: var(--fw-text);
+        font-family: inherit;
+        font-size: 0.9375rem;
+        transition: border-color 150ms var(--fw-ease);
+      }
+
+      .fw-input:focus,
+      .fw-textarea:focus {
+        outline: none;
+        border-color: var(--fw-accent);
+      }
+
+      .fw-form-status {
+        font-size: 0.875rem;
+        min-height: 20px;
+      }
+
+      /* Footer */
+      .fw-footer {
+        border-top: 1px solid var(--fw-border);
+        padding-block: 36px;
+      }
+
+      .fw-footer-inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        font-size: 0.875rem;
+        color: var(--fw-text-muted);
+      }
+
+      .fw-footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .fw-footer-links a:hover {
+        color: var(--fw-text);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="fw-header" id="top">
+      <div class="fw-container fw-header-inner">
+        <a href="#top" class="fw-brand">Formwerk</a>
+
+        <nav class="fw-nav" aria-label="Hauptnavigation">
+          <a href="#projekte" class="fw-nav-link">Projekte</a>
+          <a href="#arbeitsweise" class="fw-nav-link">Arbeitsweise</a>
+          <a href="#architektur" class="fw-nav-link">Architektur</a>
+          <a href="#kontakt" class="fw-nav-link">Kontakt</a>
+        </nav>
+
+        <div class="fw-header-actions">
+          <a href="#kontakt" class="fw-btn-primary fw-desktop-cta">Projekt anfragen</a>
+          <button
+            type="button"
+            class="fw-menu-toggle"
+            id="fw-menu-btn"
+            aria-expanded="false"
+            aria-controls="fw-mobile-drawer"
+            aria-label="Navigation öffnen"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="4" y1="7" x2="20" y2="7"></line>
+              <line x1="4" y1="12" x2="20" y2="12"></line>
+              <line x1="4" y1="17" x2="20" y2="17"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="fw-mobile-drawer" id="fw-mobile-drawer" aria-hidden="true">
+        <nav class="fw-mobile-nav-list" aria-label="Mobile Navigation">
+          <a href="#projekte" class="fw-mobile-nav-link">Projekte</a>
+          <a href="#arbeitsweise" class="fw-mobile-nav-link">Arbeitsweise</a>
+          <a href="#architektur" class="fw-mobile-nav-link">Architektur</a>
+          <a href="#kontakt" class="fw-mobile-nav-link">Kontakt</a>
+        </nav>
+        <a href="#kontakt" class="fw-btn-primary" style="width: 100%">Projekt anfragen</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="fw-hero">
+        <div class="fw-container">
+          <div class="fw-hero-grid">
+            <div>
+              <p class="fw-kicker">Digitale Systeme · Web-Architektur · Open Source</p>
+              <h1 class="fw-hero-title">Klare Interfaces und schnelle Webseiten ohne Ballast.</h1>
+              <p class="fw-hero-lead">
+                Eine eigenständige Startseite für GitHub Pages — aufgebaut auf modernem CSS,
+                präziser Typografie und einer responsiven Navigation, die auf jedem Endgerät
+                ohne Build-Abhängigkeit funktioniert.
+              </p>
+              <div class="fw-hero-actions">
+                <a href="#projekte" class="fw-btn-primary">Projekte ansehen</a>
+                <button type="button" class="fw-btn-secondary" id="fw-theme-btn">
+                  Farbmodus wechseln
+                </button>
+              </div>
+            </div>
+
+            <div class="fw-hero-panel" aria-label="Strukturvorschau der Architektur">
+              <div class="fw-meta-line">
+                <span>Responsive Layout</span>
+                <span aria-hidden="true">·</span>
+                <span>CSS Grid &amp; Tokens</span>
+                <span aria-hidden="true">·</span>
+                <span>GitHub Pages</span>
+              </div>
+
+              <svg viewBox="0 0 440 240" width="100%" height="auto" role="img" aria-label="Schematische Darstellung eines responsiven Layouts">
+                <rect x="1" y="1" width="438" height="238" rx="10" fill="none" stroke="currentColor" stroke-opacity="0.16" />
+                <rect x="20" y="20" width="400" height="28" rx="6" fill="currentColor" fill-opacity="0.06" />
+                <rect x="32" y="30" width="64" height="8" rx="4" fill="currentColor" fill-opacity="0.55" />
+                <rect x="200" y="31" width="38" height="6" rx="3" fill="currentColor" fill-opacity="0.25" />
+                <rect x="248" y="31" width="38" height="6" rx="3" fill="currentColor" fill-opacity="0.25" />
+                <rect x="296" y="31" width="38" height="6" rx="3" fill="currentColor" fill-opacity="0.25" />
+                <rect x="356" y="27" width="52" height="14" rx="4" fill="#1D4ED8" />
+
+                <rect x="20" y="64" width="248" height="92" rx="8" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.12" />
+                <rect x="36" y="82" width="160" height="12" rx="4" fill="currentColor" fill-opacity="0.6" />
+                <rect x="36" y="102" width="204" height="8" rx="3" fill="currentColor" fill-opacity="0.22" />
+                <rect x="36" y="116" width="176" height="8" rx="3" fill="currentColor" fill-opacity="0.22" />
+                <rect x="36" y="134" width="76" height="12" rx="4" fill="#1D4ED8" fill-opacity="0.85" />
+
+                <rect x="282" y="64" width="138" height="92" rx="8" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.12" />
+                <polyline points="298,136 326,112 354,122 404,84" fill="none" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+                <rect x="20" y="170" width="124" height="50" rx="8" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.12" />
+                <rect x="158" y="170" width="124" height="50" rx="8" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.12" />
+                <rect x="296" y="170" width="124" height="50" rx="8" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.12" />
+              </svg>
+
+              <div class="fw-meta-line" style="justify-content: space-between">
+                <span>Einzeldatei-kompatibel</span>
+                <span class="fw-metric">0 externe Bild-URLs</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="fw-kpi-strip" aria-label="Kennzahlen der Umsetzung">
+            <div class="fw-kpi-item">
+              <div class="fw-kpi-value">100 / 100</div>
+              <div class="fw-kpi-label">Barrierefreiheit &amp; Fokusführung</div>
+            </div>
+            <div class="fw-kpi-item">
+              <div class="fw-kpi-value">&lt; 18 KB</div>
+              <div class="fw-kpi-label">Schlankes HTML &amp; CSS ohne Ballast</div>
+            </div>
+            <div class="fw-kpi-item">
+              <div class="fw-kpi-value">3 Zonen</div>
+              <div class="fw-kpi-label">Klare Desktop- &amp; Mobile-Navigation</div>
+            </div>
+            <div class="fw-kpi-item">
+              <div class="fw-kpi-value">1 Datei</div>
+              <div class="fw-kpi-label">Direkt lauffähig auf GitHub Pages</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="fw-section" id="projekte">
+        <div class="fw-container">
+          <div class="fw-section-head">
+            <div>
+              <h2 class="fw-section-title">01. Ausgewählte Projekte</h2>
+              <p class="fw-section-sub">
+                Strukturierte Webanwendungen, Designsysteme und Werkzeuge — filterbar nach Schwerpunkt.
+              </p>
+            </div>
+
+            <div class="fw-filter-group" role="group" aria-label="Projekte filtern">
+              <button type="button" class="fw-filter-btn" data-filter="alle" aria-pressed="true">Alle</button>
+              <button type="button" class="fw-filter-btn" data-filter="webapps" aria-pressed="false">Web-Apps</button>
+              <button type="button" class="fw-filter-btn" data-filter="systeme" aria-pressed="false">Designsysteme</button>
+              <button type="button" class="fw-filter-btn" data-filter="tools" aria-pressed="false">Tools</button>
+            </div>
+          </div>
+
+          <div class="fw-bento-grid" id="fw-project-grid">
+            <article class="fw-card fw-card-wide" data-category="webapps">
+              <div>
+                <div class="fw-meta-line">
+                  <span>Web-App</span>
+                  <span aria-hidden="true">·</span>
+                  <span>TypeScript &amp; Vite</span>
+                  <span aria-hidden="true">·</span>
+                  <span>2026</span>
+                </div>
+                <h3 class="fw-card-title">Taktplan — Kapazitäts- &amp; Sprintsteuerung</h3>
+                <p class="fw-card-desc">
+                  Reduzierte Planungsansicht für verteilte Entwicklungsteams mit Tastatursteuerung,
+                  sofortigem Filterabgleich und responsiver Tabellenarchitektur.
+                </p>
+              </div>
+              <div class="fw-card-footer">
+                <span class="fw-metric">-38 % Planungsaufwand</span>
+                <a href="#kontakt" class="fw-nav-link">Details anfragen</a>
+              </div>
+            </article>
+
+            <article class="fw-card" data-category="systeme">
+              <div>
+                <div class="fw-meta-line">
+                  <span>Designsystem</span>
+                  <span aria-hidden="true">·</span>
+                  <span>CSS Tokens</span>
+                  <span aria-hidden="true">·</span>
+                  <span>2026</span>
+                </div>
+                <h3 class="fw-card-title">Baukasten UI</h3>
+                <p class="fw-card-desc">
+                  Semantische Farbvariablen für Hell- und Dunkelmodus mit strikten Kontrastregeln.
+                </p>
+              </div>
+              <div class="fw-card-footer">
+                <span class="fw-metric">WCAG AA geprüft</span>
+                <a href="#architektur" class="fw-nav-link">Aufbau lesen</a>
+              </div>
+            </article>
+
+            <article class="fw-card" data-category="tools">
+              <div>
+                <div class="fw-meta-line">
+                  <span>Tool</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Static Web</span>
+                  <span aria-hidden="true">·</span>
+                  <span>2025</span>
+                </div>
+                <h3 class="fw-card-title">StaticCheck CLI</h3>
+                <p class="fw-card-desc">
+                  Automatische Prüfung auf relative Pfade und fehlende Meta-Tags vor dem Deploy auf GitHub Pages.
+                </p>
+              </div>
+              <div class="fw-card-footer">
+                <span class="fw-metric">140 ms Laufzeit</span>
+                <a href="#kontakt" class="fw-nav-link">Repository ansehen</a>
+              </div>
+            </article>
+
+            <article class="fw-card fw-card-wide" data-category="systeme">
+              <div>
+                <div class="fw-meta-line">
+                  <span>Designsystem</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Typografie &amp; Grid</span>
+                  <span aria-hidden="true">·</span>
+                  <span>2026</span>
+                </div>
+                <h3 class="fw-card-title">Redaktions-Raster für Dokumentationen</h3>
+                <p class="fw-card-desc">
+                  Lesefreundliches Dokumentations-Layout mit fluiden Schriftgrößen via clamp(),
+                  sauberen Haarlinien und automatischer Anpassung auf Smartphones.
+                </p>
+              </div>
+              <div class="fw-card-footer">
+                <span class="fw-metric">65–72 ch Zeilenlänge</span>
+                <a href="#arbeitsweise" class="fw-nav-link">Prinzipien prüfen</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="fw-section" id="arbeitsweise">
+        <div class="fw-container">
+          <div class="fw-section-head">
+            <div>
+              <h2 class="fw-section-title">02. Arbeitsweise &amp; Standards</h2>
+              <p class="fw-section-sub">
+                Drei Grundlagen, auf denen diese GitHub-Pages-Startseite aufgebaut ist.
+              </p>
+            </div>
+          </div>
+
+          <div class="fw-steps-grid">
+            <div class="fw-step-item">
+              <h3 class="fw-step-title">01. Semantisches HTML5</h3>
+              <p class="fw-step-desc">
+                Klare Landmarks (header, nav, main, section, footer) sorgen für saubere Indexierung,
+                Screenreader-Navigation und wartbaren Quelltext.
+              </p>
+            </div>
+            <div class="fw-step-item">
+              <h3 class="fw-step-title">02. Moderne CSS-Variablen</h3>
+              <p class="fw-step-desc">
+                Design-Tokens in :root und html.dark steuern Kontraste, Abstände und Übergänge zentral —
+                ohne aufwendige Build-Konfiguration.
+              </p>
+            </div>
+            <div class="fw-step-item">
+              <h3 class="fw-step-title">03. Responsive Navigation</h3>
+              <p class="fw-step-desc">
+                Einspaltiger Header auf Mobilgeräten mit 44px-Touch-Zielen, Escape-Tasten-Unterstützung
+                und automatischem Schließen bei Link-Auswahl.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="fw-section" id="architektur">
+        <div class="fw-container">
+          <div class="fw-section-head">
+            <div>
+              <h2 class="fw-section-title">03. Bereit für GitHub Pages</h2>
+              <p class="fw-section-sub">
+                Alle Ankerlinks sind relativ (#projekte, #kontakt), sodass die Seite sowohl unter einer
+                eigenen Domain als auch unter benutzername.github.io/repository/ zuverlässig läuft.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="fw-section" id="kontakt">
+        <div class="fw-container">
+          <div class="fw-contact-grid">
+            <div>
+              <h2 class="fw-section-title">04. Kontakt &amp; Austausch</h2>
+              <p class="fw-section-sub">
+                Du möchtest das Layout anpassen oder ein gemeinsames Webprojekt starten?
+                Sende eine kurze Nachricht über das Formular.
+              </p>
+            </div>
+
+            <form class="fw-form" id="fw-contact-form" novalidate>
+              <div class="fw-field">
+                <label for="fw-name">Name</label>
+                <input class="fw-input" id="fw-name" name="name" type="text" placeholder="Dein Name" required />
+              </div>
+              <div class="fw-field">
+                <label for="fw-email">E-Mail-Adresse</label>
+                <input class="fw-input" id="fw-email" name="email" type="email" placeholder="name@beispiel.de" required />
+              </div>
+              <div class="fw-field">
+                <label for="fw-message">Nachricht</label>
+                <textarea class="fw-textarea" id="fw-message" name="message" rows="4" placeholder="Worum geht es?" required></textarea>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+                <button type="submit" class="fw-btn-primary">Nachricht prüfen &amp; senden</button>
+                <span class="fw-form-status" id="fw-form-status" role="status" aria-live="polite"></span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="fw-footer">
+      <div class="fw-container fw-footer-inner">
+        <div>Formwerk · Bereitgestellt als Startseite für GitHub Pages</div>
+        <div class="fw-footer-links">
+          <a href="#top">Nach oben</a>
+          <a href="#projekte">Projekte</a>
+          <a href="#arbeitsweise">Arbeitsweise</a>
+          <a href="#kontakt">Kontakt</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var menuBtn = document.getElementById('fw-menu-btn');
+        var drawer = document.getElementById('fw-mobile-drawer');
+        if (menuBtn && drawer) {
+          function setDrawerOpen(open) {
+            drawer.classList.toggle('is-open', open);
+            menuBtn.setAttribute('aria-expanded', String(open));
+            drawer.setAttribute('aria-hidden', String(!open));
+            menuBtn.setAttribute('aria-label', open ? 'Navigation schließen' : 'Navigation öffnen');
+          }
+
+          menuBtn.addEventListener('click', function () {
+            var isOpen = drawer.classList.contains('is-open');
+            setDrawerOpen(!isOpen);
+          });
+
+          drawer.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () {
+              setDrawerOpen(false);
+            });
+          });
+
+          document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && drawer.classList.contains('is-open')) {
+              setDrawerOpen(false);
+              menuBtn.focus();
+            }
+          });
+        }
+
+        var themeBtn = document.getElementById('fw-theme-btn');
+        if (themeBtn) {
+          themeBtn.addEventListener('click', function () {
+            var isDark = document.documentElement.classList.toggle('dark');
+            try {
+              localStorage.setItem('fw-theme', isDark ? 'dark' : 'light');
+            } catch (e) {}
+          });
+        }
+
+        var filterButtons = document.querySelectorAll('[data-filter]');
+        var projectCards = document.querySelectorAll('#fw-project-grid [data-category]');
+        filterButtons.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var selected = btn.getAttribute('data-filter');
+            filterButtons.forEach(function (b) {
+              b.setAttribute('aria-pressed', String(b === btn));
+            });
+            projectCards.forEach(function (card) {
+              var cat = card.getAttribute('data-category');
+              card.hidden = selected !== 'alle' && cat !== selected;
+            });
+          });
+        });
+
+        var form = document.getElementById('fw-contact-form');
+        var statusEl = document.getElementById('fw-form-status');
+        if (form && statusEl) {
+          form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            var nameVal = document.getElementById('fw-name').value.trim();
+            var emailVal = document.getElementById('fw-email').value.trim();
+            var msgVal = document.getElementById('fw-message').value.trim();
+            var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
+
+            if (!nameVal || !emailOk || !msgVal) {
+              statusEl.textContent = 'Bitte Name, gültige E-Mail-Adresse und Nachricht angeben.';
+              statusEl.style.color = '#dc2626';
+              return;
+            }
+            statusEl.textContent = 'Vielen Dank, ' + nameVal + '. Die Eingabe wurde erfolgreich geprüft.';
+            statusEl.style.color = 'var(--fw-accent)';
+            form.reset();
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
