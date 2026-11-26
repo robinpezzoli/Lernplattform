@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -383,6 +383,7 @@
 
     <main>
 
+        <!-- MATHE -->
         <section class="bereich">
             <h2>➗ Mathe</h2>
 
@@ -415,6 +416,7 @@
             </div>
         </section>
 
+        <!-- RZG -->
         <section class="bereich">
             <h2>🌍 RZG</h2>
 
@@ -435,6 +437,7 @@
             </div>
         </section>
 
+        <!-- MEDIEN & INFORMATIK -->
         <section class="bereich">
             <h2>💻 Medien &amp; Informatik</h2>
 
@@ -450,6 +453,13 @@
                     <div class="app-icon">©️</div>
                     <h3>Urheberrecht</h3>
                     <span>Bilder, Texte und Musik richtig verwenden</span>
+                </a>
+
+                <!-- NEU: INTERNET GAME -->
+                <a class="app-card" href="internet_game.html">
+                    <div class="app-icon">🌐</div>
+                    <h3>Internet Game</h3>
+                    <span>Spielerisch das Internet entdecken</span>
                 </a>
 
             </div>
@@ -573,7 +583,6 @@
                 return null;
             }
 
-            // Meistens die nächstgelegene Pflanze wählen
             verfuegbare.sort((a, b) => {
                 const da = Math.hypot(a.x - ziege.x, a.y - ziege.y);
                 const db = Math.hypot(b.x - ziege.x, b.y - ziege.y);
@@ -613,11 +622,9 @@
             ziege.element.classList.remove("geht");
             ziege.element.classList.add("frisst");
 
-            // Pflanze verschwindet
             pflanze.verfuegbar = false;
             pflanze.element.classList.add("verschwindet");
 
-            // Kleine Fressblase
             const blase = document.createElement("div");
             blase.className = "fress-text";
             blase.textContent = "😋";
@@ -642,7 +649,6 @@
                 pflanzeErstellen();
             }, wartezeit);
 
-            // Nach dem Fressen weiterlaufen
             setTimeout(() => {
                 ziege.element.classList.remove("frisst");
                 ziege.element.classList.add("geht");
@@ -670,8 +676,8 @@
                 setTimeout(() => {
                     frisstZiege(ziege, pflanze);
                 }, dauer + 300);
+
             } else {
-                // Wenn gerade nichts wächst, gemütlich weiterlaufen
                 const pos = neuePosition();
                 const dauer = bewegeZiege(ziege, pos.x, pos.y);
 
@@ -745,4 +751,3 @@
 
 </body>
 </html>
-```
