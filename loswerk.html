@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="de" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loswerk — Gruppen- &amp; Zufallsgenerator</title>
+  <style>
+    :root {
+      --bg: #F7F7F5;
+      --surface: #FFFFFF;
+      --surface-alt: #EFEFEA;
+      --border: #E2E2DC;
+      --text: #141619;
+      --muted: #525866;
+      --accent: #D97706;
+      --accent-hover: #B45309;
+      --accent-text: #FFFFFF;
+      --accent-soft: rgba(217, 119, 6, 0.14);
+      --danger: #DC2626;
+      --success: #059669;
+      --radius: 12px;
+      --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-display: "Outfit", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    html.dark {
+      --bg: #111315;
+      --surface: #181B1F;
+      --surface-alt: #20242A;
+      --border: #2A2F37;
+      --text: #F3F4F6;
+      --muted: #9CA3AF;
+      --accent: #F59E0B;
+      --accent-hover: #FBBF24;
+      --accent-text: #111315;
+      --accent-soft: rgba(245, 158, 11, 0.16);
+      --danger: #F87171;
+      --success: #34D399;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 { font-family: var(--font-display); margin: 0; }
+    p { margin: 0; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    header {
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      overflow-x: auto;
+    }
+    .nav-btn {
+      background: none;
+      border: none;
+      padding: 8px 2px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .nav-btn.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 8px 16px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-text);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 380px minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .stack { display: flex; flex-direction: column; gap: 18px; }
+    .divider { border-top: 1px solid var(--border); margin: 4px 0; }
+    .segmented {
+      display: grid;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 9px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+    .segmented.cols-2 { grid-template-columns: 1fr 1fr; }
+    .segmented.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .seg-btn {
+      min-height: 36px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .seg-btn.active {
+      background: var(--surface-alt);
+      color: var(--text);
+      font-weight: 600;
+    }
+    .field {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+    .field:focus { outline: none; border-color: var(--accent); }
+    .row-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .step-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+    .step-val {
+      width: 64px;
+      height: 36px;
+      text-align: center;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+    .stage-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px;
+    }
+    .group-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .group-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+    .member-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 8px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .member-btn:hover { background: var(--surface-alt); }
+    .member-btn.selected {
+      background: var(--accent-soft);
+      outline: 1px solid var(--accent);
+    }
+    .big-stage {
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 12px;
+      padding: 40px 24px;
+    }
+    .big-number {
+      font-family: var(--font-mono);
+      font-size: clamp(3.5rem, 9vw, 6.5rem);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .big-name {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 6vw, 4.2rem);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+      word-break: break-word;
+    }
+    .list-item-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+    .list-item-btn:hover { background: var(--surface-alt); }
+    .list-item-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .pool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .pool-chip {
+      padding: 7px 10px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-size: 0.82rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .pool-chip.drawn {
+      opacity: 0.45;
+      text-decoration: line-through;
+    }
+    .muted { color: var(--muted); font-size: 0.84rem; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">Loswerk</div>
+      <nav aria-label="Hauptnavigation">
+        <button type="button" class="nav-btn active" data-tab="groups">Gruppengenerator</button>
+        <button type="button" class="nav-btn" data-tab="random">Zufallsgenerator</button>
+        <button type="button" class="nav-btn" data-tab="lists">Listen</button>
+      </nav>
+      <button type="button" class="btn" id="theme-toggle">Hell / Dunkel</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="toolbar">
+      <span id="toolbar-context">Offline-HTML-Version · Gespeicherte Listen bleiben lokal erhalten</span>
+      <span class="mono" id="toolbar-list-count"></span>
+    </div>
+
+    <!-- TAB: GROUPS -->
+    <section id="tab-groups" class="layout">
+      <aside class="panel stack">
+        <div class="stack" style="gap: 12px;">
+          <div class="row-between">
+            <h2 style="font-size: 1rem;">01. Kinder festlegen</h2>
+            <span class="mono muted" id="grp-count-badge">20 Kinder</span>
+          </div>
+          <div class="segmented cols-3">
+            <button type="button" class="seg-btn" data-grp-src="count">Anzahl</button>
+            <button type="button" class="seg-btn active" data-grp-src="list">Liste</button>
+            <button type="button" class="seg-btn" data-grp-src="custom">Namen</button>
+          </div>
+
+          <div id="grp-src-count" class="stack hidden" style="gap: 12px;">
+            <div class="row-between">
+              <span class="muted">Wie viele Kinder?</span>
+              <div class="stepper">
+                <button type="button" class="step-btn" id="grp-child-minus">−</button>
+                <input type="number" class="step-val" id="grp-child-input" min="2" max="120" value="20" />
+                <button type="button" class="step-btn" id="grp-child-plus">+</button>
+              </div>
+            </div>
+            <input type="range" id="grp-child-range" min="2" max="60" value="20" />
+            <div class="row-between">
+              <span class="muted">Bezeichnung</span>
+              <input type="text" class="field" id="grp-prefix" value="Kind" style="width: 140px;" />
+            </div>
+          </div>
+
+          <div id="grp-src-list" class="stack" style="gap: 10px;">
+            <select class="field" id="grp-list-select"></select>
+          </div>
+
+          <div id="grp-src-custom" class="stack hidden" style="gap: 10px;">
+            <textarea class="field" id="grp-custom-text" rows="5" placeholder="Ein Name pro Zeile oder mit Komma..."></textarea>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="stack" style="gap: 12px;">
+          <h2 style="font-size: 1rem;">02. Aufteilung wählen</h2>
+          <div class="segmented cols-2">
+            <button type="button" class="seg-btn active" data-split="bySize">Gruppengrösse</button>
+            <button type="button" class="seg-btn" data-split="byCount">Anzahl Gruppen</button>
+          </div>
+          <div class="row-between">
+            <span class="muted" id="grp-split-label">Kinder pro Gruppe</span>
+            <div class="stepper">
+              <button type="button" class="step-btn" id="grp-split-minus">−</button>
+              <input type="number" class="step-val" id="grp-split-input" min="2" max="60" value="4" />
+              <button type="button" class="step-btn" id="grp-split-plus">+</button>
+            </div>
+          </div>
+          <label class="row-between" id="grp-balance-row" style="cursor: pointer;">
+            <span class="muted">Rest gleichmässig verteilen</span>
+            <input type="checkbox" id="grp-balance" checked />
+          </label>
+          <div class="mono muted" id="grp-preview"></div>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="grp-generate-btn">Gruppen auslosen</button>
+      </aside>
+
+      <div>
+        <div class="stage-header">
+          <div>
+            <h1 style="font-size: 1.5rem;">Gruppeneinteilung</h1>
+            <p class="mono muted" id="grp-result-meta">Bereit zum Auslosen</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn hidden" id="grp-reshuffle-btn">Neu mischen</button>
+            <button type="button" class="btn hidden" id="grp-copy-btn">Text kopieren</button>
+          </div>
+        </div>
+        <div id="grp-results-container" class="panel big-stage">
+          <p class="muted">Klicke auf „Gruppen auslosen“, um zufällige Gruppen zu bilden.</p>
+        </div>
+        <p class="muted hidden" id="grp-swap-hint" style="margin-top: 12px;"></p>
+      </div>
+    </section>
+
+    <!-- TAB: RANDOM -->
+    <section id="tab-random" class="layout hidden">
+      <aside class="panel stack">
+        <div class="stack" style="gap: 12px;">
+          <h2 style="font-size: 1rem;">01. Modus wählen</h2>
+          <div class="segmented cols-2">
+            <button type="button" class="seg-btn active" data-rnd-mode="number">Zufallszahl</button>
+            <button type="button" class="seg-btn" data-rnd-mode="name">Name aus Liste</button>
+          </div>
+        </div>
+        <div class="divider"></div>
+
+        <div id="rnd-panel-number" class="stack" style="gap: 14px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+              <label class="muted" for="rnd-min">Von (Min)</label>
+              <input type="number" class="field mono" id="rnd-min" value="1" />
+            </div>
+            <div>
+              <label class="muted" for="rnd-max">Bis (Max)</label>
+              <input type="number" class="field mono" id="rnd-max" value="24" />
+            </div>
+          </div>
+          <label class="row-between" style="cursor: pointer;">
+            <span class="muted">Ohne Wiederholung ziehen</span>
+            <input type="checkbox" id="rnd-num-norepeat" />
+          </label>
+          <button type="button" class="btn btn-primary" id="rnd-draw-num-btn">Zufallszahl ziehen</button>
+        </div>
+
+        <div id="rnd-panel-name" class="stack hidden" style="gap: 14px;">
+          <div>
+            <label class="muted" for="rnd-list-select">Gespeicherte Liste</label>
+            <select class="field" id="rnd-list-select"></select>
+          </div>
+          <label class="row-between" style="cursor: pointer;">
+            <span class="muted">Gezogene Namen nicht wiederholen</span>
+            <input type="checkbox" id="rnd-name-norepeat" checked />
+          </label>
+          <button type="button" class="btn btn-primary" id="rnd-draw-name-btn">Zufälligen Namen ziehen</button>
+        </div>
+      </aside>
+
+      <div class="stack">
+        <div class="stage-header" style="margin-bottom: 0;">
+          <div>
+            <h1 style="font-size: 1.5rem;" id="rnd-stage-title">Zufallszahl</h1>
+            <p class="mono muted" id="rnd-stage-meta"></p>
+          </div>
+          <button type="button" class="btn hidden" id="rnd-reset-btn">Zurücksetzen</button>
+        </div>
+        <div class="panel big-stage" id="rnd-display-box">
+          <div class="muted">Bereit für die Ziehung</div>
+        </div>
+        <div class="panel hidden" id="rnd-history-box"></div>
+      </div>
+    </section>
+
+    <!-- TAB: LISTS -->
+    <section id="tab-lists" class="layout hidden">
+      <aside class="panel stack" style="gap: 12px;">
+        <div class="row-between">
+          <h2 style="font-size: 1rem;">Gespeicherte Listen</h2>
+          <button type="button" class="btn btn-primary" id="lists-new-btn" style="min-height: 34px; padding: 6px 12px;">+ Neue Liste</button>
+        </div>
+        <div id="lists-index" class="stack" style="gap: 6px;"></div>
+      </aside>
+      <div class="panel stack">
+        <div class="row-between" style="padding-bottom: 12px; border-bottom: 1px solid var(--border);">
+          <h1 style="font-size: 1.4rem;" id="list-editor-heading">Liste bearbeiten</h1>
+          <button type="button" class="btn hidden" id="list-delete-btn" style="color: var(--danger);">Löschen</button>
+        </div>
+        <div>
+          <label class="muted" for="list-name-input">Listenname</label>
+          <input type="text" class="field" id="list-name-input" placeholder="z. B. Klasse 5a" />
+        </div>
+        <div>
+          <label class="muted" for="list-items-input">Namen (ein Name pro Zeile oder mit Komma)</label>
+          <textarea class="field" id="list-items-input" rows="10"></textarea>
+        </div>
+        <div class="row-between">
+          <span class="mono muted" id="list-parsed-count">0 Einträge</span>
+          <button type="button" class="btn btn-primary" id="list-save-btn">Liste speichern</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'loswerk_saved_lists_v2';
+      const THEME_KEY = 'loswerk_theme_v1';
+      const INITIAL_LISTS = [{"id":"klasse-3g","name":"3G (Hauptklasse)","items":["Taza","Isöh","Adko","Alvu","Jave","Elme","Mast","Lusc","Gofe","Tiwi","Irka"],"updatedAt":"2026-11-19T12:00:00.000Z"},{"id":"klasse-2e1","name":"2E1","items":["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"],"updatedAt":"2026-11-19T12:00:00.000Z"},{"id":"klasse-2e2","name":"2E2","items":["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18"],"updatedAt":"2026-11-19T12:00:00.000Z"},{"id":"klasse-m3g","name":"M3g","items":["1","2","3","4","5","6","7","8","9"],"updatedAt":"2026-11-19T12:00:00.000Z"}];
+
+      function loadLists() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {}
+        return INITIAL_LISTS;
+      }
+
+      function saveLists(next) {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) {}
+      }
+
+      function randInt(min, max) {
+        const lo = Math.ceil(Math.min(min, max));
+        const hi = Math.floor(Math.max(min, max));
+        const range = hi - lo + 1;
+        if (range <= 1) return lo;
+        if (window.crypto && window.crypto.getRandomValues) {
+          const limit = Math.floor(0xffffffff / range) * range;
+          const arr = new Uint32Array(1);
+          let val;
+          do { window.crypto.getRandomValues(arr); val = arr[0]; } while (val >= limit);
+          return lo + (val % range);
+        }
+        return lo + Math.floor(Math.random() * range);
+      }
+
+      function shuffle(list) {
+        const a = list.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = randInt(0, i);
+          const t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
+      }
+
+      function parseNames(text) {
+        return text.split(/[\n,;]+/g).map(s => s.trim()).filter(Boolean);
+      }
+
+      let lists = loadLists();
+      let selectedListId = lists[0] ? lists[0].id : '';
+      let grpSource = 'list';
+      let splitMode = 'bySize';
+      let currentGroups = [];
+      let swapFirst = null;
+      let rndMode = 'number';
+      let drawnNumbers = [];
+      let drawnNameIdx = {};
+      let editingNewList = lists.length === 0;
+
+      const themeBtn = document.getElementById('theme-toggle');
+      themeBtn.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        try { localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light'); } catch (e) {}
+      });
+
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = btn.getAttribute('data-tab');
+          document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('active', b === btn));
+          ['groups', 'random', 'lists'].forEach(id => {
+            document.getElementById('tab-' + id).classList.toggle('hidden', id !== t);
+          });
+          refreshAll();
+        });
+      });
+
+      function getParticipants() {
+        if (grpSource === 'count') {
+          const n = Math.max(1, Math.min(120, parseInt(document.getElementById('grp-child-input').value, 10) || 20));
+          const prefix = (document.getElementById('grp-prefix').value || 'Kind').trim();
+          return Array.from({ length: n }, (_, i) => prefix + ' ' + (i + 1));
+        }
+        if (grpSource === 'list') {
+          const list = lists.find(l => l.id === selectedListId);
+          return list ? list.items.slice() : [];
+        }
+        return parseNames(document.getElementById('grp-custom-text').value);
+      }
+
+      function calcSizes(total, mode, val, balance) {
+        if (total <= 0) return [];
+        const v = Math.max(1, val);
+        if (mode === 'byCount') {
+          const c = Math.min(total, v);
+          const base = Math.floor(total / c), extra = total % c;
+          return Array.from({ length: c }, (_, i) => base + (i < extra ? 1 : 0));
+        }
+        const sz = Math.min(total, v);
+        if (!balance) {
+          const res = [];
+          let rem = total;
+          while (rem > 0) { const k = Math.min(sz, rem); res.push(k); rem -= k; }
+          return res;
+        }
+        const c = Math.max(1, Math.ceil(total / sz));
+        const base = Math.floor(total / c), extra = total % c;
+        return Array.from({ length: c }, (_, i) => base + (i < extra ? 1 : 0));
+      }
+
+      function updateGroupPreview() {
+        const p = getParticipants();
+        document.getElementById('grp-count-badge').textContent = p.length + (p.length === 1 ? ' Kind' : ' Kinder');
+        const val = parseInt(document.getElementById('grp-split-input').value, 10) || 4;
+        const balance = document.getElementById('grp-balance').checked;
+        const sizes = calcSizes(p.length, splitMode, val, balance);
+        const counts = {};
+        sizes.forEach(s => counts[s] = (counts[s] || 0) + 1);
+        const desc = Object.keys(counts).sort((a, b) => b - a).map(s => counts[s] + '× ' + s + 'er').join(', ');
+        document.getElementById('grp-preview').textContent = sizes.length ? ('Vorschau: ' + sizes.length + ' Gruppen (' + desc + ')') : 'Keine Kinder';
+      }
+
+      function renderGroups() {
+        const box = document.getElementById('grp-results-container');
+        const hint = document.getElementById('grp-swap-hint');
+        const reshuffleBtn = document.getElementById('grp-reshuffle-btn');
+        const copyBtn = document.getElementById('grp-copy-btn');
+        if (currentGroups.length === 0) {
+          box.className = 'panel big-stage';
+          box.innerHTML = '<p class="muted">Klicke auf „Gruppen auslosen“, um zufällige Gruppen zu bilden.</p>';
+          hint.classList.add('hidden');
+          reshuffleBtn.classList.add('hidden');
+          copyBtn.classList.add('hidden');
+          return;
+        }
+        box.className = 'groups-grid';
+        box.innerHTML = '';
+        currentGroups.forEach((g, gIdx) => {
+          const card = document.createElement('div');
+          card.className = 'group-card';
+          const head = document.createElement('div');
+          head.className = 'group-head';
+          head.innerHTML = '<strong>Gruppe ' + (gIdx + 1) + '</strong><span class="mono muted">' + g.length + '</span>';
+          card.appendChild(head);
+          g.forEach((name, mIdx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'member-btn' + (swapFirst && swapFirst.g === gIdx && swapFirst.m === mIdx ? ' selected' : '');
+            btn.innerHTML = '<span class="mono muted">' + String(mIdx + 1).padStart(2, '0') + '</span><span></span>';
+            btn.lastChild.textContent = name;
+            btn.addEventListener('click', () => {
+              if (!swapFirst) { swapFirst = { g: gIdx, m: mIdx }; }
+              else if (swapFirst.g === gIdx && swapFirst.m === mIdx) { swapFirst = null; }
+              else {
+                const tmp = currentGroups[swapFirst.g][swapFirst.m];
+                currentGroups[swapFirst.g][swapFirst.m] = currentGroups[gIdx][mIdx];
+                currentGroups[gIdx][mIdx] = tmp;
+                swapFirst = null;
+              }
+              renderGroups();
+            });
+            card.appendChild(btn);
+          });
+          box.appendChild(card);
+        });
+        document.getElementById('grp-result-meta').textContent = currentGroups.reduce((a, g) => a + g.length, 0) + ' Kinder · ' + currentGroups.length + ' Gruppen';
+        hint.classList.remove('hidden');
+        hint.textContent = swapFirst ? 'Zweites Kind anklicken, um zu tauschen.' : 'Tipp: Zwei Namen anklicken zum Tauschen.';
+        reshuffleBtn.classList.remove('hidden');
+        copyBtn.classList.remove('hidden');
+      }
+
+      function generateNow() {
+        const p = getParticipants();
+        if (p.length === 0) return;
+        const val = parseInt(document.getElementById('grp-split-input').value, 10) || 4;
+        const balance = document.getElementById('grp-balance').checked;
+        const sizes = calcSizes(p.length, splitMode, val, balance);
+        const shuffled = shuffle(p);
+        currentGroups = [];
+        let cursor = 0;
+        sizes.forEach(s => { currentGroups.push(shuffled.slice(cursor, cursor + s)); cursor += s; });
+        swapFirst = null;
+        renderGroups();
+      }
+
+      document.querySelectorAll('[data-grp-src]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          grpSource = btn.getAttribute('data-grp-src');
+          document.querySelectorAll('[data-grp-src]').forEach(b => b.classList.toggle('active', b === btn));
+          ['count', 'list', 'custom'].forEach(k => document.getElementById('grp-src-' + k).classList.toggle('hidden', k !== grpSource));
+          updateGroupPreview();
+        });
+      });
+
+      document.querySelectorAll('[data-split]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          splitMode = btn.getAttribute('data-split');
+          document.querySelectorAll('[data-split]').forEach(b => b.classList.toggle('active', b === btn));
+          document.getElementById('grp-split-label').textContent = splitMode === 'bySize' ? 'Kinder pro Gruppe' : 'Wie viele Gruppen?';
+          document.getElementById('grp-balance-row').classList.toggle('hidden', splitMode !== 'bySize');
+          updateGroupPreview();
+        });
+      });
+
+      const cInput = document.getElementById('grp-child-input');
+      const cRange = document.getElementById('grp-child-range');
+      cInput.addEventListener('input', () => { cRange.value = Math.min(60, Math.max(2, cInput.value)); updateGroupPreview(); });
+      cRange.addEventListener('input', () => { cInput.value = cRange.value; updateGroupPreview(); });
+      document.getElementById('grp-child-minus').addEventListener('click', () => { cInput.value = Math.max(2, (parseInt(cInput.value, 10) || 2) - 1); cRange.value = Math.min(60, cInput.value); updateGroupPreview(); });
+      document.getElementById('grp-child-plus').addEventListener('click', () => { cInput.value = Math.min(120, (parseInt(cInput.value, 10) || 2) + 1); cRange.value = Math.min(60, cInput.value); updateGroupPreview(); });
+
+      const sInput = document.getElementById('grp-split-input');
+      sInput.addEventListener('input', updateGroupPreview);
+      document.getElementById('grp-split-minus').addEventListener('click', () => { sInput.value = Math.max(2, (parseInt(sInput.value, 10) || 2) - 1); updateGroupPreview(); });
+      document.getElementById('grp-split-plus').addEventListener('click', () => { sInput.value = Math.min(60, (parseInt(sInput.value, 10) || 2) + 1); updateGroupPreview(); });
+      document.getElementById('grp-balance').addEventListener('change', updateGroupPreview);
+      document.getElementById('grp-custom-text').addEventListener('input', updateGroupPreview);
+      document.getElementById('grp-list-select').addEventListener('change', (e) => { selectedListId = e.target.value; updateGroupPreview(); });
+      document.getElementById('grp-generate-btn').addEventListener('click', generateNow);
+      document.getElementById('grp-reshuffle-btn').addEventListener('click', generateNow);
+      document.getElementById('grp-copy-btn').addEventListener('click', () => {
+        const txt = currentGroups.map((g, i) => 'Gruppe ' + (i + 1) + ':\n' + g.map((n, j) => '  ' + (j + 1) + '. ' + n).join('\n')).join('\n\n');
+        navigator.clipboard.writeText(txt).catch(() => {});
+      });
+
+      // RANDOM GENERATOR
+      document.querySelectorAll('[data-rnd-mode]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          rndMode = btn.getAttribute('data-rnd-mode');
+          document.querySelectorAll('[data-rnd-mode]').forEach(b => b.classList.toggle('active', b === btn));
+          document.getElementById('rnd-panel-number').classList.toggle('hidden', rndMode !== 'number');
+          document.getElementById('rnd-panel-name').classList.toggle('hidden', rndMode !== 'name');
+          renderRandomStage();
+        });
+      });
+
+      function renderRandomStage(value) {
+        const title = document.getElementById('rnd-stage-title');
+        const meta = document.getElementById('rnd-stage-meta');
+        const box = document.getElementById('rnd-display-box');
+        const hist = document.getElementById('rnd-history-box');
+        const resetBtn = document.getElementById('rnd-reset-btn');
+        if (rndMode === 'number') {
+          title.textContent = 'Zufallszahl';
+          const lo = parseInt(document.getElementById('rnd-min').value, 10) || 1;
+          const hi = parseInt(document.getElementById('rnd-max').value, 10) || 24;
+          meta.textContent = 'Bereich ' + Math.min(lo, hi) + '–' + Math.max(lo, hi);
+          if (value !== undefined) {
+            box.innerHTML = '<div class="muted">Gezogene Zahl</div><div class="big-number">' + value + '</div>';
+          } else {
+            box.innerHTML = '<div class="muted">Bereit für die Ziehung</div>';
+          }
+          resetBtn.classList.toggle('hidden', drawnNumbers.length === 0);
+          if (drawnNumbers.length > 0) {
+            hist.classList.remove('hidden');
+            hist.innerHTML = '<div class="muted" style="margin-bottom:8px;">Verlauf</div><div class="mono">' + drawnNumbers.join(' · ') + '</div>';
+          } else { hist.classList.add('hidden'); }
+        } else {
+          title.textContent = 'Zufälliger Name';
+          const list = lists.find(l => l.id === selectedListId);
+          meta.textContent = list ? (list.name + ' · ' + list.items.length + ' Namen') : 'Keine Liste';
+          if (value !== undefined) {
+            const safe = document.createElement('div');
+            safe.className = 'big-name';
+            safe.textContent = value;
+            box.innerHTML = '<div class="muted">Ausgewählter Name</div>';
+            box.appendChild(safe);
+          } else {
+            box.innerHTML = '<div class="muted">Bereit für die Ziehung</div>';
+          }
+          const drawn = (list && drawnNameIdx[list.id]) ? drawnNameIdx[list.id] : [];
+          resetBtn.classList.toggle('hidden', drawn.length === 0);
+          if (list && list.items.length > 0) {
+            hist.classList.remove('hidden');
+            hist.innerHTML = '<div class="muted">Topf-Übersicht</div>';
+            const grid = document.createElement('div');
+            grid.className = 'pool-grid';
+            const noRep = document.getElementById('rnd-name-norepeat').checked;
+            list.items.forEach((name, idx) => {
+              const chip = document.createElement('div');
+              chip.className = 'pool-chip' + (noRep && drawn.includes(idx) ? ' drawn' : '');
+              chip.textContent = name;
+              grid.appendChild(chip);
+            });
+            hist.appendChild(grid);
+          } else { hist.classList.add('hidden'); }
+        }
+      }
+
+      document.getElementById('rnd-draw-num-btn').addEventListener('click', () => {
+        const a = parseInt(document.getElementById('rnd-min').value, 10) || 1;
+        const b = parseInt(document.getElementById('rnd-max').value, 10) || 24;
+        const lo = Math.min(a, b), hi = Math.max(a, b);
+        const noRep = document.getElementById('rnd-num-norepeat').checked;
+        let pick;
+        if (noRep && (hi - lo + 1) <= 5000) {
+          const avail = [];
+          for (let n = lo; n <= hi; n++) if (!drawnNumbers.includes(n)) avail.push(n);
+          if (avail.length === 0) return;
+          pick = avail[randInt(0, avail.length - 1)];
+        } else {
+          pick = randInt(lo, hi);
+        }
+        drawnNumbers.unshift(pick);
+        renderRandomStage(pick);
+      });
+
+      document.getElementById('rnd-draw-name-btn').addEventListener('click', () => {
+        const list = lists.find(l => l.id === selectedListId);
+        if (!list || list.items.length === 0) return;
+        const noRep = document.getElementById('rnd-name-norepeat').checked;
+        const drawn = drawnNameIdx[list.id] || [];
+        const pool = list.items.map((_, i) => i).filter(i => !noRep || !drawn.includes(i));
+        if (pool.length === 0) return;
+        const idx = pool[randInt(0, pool.length - 1)];
+        drawnNameIdx[list.id] = [idx].concat(drawn);
+        renderRandomStage(list.items[idx]);
+      });
+
+      document.getElementById('rnd-list-select').addEventListener('change', (e) => {
+        selectedListId = e.target.value;
+        renderRandomStage();
+      });
+
+      document.getElementById('rnd-reset-btn').addEventListener('click', () => {
+        if (rndMode === 'number') drawnNumbers = [];
+        else if (selectedListId) drawnNameIdx[selectedListId] = [];
+        renderRandomStage();
+      });
+
+      // LIST MANAGER
+      function renderListEditor() {
+        const nameEl = document.getElementById('list-name-input');
+        const itemsEl = document.getElementById('list-items-input');
+        const heading = document.getElementById('list-editor-heading');
+        const delBtn = document.getElementById('list-delete-btn');
+        const active = lists.find(l => l.id === selectedListId);
+        if (editingNewList || !active) {
+          heading.textContent = 'Neue Liste erstellen';
+          nameEl.value = '';
+          itemsEl.value = '';
+          delBtn.classList.add('hidden');
+        } else {
+          heading.textContent = active.name;
+          nameEl.value = active.name;
+          itemsEl.value = active.items.join('\n');
+          delBtn.classList.remove('hidden');
+        }
+        document.getElementById('list-parsed-count').textContent = parseNames(itemsEl.value).length + ' Einträge';
+      }
+
+      document.getElementById('list-items-input').addEventListener('input', (e) => {
+        document.getElementById('list-parsed-count').textContent = parseNames(e.target.value).length + ' Einträge';
+      });
+
+      document.getElementById('lists-new-btn').addEventListener('click', () => {
+        editingNewList = true;
+        renderListEditor();
+      });
+
+      document.getElementById('list-save-btn').addEventListener('click', () => {
+        const items = parseNames(document.getElementById('list-items-input').value);
+        if (items.length === 0) return;
+        const name = document.getElementById('list-name-input').value.trim() || ('Liste (' + items.length + ')');
+        if (editingNewList) {
+          const newList = { id: 'list-' + Date.now(), name: name, items: items, updatedAt: new Date().toISOString() };
+          lists.unshift(newList);
+          selectedListId = newList.id;
+          editingNewList = false;
+        } else {
+          lists = lists.map(l => l.id === selectedListId ? { id: l.id, name: name, items: items, updatedAt: new Date().toISOString() } : l);
+        }
+        saveLists(lists);
+        refreshAll();
+      });
+
+      document.getElementById('list-delete-btn').addEventListener('click', () => {
+        lists = lists.filter(l => l.id !== selectedListId);
+        selectedListId = lists[0] ? lists[0].id : '';
+        editingNewList = lists.length === 0;
+        saveLists(lists);
+        refreshAll();
+      });
+
+      function refreshAll() {
+        document.getElementById('toolbar-list-count').textContent = lists.length + ' gespeicherte ' + (lists.length === 1 ? 'Liste' : 'Listen');
+        ['grp-list-select', 'rnd-list-select'].forEach(selId => {
+          const sel = document.getElementById(selId);
+          sel.innerHTML = '';
+          lists.forEach(l => {
+            const opt = document.createElement('option');
+            opt.value = l.id;
+            opt.textContent = l.name + ' (' + l.items.length + ')';
+            if (l.id === selectedListId) opt.selected = true;
+            sel.appendChild(opt);
+          });
+        });
+        const idxEl = document.getElementById('lists-index');
+        idxEl.innerHTML = '';
+        lists.forEach(l => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'list-item-btn' + (!editingNewList && l.id === selectedListId ? ' active' : '');
+          btn.innerHTML = '<span></span><span class="mono muted"></span>';
+          btn.firstChild.textContent = l.name;
+          btn.lastChild.textContent = l.items.length;
+          btn.addEventListener('click', () => {
+            selectedListId = l.id;
+            editingNewList = false;
+            refreshAll();
+          });
+          idxEl.appendChild(btn);
+        });
+        updateGroupPreview();
+        renderRandomStage();
+        renderListEditor();
+      }
+
+      refreshAll();
+    })();
+  </script>
+</body>
+</html>

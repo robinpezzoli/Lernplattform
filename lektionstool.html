@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lektionstool</title>
+<style>
+:root{--bg:#e6d5c3;--card:#fff;--tx:#3b2f26;--mut:#7a6858;--bd:#d0bba3;--ac:#8a5a2b;--g:#6fb585;--y:#e3b04b;--r:#d9776e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:grid;grid-template-columns:200px 1fr auto;gap:14px;padding:14px;align-items:start}
+@media(max-width:820px){header{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}
+h2{margin:0 0 8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:600}
+input[type=date],input[type=text]{width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+.goal{display:flex;gap:8px;align-items:center;margin-bottom:6px}.goal b{color:var(--ac);width:18px}
+.right{display:flex;flex-direction:column;gap:10px;min-width:220px}
+.lv{display:flex;gap:6px}
+.lv button{flex:1;padding:10px 0;font:600 18px inherit;border:2px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:10px;cursor:pointer}
+.lv button.on[data-l="0"]{background:var(--g);border-color:var(--g);color:#fff}
+.lv button.on[data-l="1"]{background:var(--y);border-color:var(--y);color:#fff}
+.lv button.on[data-l="2"]{background:var(--r);border-color:var(--r);color:#fff}
+.lvt{font-size:13px;color:var(--mut);margin-top:6px;min-height:20px}
+details summary{cursor:pointer;font-weight:600;font-size:14px}
+.bar{height:14px;background:var(--bg);border:1px solid var(--bd);border-radius:7px;overflow:hidden;margin:10px 0 6px}
+#fill{height:100%;width:0;background:var(--g);transition:width .1s}
+#db{font-size:28px;font-weight:700}
+button.b{padding:7px 12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:8px;cursor:pointer;font:inherit;font-size:14px}
+button.b:hover{border-color:var(--ac)}
+main{padding:0 14px 28px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+#notes{min-height:180px;outline:none;line-height:1.6}
+#notes:empty:before{content:attr(data-ph);color:var(--mut)}
+#notes img{max-width:100%;border-radius:8px}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:12px}
+.it{border:1px solid var(--bd);border-radius:10px;padding:10px;background:var(--bg);position:relative;word-break:break-word;font-size:14px}
+.it img{width:100%;border-radius:6px;display:block;margin-bottom:6px}
+.it a{color:var(--ac)}.x{position:absolute;top:4px;right:6px;border:0;background:none;color:var(--mut);cursor:pointer;font-size:18px}
+.it .x{background:var(--card);border-radius:6px}
+.note{font-size:12px;color:var(--mut);margin-top:10px}
+header>.card:nth-child(1){background:#fad9c1}
+header>.card:nth-child(2){background:#fbefc2}
+.right .card:nth-child(1){background:#d4ebd0}
+.right .card:nth-child(2){background:#d3e4f1}
+main>.card{background:#f1dcea}
+.card input,.card .lv button,.card button.b,.bar,.it,.card select{background:rgba(255,255,255,.6);color:var(--tx)}
+#bird{display:block;margin:10px auto 0;font-size:42px;line-height:1;border:0;background:none;cursor:pointer;padding:0}
+#bird.sing{animation:wig .25s 5}
+@keyframes wig{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg) scale(1.1)}75%{transform:rotate(14deg) scale(1.1)}}
+.fmt{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.fmt select{padding:6px 8px;border:1px solid var(--bd);border-radius:8px;font:inherit;font-size:14px}
+.fmt .b{min-width:36px}
+#notes{background:rgba(255,255,255,.45);border-radius:8px;padding:10px}
+</style>
+</head>
+<body>
+<header>
+ <section class="card"><h2>Datum</h2><input type="date" id="date"><button id="bird" title="Los geht’s!" aria-label="Startsignal">🦜</button></section>
+ <section class="card"><h2>Lernziele</h2>
+  <div class="goal"><b>1</b><input type="text" data-g="0" placeholder="Ich kann …"></div>
+  <div class="goal"><b>2</b><input type="text" data-g="1" placeholder="Ich kann …"></div>
+  <div class="goal"><b>3</b><input type="text" data-g="2" placeholder="Ich kann …"></div>
+ </section>
+ <div class="right">
+  <section class="card"><h2>Lautstärke</h2>
+   <div class="lv"><button data-l="0">0</button><button data-l="1">1</button><button data-l="2">2</button></div>
+   <div class="lvt" id="lvt"></div></section>
+  <details class="card"><summary>Dezibel-Messer</summary>
+   <div class="bar"><div id="fill"></div></div>
+   <div><span id="db">– </span> dB <span id="st" style="color:var(--mut);font-size:13px"></span></div>
+   <button class="b" id="mic" style="margin-top:8px">Mikrofon starten</button>
+   <div class="note">Relativer Richtwert, nicht kalibriert.</div></details>
+ </div>
+</header>
+<main><section class="card"><h2>Was steht an?</h2>
+ <div class="tools">
+  <button class="b" id="bImg">Bild</button><button class="b" id="bFile">Datei</button><button class="b" id="bLink">Link</button>
+ </div>
+ <div class="fmt">
+  <select id="ff1" title="Schriftart"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="Trebuchet MS">Trebuchet</option><option value="Comic Sans MS">Comic Sans</option><option value="Courier New">Courier</option></select>
+  <select id="fs1" title="Schriftgrösse"><option value="1">Sehr klein</option><option value="2">Klein</option><option value="3" selected>Normal</option><option value="4">Mittel</option><option value="5">Gross</option><option value="6">Sehr gross</option><option value="7">Riesig</option></select>
+  <button class="b" data-c="bold" title="Fett"><b>B</b></button><button class="b" data-c="italic" title="Kursiv"><i>K</i></button>
+ </div>
+ <div id="notes" contenteditable="true" data-ph="Ablauf, Aufträge, Notizen … (Bilder können auch eingefügt werden)"></div>
+ <div class="items" id="items"></div>
+ <div class="note">Daten werden im Browser gespeichert. Grosse Dateien können das Speicherlimit überschreiten.</div>
+</section></main>
+<input type="file" id="fi" accept="image/*" hidden multiple><input type="file" id="ff" hidden multiple>
+<script>
+const $=s=>document.querySelector(s);
+let S={date:new Date().toISOString().slice(0,10),goals:['','',''],level:0,notes:'',items:[]};
+try{const r=localStorage.getItem('lektionstool');if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+let warned=false;
+function save(){S.notes=$('#notes').innerHTML;try{localStorage.setItem('lektionstool',JSON.stringify(S))}catch(e){if(!warned){warned=true;alert('Speicher voll: Anhänge bleiben nur bis zum Schliessen erhalten.')}}}
+const LT=['Ruhe – Einzelarbeit','Flüstern – Partnerarbeit','Normal – Gruppenarbeit'];
+function setLevel(l){S.level=l;document.querySelectorAll('.lv button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l));$('#lvt').textContent=LT[l];save()}
+function render(){
+ $('#items').innerHTML='';
+ S.items.forEach((it,i)=>{const d=document.createElement('div');d.className='it';
+  const x=document.createElement('button');x.className='x';x.textContent='×';x.onclick=()=>{S.items.splice(i,1);render();save()};d.append(x);
+  if(it.t==='img'){const im=document.createElement('img');im.src=it.d;d.append(im)}
+  const a=document.createElement('a');a.textContent=it.n;
+  if(it.t==='link'){a.href=it.d;a.target='_blank';a.rel='noopener'}else if(it.t==='file'){a.href=it.d;a.download=it.n}
+  else{a.href=it.d;a.target='_blank'}
+  d.append(a);$('#items').append(d)})}
+function read(files,t){[...files].forEach(f=>{const r=new FileReader();r.onload=()=>{S.items.push({t:t==='img'&&f.type.startsWith('image/')?'img':'file',n:f.name,d:r.result});render();save()};r.readAsDataURL(f)})}
+$('#date').value=S.date;$('#date').oninput=e=>{S.date=e.target.value;save()};
+document.querySelectorAll('[data-g]').forEach(i=>{i.value=S.goals[+i.dataset.g]||'';i.oninput=()=>{S.goals[+i.dataset.g]=i.value;save()}});
+document.querySelectorAll('.lv button').forEach(b=>b.onclick=()=>setLevel(+b.dataset.l));
+$('#notes').innerHTML=S.notes;$('#notes').oninput=save;
+$('#notes').addEventListener('paste',e=>{const fs=[...(e.clipboardData?.files||[])].filter(f=>f.type.startsWith('image/'));if(fs.length){e.preventDefault();read(fs,'img')}});
+$('#bImg').onclick=()=>$('#fi').click();$('#bFile').onclick=()=>$('#ff').click();
+$('#fi').onchange=e=>{read(e.target.files,'img');e.target.value=''};$('#ff').onchange=e=>{read(e.target.files,'file');e.target.value=''};
+$('#bLink').onclick=()=>{let u=prompt('Link (URL):');if(!u)return;if(!/^https?:\/\//i.test(u))u='https://'+u;S.items.push({t:'link',n:u,d:u});render();save()};
+setLevel(S.level);render();
+// Formatierung
+let rng;document.addEventListener('selectionchange',()=>{const s=getSelection();if(s.rangeCount&&$('#notes').contains(s.anchorNode))rng=s.getRangeAt(0).cloneRange()});
+function fmt(c,v){$('#notes').focus();if(rng){const s=getSelection();s.removeAllRanges();s.addRange(rng)}document.execCommand('styleWithCSS',false,true);document.execCommand(c,false,v);save()}
+document.querySelectorAll('.fmt .b').forEach(b=>{b.onmousedown=e=>e.preventDefault();b.onclick=()=>fmt(b.dataset.c)});
+$('#ff1').onchange=e=>fmt('fontName',e.target.value);$('#fs1').onchange=e=>fmt('fontSize',e.target.value);
+// Vogel
+let bctx;
+function tweet(ac,t){[[2600,3800],[3400,2800],[2800,4200]].forEach((p,i)=>{const o=ac.createOscillator(),g=ac.createGain(),s=t+i*.11;o.type='sine';o.frequency.setValueAtTime(p[0],s);o.frequency.exponentialRampToValueAtTime(p[1],s+.08);g.gain.setValueAtTime(0.0001,s);g.gain.linearRampToValueAtTime(.25,s+.01);g.gain.exponentialRampToValueAtTime(.001,s+.09);o.connect(g);g.connect(ac.destination);o.start(s);o.stop(s+.1)})}
+$('#bird').onclick=()=>{try{bctx=bctx||new (window.AudioContext||window.webkitAudioContext)();bctx.resume();const n=bctx.currentTime+.05;tweet(bctx,n);tweet(bctx,n+.6)}catch(e){}const b=$('#bird');b.classList.remove('sing');void b.offsetWidth;b.classList.add('sing')};
+// Dezibel-Messer
+let ctx,an,buf,run=false,stream;
+$('#mic').onclick=async()=>{
+ if(run){run=false;stream.getTracks().forEach(t=>t.stop());ctx.close();$('#mic').textContent='Mikrofon starten';return}
+ try{stream=await navigator.mediaDevices.getUserMedia({audio:true});}catch(e){$('#st').textContent='Kein Mikrofonzugriff';return}
+ ctx=new (window.AudioContext||window.webkitAudioContext)();an=ctx.createAnalyser();an.fftSize=1024;ctx.createMediaStreamSource(stream).connect(an);
+ buf=new Float32Array(an.fftSize);run=true;$('#mic').textContent='Stoppen';
+ (function loop(){if(!run)return;an.getFloatTimeDomainData(buf);let s=0;for(const v of buf)s+=v*v;
+  const rms=Math.sqrt(s/buf.length)||1e-5;const db=Math.max(30,Math.min(100,Math.round(94+20*Math.log10(rms))));
+  const p=(db-30)/70*100,lv=db<50?0:db<65?1:2;
+  $('#db').textContent=db;$('#fill').style.width=p+'%';$('#fill').style.background=['var(--g)','var(--y)','var(--r)'][lv];
+  $('#st').textContent=lv>S.level?'· zu laut für Stufe '+S.level:'· OK';requestAnimationFrame(loop)})()};
+</script>
+</body>
+</html>
