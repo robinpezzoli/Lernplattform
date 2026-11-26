@@ -8,13 +8,14 @@
 
 <style>
 :root {
-    --forest: #244b3b;
-    --deep: #17382d;
-    --sage: #789b83;
-    --mint: #dcebdd;
-    --pastel: #eff6ed;
-    --cream: #fafbf4;
-    --text: #294438;
+    --forest: #315d49;
+    --deep: #244b3b;
+    --sage: #8caf98;
+    --mint: #dcefe0;
+    --pastel: #f1f7ef;
+    --cream: #ffffff;
+    --text: #345344;
+    --shadow: rgba(49, 93, 73, 0.10);
 }
 
 * {
@@ -23,37 +24,41 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: var(--pastel);
+    font-family: "Courier New", Courier, monospace;
+    background: linear-gradient(135deg, #f3f8ef, #eaf4eb);
     color: var(--text);
     overflow-x: hidden;
 }
 
+/* KOPFBEREICH */
+
 header {
-    background: linear-gradient(135deg, #244b3b, #527b60);
+    background: linear-gradient(135deg, #315d49, #83ad8c);
     color: white;
     text-align: center;
-    padding: 65px 20px 75px;
-    border-radius: 0 0 35px 35px;
-    position: relative;
+    padding: 35px 15px 42px;
+    border-radius: 0 0 28px 28px;
+    box-shadow: 0 5px 20px var(--shadow);
 }
 
 header h1 {
-    font-size: clamp(30px, 5vw, 44px);
-    margin: 0 0 15px;
+    font-size: clamp(25px, 4vw, 38px);
+    margin: 0 0 10px;
 }
 
 header p {
-    font-size: 18px;
-    color: #e4f1df;
+    font-size: 15px;
+    color: #f0f8ec;
+    margin: 0;
 }
 
 /* ZIEGEN */
+
 .goat {
     position: fixed;
     z-index: 10;
-    top: 155px;
-    font-size: clamp(38px, 6vw, 65px);
+    top: 120px;
+    font-size: 48px;
     pointer-events: none;
     opacity: 0;
 }
@@ -102,91 +107,150 @@ header p {
 }
 
 /* INHALT */
+
 main {
-    max-width: 1100px;
-    margin: 45px auto;
-    padding: 20px;
+    width: 98%;
+    max-width: 1800px;
+    margin: 28px auto;
+    padding: 8px;
 }
 
 .bereich {
-    margin-bottom: 55px;
+    margin-bottom: 35px;
 }
 
 .bereich-titel {
     text-align: center;
     color: var(--forest);
-    font-size: 30px;
-    margin-bottom: 28px;
-    padding-bottom: 12px;
-    border-bottom: 3px solid var(--mint);
+    font-size: clamp(17px, 2vw, 23px);
+    margin-bottom: 17px;
+    padding-bottom: 9px;
+    border-bottom: 2px solid #cfe3d1;
 }
+
+/* APP-RASTER */
 
 .karten {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 10px;
 }
 
+/* APP-KACHELN */
+
 .karte {
-    background: var(--cream);
-    padding: 32px 22px;
-    border-radius: 22px;
+    background: rgba(255,255,255,0.88);
+    padding: 12px 7px;
+    border-radius: 15px;
     text-align: center;
-    border: 1px solid #dce9da;
-    box-shadow: 0 5px 16px rgba(36,75,59,0.08);
-    transition: transform 0.25s, box-shadow 0.25s;
+    border: 1px solid #dceadd;
+    box-shadow: 0 3px 10px var(--shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .karte:hover {
-    transform: translateY(-7px);
-    box-shadow: 0 12px 25px rgba(36,75,59,0.16);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(49,93,73,0.17);
+    background: #ffffff;
 }
 
 .symbol {
-    font-size: 52px;
-    margin-bottom: 10px;
+    font-size: 27px;
+    margin-bottom: 5px;
 }
 
 .karte h3 {
     color: var(--forest);
-    font-size: 21px;
-    min-height: 48px;
+    font-size: 11px;
+    line-height: 1.4;
+    margin: 4px 0;
+    overflow-wrap: anywhere;
 }
 
 .karte p {
-    line-height: 1.6;
-    min-height: 65px;
-    color: #61766a;
+    font-size: 9px;
+    line-height: 1.4;
+    color: #718578;
+    margin: 4px 0 8px;
+    flex-grow: 1;
 }
 
 .button {
     display: inline-block;
-    background: var(--sage);
+    background: #8caf98;
     color: white;
-    padding: 13px 23px;
-    border-radius: 12px;
+    padding: 7px 8px;
+    border-radius: 9px;
     text-decoration: none;
+    font-size: 9px;
     font-weight: bold;
-    margin-top: 15px;
-    transition: background 0.2s;
+    margin-top: auto;
+    transition: background 0.2s, transform 0.2s;
 }
 
 .button:hover {
     background: var(--forest);
+    transform: scale(1.04);
 }
 
 /* FUSSZEILE */
+
 footer {
-    background: #e1ecdf;
+    background: #e1eee0;
     text-align: center;
-    padding: 30px 15px;
-    margin-top: 55px;
+    padding: 22px 10px;
+    margin-top: 35px;
     color: var(--forest);
-    border-radius: 30px 30px 0 0;
+    border-radius: 25px 25px 0 0;
+    font-size: 12px;
 }
 
 footer p {
     margin: 5px;
+}
+
+/* RESPONSIVE DESIGN */
+
+/* Kleinere Bildschirme */
+@media (max-width: 1100px) {
+    .karten {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+/* Tablets */
+@media (max-width: 650px) {
+    .karten {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 9px;
+    }
+
+    .karte {
+        padding: 12px 5px;
+    }
+
+    .symbol {
+        font-size: 25px;
+    }
+
+    .karte h3 {
+        font-size: 10px;
+    }
+
+    .karte p {
+        font-size: 9px;
+    }
+}
+
+/* Smartphones */
+@media (max-width: 380px) {
+    .karten {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -204,13 +268,12 @@ footer p {
 
 <body>
 
-<!-- Neugierige Geisslein -->
 <div class="goat goat-left" aria-hidden="true">🐐</div>
 <div class="goat goat-right" aria-hidden="true">🐐</div>
 
 <header>
     <h1>💡 Hirntraining 🧠</h1>
-    <p>Entdecken, üben, knobeln und besser werden!</p>
+    <p>Entdecken, üben, knobeln und besser werden! 🌷</p>
 </header>
 
 <main>
@@ -225,36 +288,28 @@ footer p {
                 <div class="symbol">🏆</div>
                 <h3>Mathe-Master-Challenge</h3>
                 <p>Stelle dein mathematisches Können unter Beweis!</p>
-                <a class="button" href="Mathe-Master-Challenge-3.html">
-                    Jetzt starten →
-                </a>
+                <a class="button" href="Mathe-Master-Challenge-3.html">Starten →</a>
             </div>
 
             <div class="karte">
                 <div class="symbol">🏔️</div>
                 <h3>Alpenlift – Pythagoras</h3>
-                <p>Entdecke den Satz des Pythagoras auf spielerische Weise!</p>
-                <a class="button" href="alpenlift-pythagoras.html">
-                    Jetzt starten →
-                </a>
+                <p>Entdecke den Satz des Pythagoras!</p>
+                <a class="button" href="alpenlift-pythagoras.html">Starten →</a>
             </div>
 
             <div class="karte">
                 <div class="symbol">✖️</div>
                 <h3>Multiplikations-Duell</h3>
-                <p>Trainiere das Einmaleins und verbessere deine Geschwindigkeit!</p>
-                <a class="button" href="multiplikations_duell.html">
-                    Jetzt starten →
-                </a>
+                <p>Trainiere das Einmaleins!</p>
+                <a class="button" href="multiplikations_duell.html">Starten →</a>
             </div>
 
             <div class="karte">
                 <div class="symbol">🛒</div>
-                <h3>Detailhandel-Kassentrainer Schweiz</h3>
-                <p>Trainiere Kassieren, Rückgeld und den Umgang mit Schweizer Franken!</p>
-                <a class="button" href="Detailhandel_Kassentrainer_Schweiz.html">
-                    Jetzt starten →
-                </a>
+                <h3>Detailhandel-Kassentrainer</h3>
+                <p>Trainiere Kassieren und Rückgeld mit Schweizer Franken!</p>
+                <a class="button" href="Detailhandel_Kassentrainer_Schweiz.html">Starten →</a>
             </div>
 
         </div>
@@ -269,19 +324,15 @@ footer p {
             <div class="karte">
                 <div class="symbol">🌙</div>
                 <h3>Mondphasen-Atlas</h3>
-                <p>Entdecke die Mondphasen und beobachte den Mond im Verlauf eines Monats!</p>
-                <a class="button" href="Mondphasen-Atlas.html">
-                    Jetzt starten →
-                </a>
+                <p>Entdecke die Mondphasen!</p>
+                <a class="button" href="Mondphasen-Atlas.html">Starten →</a>
             </div>
 
             <div class="karte">
                 <div class="symbol">🌷</div>
                 <h3>Jahreszeiten in der Schweiz</h3>
-                <p>Erfahre mehr über Frühling, Sommer, Herbst und Winter in der Schweiz!</p>
-                <a class="button" href="Jahreszeiten_in_der_Schweiz.html">
-                    Jetzt starten →
-                </a>
+                <p>Erfahre mehr über Frühling, Sommer, Herbst und Winter!</p>
+                <a class="button" href="Jahreszeiten_in_der_Schweiz.html">Starten →</a>
             </div>
 
         </div>
