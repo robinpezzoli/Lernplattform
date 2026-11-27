@@ -8,13 +8,13 @@
 
     <style>
         :root {
-            --forest: #52796f;
-            --deep: #354f52;
-            --sage: #84a98c;
-            --mint: #cadfd3;
-            --pastel: #e8f3ec;
-            --cream: #f8f8ef;
-            --text: #354f52;
+            --forest: #47745a;
+            --deep: #315d45;
+            --sage: #91b89b;
+            --mint: #dcefe1;
+            --pastel: #edf7ee;
+            --cream: #fffdf5;
+            --text: #284b38;
         }
 
         * {
@@ -23,345 +23,238 @@
 
         body {
             margin: 0;
-            padding: 20px;
-            font-family: "Courier New", Courier, monospace;
-            background: var(--cream);
+            font-family: Arial, sans-serif;
+            background: var(--pastel);
             color: var(--text);
+            min-height: 100vh;
             overflow-x: hidden;
         }
 
         header {
-            max-width: 1400px;
-            margin: 0 auto 24px;
-            padding: 18px;
             text-align: center;
-            background: var(--pastel);
-            border: 2px solid var(--mint);
-            border-radius: 18px;
+            padding: 35px 20px 20px;
             position: relative;
             z-index: 2;
         }
 
-        header h1 {
-            margin: 5px 0;
+        h1 {
             color: var(--deep);
-            font-size: clamp(1.7rem, 4vw, 2.6rem);
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 10px;
         }
 
         header p {
-            margin: 8px 0;
-            font-size: 0.95rem;
-        }
-
-        .lehrer-button {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 9px 15px;
-            border: 2px solid var(--forest);
-            border-radius: 12px;
-            background: var(--forest);
-            color: white;
-            font-family: inherit;
-            font-size: 0.85rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .lehrer-button:hover {
-            background: var(--deep);
-            transform: translateY(-2px);
+            font-size: 1.1rem;
         }
 
         main {
-            max-width: 1400px;
+            max-width: 1100px;
             margin: 0 auto;
+            padding: 20px;
             position: relative;
             z-index: 2;
         }
 
         .bereich {
-            margin-bottom: 26px;
+            background: rgba(255, 253, 245, 0.94);
+            border-radius: 22px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 18px rgba(40, 75, 56, 0.09);
         }
 
         .bereich h2 {
-            margin: 0 0 12px;
-            padding: 9px 13px;
-            border-radius: 12px;
-            background: var(--mint);
             color: var(--deep);
-            font-size: 1.15rem;
+            margin-top: 0;
+            font-size: 1.6rem;
         }
 
         .app-grid {
             display: grid;
-            grid-template-columns: repeat(10, minmax(0, 1fr));
-            gap: 9px;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 15px;
         }
 
         .app-card {
-            min-width: 0;
-            padding: 10px 5px;
-            text-align: center;
-            background: white;
-            border: 2px solid var(--mint);
-            border-radius: 12px;
-            text-decoration: none;
-            color: var(--text);
-            transition: 0.2s;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            gap: 7px;
+            gap: 12px;
+            min-height: 85px;
+            padding: 18px;
+            background: var(--mint);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            color: var(--deep);
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s, background 0.2s, border-color 0.2s;
         }
 
         .app-card:hover {
-            background: var(--pastel);
-            border-color: var(--forest);
-            transform: translateY(-3px);
+            transform: translateY(-4px);
+            background: #cce6d3;
+            border-color: var(--sage);
         }
 
         .app-icon {
-            font-size: 1.7rem;
-            line-height: 1.2;
+            font-size: 2rem;
+            flex-shrink: 0;
         }
 
-        .app-card h3 {
-            margin: 0;
-            font-size: 0.75rem;
-            line-height: 1.25;
-            overflow-wrap: anywhere;
-        }
-
-        .app-card span {
-            font-size: 0.65rem;
-            line-height: 1.2;
+        .app-title {
+            font-size: 1.05rem;
         }
 
         footer {
-            max-width: 1400px;
-            margin: 30px auto 0;
-            padding: 14px;
             text-align: center;
-            color: var(--forest);
-            font-size: 0.85rem;
+            padding: 25px;
+            color: var(--deep);
             position: relative;
             z-index: 2;
         }
 
-        /* =====================================
-           🐐 ZIEGEN UND PFLANZEN IM HINTERGRUND
-        ===================================== */
-
-        #ziegenWiese {
+        /* Lehrpersonen-Login */
+        .lehrpersonen-button {
             position: fixed;
-            inset: 0;
-            z-index: 1;
-            overflow: hidden;
-            pointer-events: none;
+            right: 18px;
+            top: 18px;
+            z-index: 10;
+            background: var(--deep);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
-        .ziege {
-            position: absolute;
-            font-size: 2.5rem;
-            line-height: 1;
-            transition:
-                left 3s ease-in-out,
-                top 3s ease-in-out;
-            transform-origin: center;
-            will-change: left, top;
-            filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.12));
+        .lehrpersonen-button:hover {
+            background: var(--forest);
         }
 
-        .ziege.geht {
-            animation: laufen 0.35s infinite alternate;
-        }
-
-        .ziege.frisst {
-            animation: kauen 0.5s infinite alternate;
-        }
-
-        .ziege.umgedreht {
-            transform: scaleX(-1);
-        }
-
-        @keyframes laufen {
-            from {
-                margin-top: -2px;
-            }
-            to {
-                margin-top: 3px;
-            }
-        }
-
-        @keyframes kauen {
-            from {
-                transform: scale(1) rotate(-3deg);
-            }
-            to {
-                transform: scale(1.12) rotate(3deg);
-            }
-        }
-
-        .pflanze {
-            position: absolute;
-            font-size: 1.8rem;
-            opacity: 0.85;
-            transition: opacity 0.5s, transform 0.5s;
-            animation: pflanzenWachsen 2s ease-in-out infinite alternate;
-        }
-
-        .pflanze.verschwindet {
-            opacity: 0;
-            transform: scale(0.1);
-        }
-
-        @keyframes pflanzenWachsen {
-            from {
-                transform: scale(0.9) rotate(-5deg);
-            }
-            to {
-                transform: scale(1.08) rotate(5deg);
-            }
-        }
-
-        .pflanze-neu {
-            animation: neuWachsen 2s ease-out;
-        }
-
-        @keyframes neuWachsen {
-            from {
-                opacity: 0;
-                transform: scale(0);
-            }
-            to {
-                opacity: 0.85;
-                transform: scale(1);
-            }
-        }
-
-        .fress-text {
-            position: absolute;
-            font-size: 1rem;
-            animation: fressBlase 1.5s forwards;
-        }
-
-        @keyframes fressBlase {
-            0% {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-            30% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-        }
-
-        @media (max-width: 1100px) {
-            .app-grid {
-                grid-template-columns: repeat(5, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 650px) {
-            body {
-                padding: 12px;
-            }
-
-            .app-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-
-            .ziege {
-                font-size: 2rem;
-            }
-
-            .pflanze {
-                font-size: 1.4rem;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .app-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        /* Login-Fenster */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
             inset: 0;
-            background: rgba(30, 50, 45, 0.6);
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 20;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
 
         .modal-inhalt {
+            background: var(--cream);
+            padding: 30px;
+            border-radius: 20px;
             width: 100%;
             max-width: 380px;
-            padding: 25px;
-            text-align: center;
-            background: var(--cream);
-            border: 3px solid var(--sage);
-            border-radius: 18px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         }
 
         .modal-inhalt h2 {
             margin-top: 0;
             color: var(--deep);
-            font-size: 1.3rem;
-        }
-
-        .modal-inhalt p {
-            font-size: 0.9rem;
         }
 
         .modal-inhalt input {
             width: 100%;
-            padding: 11px;
-            margin: 10px 0;
-            border: 2px solid var(--mint);
+            padding: 12px;
+            border: 1px solid var(--sage);
             border-radius: 9px;
-            font-family: inherit;
+            margin: 10px 0;
             font-size: 1rem;
         }
 
-        .modal-inhalt input:focus {
-            outline: 2px solid var(--sage);
-        }
-
         .modal-inhalt button {
-            margin: 5px;
-            padding: 9px 14px;
+            padding: 11px 16px;
             border: none;
             border-radius: 9px;
-            background: var(--forest);
-            color: white;
-            font-family: inherit;
-            cursor: pointer;
-        }
-
-        .modal-inhalt button:hover {
             background: var(--deep);
-        }
-
-        #fehler {
-            min-height: 20px;
-            color: #b33a3a;
+            color: white;
+            cursor: pointer;
             font-weight: bold;
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            .ziege, .pflanze {
-                animation: none !important;
+        .modal-inhalt button:hover {
+            background: var(--forest);
+        }
+
+        .fehler {
+            color: #b3261e;
+            min-height: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Ziegenwiese im Hintergrund */
+        #ziegenWiese {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.42;
+        }
+
+        .ziege {
+            position: absolute;
+            font-size: 2.5rem;
+            line-height: 1;
+            transition: left 60s linear, top 60s linear;
+            transform-origin: center;
+            will-change: left, top;
+            filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.12));
+        }
+
+        .ziege.geht {
+            animation: laufen 4s infinite alternate;
+        }
+
+        .ziege.frisst {
+            animation: kauen 3s infinite alternate;
+        }
+
+        @keyframes laufen {
+            from {
+                margin-top: 0;
+            }
+            to {
+                margin-top: -3px;
+            }
+        }
+
+        @keyframes kauen {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.04);
+            }
+        }
+
+        .pflanze {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.8;
+            transition: opacity 0.5s;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding-top: 75px;
+            }
+
+            .bereich {
+                padding: 18px;
+            }
+
+            .app-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lehrpersonen-button {
+                right: 12px;
+                top: 12px;
             }
         }
     </style>
@@ -369,48 +262,28 @@
 
 <body>
 
-    <!-- Ziegenwiese -->
-    <div id="ziegenWiese" aria-hidden="true"></div>
+    <div id="ziegenWiese"></div>
+
+    <button class="lehrpersonen-button" onclick="zeigeLogin()">
+        👩‍🏫 Lehrpersonen
+    </button>
 
     <header>
         <h1>💡 Hirntraining 🧠</h1>
-        <p>Denken, entdecken, üben und wachsen! 🌱</p>
-
-        <button class="lehrer-button" onclick="oeffneLehrerLogin()">
-            🔐 Für Lehrpersonen
-        </button>
+        <p>Entdecken, üben und spielerisch lernen!</p>
     </header>
 
     <main>
 
         <!-- MATHE -->
         <section class="bereich">
-            <h2>➗ Mathe</h2>
+            <h2>🔢 Mathe</h2>
 
             <div class="app-grid">
 
-                <a class="app-card" href="Mathe-Master-Challenge-3.html">
-                    <div class="app-icon">🧠</div>
-                    <h3>Mathe Master</h3>
-                    <span>Knifflige Aufgaben</span>
-                </a>
-
-                <a class="app-card" href="alpenlift-pythagoras.html">
-                    <div class="app-icon">🏔️</div>
-                    <h3>Alpenlift</h3>
-                    <span>Pythagoras</span>
-                </a>
-
-                <a class="app-card" href="multiplikations_duell.html">
-                    <div class="app-icon">✖️</div>
-                    <h3>Multiplikations-Duell</h3>
-                    <span>Einmaleins trainieren</span>
-                </a>
-
-                <a class="app-card" href="Detailhandel_Kassentrainer_Schweiz.html">
-                    <div class="app-icon">🛒</div>
-                    <h3>Kassentrainer</h3>
-                    <span>Rechnen mit Geld</span>
+                <a href="ufo-escape-html.html" class="app-card">
+                    <span class="app-icon">🛸</span>
+                    <span class="app-title">UFO Escape</span>
                 </a>
 
             </div>
@@ -421,45 +294,29 @@
             <h2>🌍 RZG</h2>
 
             <div class="app-grid">
-
-                <a class="app-card" href="Mondphasen-Atlas.html">
-                    <div class="app-icon">🌙</div>
-                    <h3>Mondphasen-Atlas</h3>
-                    <span>Den Mond entdecken</span>
-                </a>
-
-                <a class="app-card" href="Jahreszeiten_in_der_Schweiz.html">
-                    <div class="app-icon">🍂</div>
-                    <h3>Jahreszeiten</h3>
-                    <span>Die Schweiz im Wandel</span>
-                </a>
-
+                <!-- Weitere RZG-Spiele können hier ergänzt werden -->
             </div>
         </section>
 
         <!-- MEDIEN & INFORMATIK -->
         <section class="bereich">
-            <h2>💻 Medien &amp; Informatik</h2>
+            <h2>💻 Medien & Informatik</h2>
 
             <div class="app-grid">
 
-                <a class="app-card" href="netiquette.html">
-                    <div class="app-icon">💬</div>
-                    <h3>Netiquette</h3>
-                    <span>Respektvoll kommunizieren im Internet</span>
+                <a href="netiquette.html" class="app-card">
+                    <span class="app-icon">💬</span>
+                    <span class="app-title">Netiquette</span>
                 </a>
 
-                <a class="app-card" href="urheberrecht.html">
-                    <div class="app-icon">©️</div>
-                    <h3>Urheberrecht</h3>
-                    <span>Bilder, Texte und Musik richtig verwenden</span>
+                <a href="urheberrecht.html" class="app-card">
+                    <span class="app-icon">©️</span>
+                    <span class="app-title">Urheberrecht</span>
                 </a>
 
-                <!-- NEU: INTERNET GAME -->
-                <a class="app-card" href="internet_game.html">
-                    <div class="app-icon">🌐</div>
-                    <h3>Internet Game</h3>
-                    <span>Spielerisch das Internet entdecken</span>
+                <a href="internet_game.html" class="app-card">
+                    <span class="app-icon">🌐</span>
+                    <span class="app-title">Internet Game</span>
                 </a>
 
             </div>
@@ -468,148 +325,141 @@
     </main>
 
     <footer>
-        🌱 Denken. Üben. Lernen. Wachsen. 🌱
+        🌱 Viel Spass beim Lernen! 🐐
     </footer>
 
-    <!-- Login-Fenster für Lehrpersonen -->
-    <div class="modal" id="lehrerModal">
+    <!-- LOGIN-MODAL -->
+    <div class="modal" id="loginModal">
         <div class="modal-inhalt">
-            <h2>🔐 Lehrpersonenbereich</h2>
+            <h2>👩‍🏫 Lehrpersonen-Login</h2>
             <p>Bitte Passwort eingeben:</p>
 
             <input
                 type="password"
-                id="lehrerPasswort"
+                id="passwort"
                 placeholder="Passwort"
-                autocomplete="off"
                 onkeydown="if(event.key === 'Enter') pruefePasswort()"
             >
 
-            <p id="fehler"></p>
+            <p class="fehler" id="loginFehler"></p>
 
-            <button onclick="pruefePasswort()">
-                Anmelden →
-            </button>
-
-            <button onclick="schliesseLehrerLogin()">
+            <button onclick="pruefePasswort()">Einloggen</button>
+            <button onclick="schliesseLogin()" style="background:#888; margin-left:5px;">
                 Abbrechen
             </button>
         </div>
     </div>
 
     <script>
-        /* =====================================
-           🐐 ZIEGEN UND PFLANZEN
-        ===================================== */
+        /* Lehrpersonen-Login */
+
+        function zeigeLogin() {
+            document.getElementById("loginModal").style.display = "flex";
+            document.getElementById("passwort").focus();
+        }
+
+        function schliesseLogin() {
+            document.getElementById("loginModal").style.display = "none";
+            document.getElementById("passwort").value = "";
+            document.getElementById("loginFehler").textContent = "";
+        }
+
+        function pruefePasswort() {
+            const passwort = document.getElementById("passwort").value;
+
+            if (passwort === "fedpol") {
+                window.location.href = "index_lp.html";
+            } else {
+                document.getElementById("loginFehler").textContent =
+                    "Das Passwort ist leider falsch.";
+            }
+        }
+
+        /* Ziegenwiese */
 
         const wiese = document.getElementById("ziegenWiese");
 
-        const pflanzenArten = ["🍀", "☘️", "🌿", "🌱"];
-
-        const ziegen = [];
         const pflanzen = [];
+        const ziegen = [];
 
-        const ANZAHL_ZIEGEN = 2;
-        const ANZAHL_PFLANZEN = 12;
+        const ZIEGEN_PIXEL_PRO_MINUTE = 40;
 
-        function zufall(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+        function erstellePflanzen() {
+            const symbole = ["🌱", "🌿", "☘️", "🌼"];
 
-        function neuePosition() {
-            const rand = 45;
+            for (let i = 0; i < 12; i++) {
+                const pflanze = document.createElement("div");
 
-            return {
-                x: zufall(rand, Math.max(rand + 1, window.innerWidth - rand)),
-                y: zufall(100, Math.max(110, window.innerHeight - 70))
-            };
-        }
+                pflanze.className = "pflanze";
+                pflanze.textContent =
+                    symbole[Math.floor(Math.random() * symbole.length)];
 
-        // Pflanzen anlegen
-        function pflanzeErstellen() {
-            const pflanze = document.createElement("div");
+                pflanze.style.left =
+                    Math.random() * (window.innerWidth - 40) + "px";
 
-            pflanze.className = "pflanze";
-            pflanze.textContent =
-                pflanzenArten[Math.floor(Math.random() * pflanzenArten.length)];
+                pflanze.style.top =
+                    Math.random() * (window.innerHeight - 40) + "px";
 
-            const pos = neuePosition();
+                wiese.appendChild(pflanze);
 
-            pflanze.style.left = pos.x + "px";
-            pflanze.style.top = pos.y + "px";
-
-            wiese.appendChild(pflanze);
-
-            const daten = {
-                element: pflanze,
-                x: pos.x,
-                y: pos.y,
-                verfuegbar: true
-            };
-
-            pflanzen.push(daten);
-
-            return daten;
-        }
-
-        // Ziegen erstellen
-        function ziegeErstellen(index) {
-            const ziege = document.createElement("div");
-
-            ziege.className = "ziege geht";
-            ziege.textContent = "🐐";
-
-            const pos = neuePosition();
-
-            ziege.style.left = pos.x + "px";
-            ziege.style.top = pos.y + "px";
-
-            wiese.appendChild(ziege);
-
-            return {
-                element: ziege,
-                x: pos.x,
-                y: pos.y,
-                beschaeftigt: false,
-                index: index
-            };
-        }
-
-        // Passende Pflanze suchen
-        function findePflanze(ziege) {
-            const verfuegbare = pflanzen.filter(p => p.verfuegbar);
-
-            if (verfuegbare.length === 0) {
-                return null;
+                pflanzen.push({
+                    element: pflanze,
+                    x: parseFloat(pflanze.style.left),
+                    y: parseFloat(pflanze.style.top),
+                    verfuegbar: true
+                });
             }
-
-            verfuegbare.sort((a, b) => {
-                const da = Math.hypot(a.x - ziege.x, a.y - ziege.y);
-                const db = Math.hypot(b.x - ziege.x, b.y - ziege.y);
-                return da - db;
-            });
-
-            return verfuegbare[0];
         }
 
-        // Ziegen zu einer Pflanze bewegen
+        function erstelleZiegen() {
+            for (let i = 0; i < 2; i++) {
+                const ziege = document.createElement("div");
+
+                ziege.className = "ziege";
+                ziege.textContent = "🐐";
+
+                const x = Math.random() * (window.innerWidth - 60);
+                const y = Math.random() * (window.innerHeight - 60);
+
+                ziege.style.left = x + "px";
+                ziege.style.top = y + "px";
+
+                wiese.appendChild(ziege);
+
+                ziegen.push({
+                    element: ziege,
+                    x: x,
+                    y: y
+                });
+            }
+        }
+
         function bewegeZiege(ziege, x, y) {
             const element = ziege.element;
 
             element.classList.remove("frisst");
             element.classList.add("geht");
 
-            const blickNachRechts = x >= ziege.x;
+            const dx = x - ziege.x;
+            const dy = y - ziege.y;
 
-            element.style.transform = blickNachRechts
-                ? "scaleX(1)"
-                : "scaleX(-1)";
+            const entfernung = Math.hypot(dx, dy);
 
-            element.style.left = x + "px";
-            element.style.top = y + "px";
+            const dauer = Math.max(
+                1000,
+                entfernung / ZIEGEN_PIXEL_PRO_MINUTE * 60000
+            );
 
-            const entfernung = Math.hypot(x - ziege.x, y - ziege.y);
-            const dauer = Math.max(1500, entfernung * 7);
+            element.style.transform =
+                dx >= 0 ? "scaleX(1)" : "scaleX(-1)";
+
+            element.style.transition =
+                `left ${dauer}ms linear, top ${dauer}ms linear`;
+
+            requestAnimationFrame(() => {
+                element.style.left = x + "px";
+                element.style.top = y + "px";
+            });
 
             ziege.x = x;
             ziege.y = y;
@@ -617,135 +467,85 @@
             return dauer;
         }
 
-        // Fressanimation
-        function frisstZiege(ziege, pflanze) {
+        function findePflanze() {
+            const verfuegbarePflanzen =
+                pflanzen.filter(p => p.verfuegbar);
+
+            if (verfuegbarePflanzen.length === 0) {
+                return null;
+            }
+
+            return verfuegbarePflanzen[
+                Math.floor(Math.random() * verfuegbarePflanzen.length)
+            ];
+        }
+
+        function lasseZiegeFressen(ziege, pflanze) {
             ziege.element.classList.remove("geht");
             ziege.element.classList.add("frisst");
 
             pflanze.verfuegbar = false;
-            pflanze.element.classList.add("verschwindet");
+            pflanze.element.style.opacity = "0.15";
 
-            const blase = document.createElement("div");
-            blase.className = "fress-text";
-            blase.textContent = "😋";
-            blase.style.left = ziege.x + "px";
-            blase.style.top = (ziege.y - 25) + "px";
-
-            wiese.appendChild(blase);
-
-            setTimeout(() => blase.remove(), 1600);
-
-            // Pflanze nach 2 bis 4 Minuten nachwachsen lassen
-            const wartezeit = zufall(120000, 240000);
-
-            setTimeout(() => {
-                pflanze.element.remove();
-
-                const index = pflanzen.indexOf(pflanze);
-                if (index !== -1) {
-                    pflanzen.splice(index, 1);
-                }
-
-                pflanzeErstellen();
-            }, wartezeit);
+            const fressdauer = 10000 + Math.random() * 10000;
 
             setTimeout(() => {
                 ziege.element.classList.remove("frisst");
-                ziege.element.classList.add("geht");
-                ziege.beschaeftigt = false;
-                ziegeWeiter(ziege);
-            }, zufall(2500, 4500));
+                pflanze.element.style.opacity = "0.8";
+                pflanze.verfuegbar = true;
+
+                planeNaechsteBewegung(ziege);
+            }, fressdauer);
         }
 
-        // Ziegen bewegen sich selbstständig
-        function ziegeWeiter(ziege) {
-            if (ziege.beschaeftigt) return;
+        function planeNaechsteBewegung(ziege) {
+            const pflanze = findePflanze();
 
-            ziege.beschaeftigt = true;
-
-            const pflanze = findePflanze(ziege);
+            let zielX;
+            let zielY;
 
             if (pflanze) {
-                pflanze.verfuegbar = false;
-
-                const zielX = pflanze.x;
-                const zielY = pflanze.y;
-
-                const dauer = bewegeZiege(ziege, zielX, zielY);
-
-                setTimeout(() => {
-                    frisstZiege(ziege, pflanze);
-                }, dauer + 300);
-
+                zielX = pflanze.x;
+                zielY = pflanze.y;
             } else {
-                const pos = neuePosition();
-                const dauer = bewegeZiege(ziege, pos.x, pos.y);
-
-                setTimeout(() => {
-                    ziege.beschaeftigt = false;
-                    ziegeWeiter(ziege);
-                }, dauer + 1000);
+                zielX = Math.random() * (window.innerWidth - 60);
+                zielY = Math.random() * (window.innerHeight - 60);
             }
+
+            const dauer = bewegeZiege(ziege, zielX, zielY);
+
+            setTimeout(() => {
+                if (pflanze) {
+                    lasseZiegeFressen(ziege, pflanze);
+                } else {
+                    planeNaechsteBewegung(ziege);
+                }
+            }, dauer);
         }
 
-        // Wiese starten
         function starteZiegenWiese() {
-            for (let i = 0; i < ANZAHL_PFLANZEN; i++) {
-                pflanzeErstellen();
-            }
+            erstellePflanzen();
+            erstelleZiegen();
 
-            for (let i = 0; i < ANZAHL_ZIEGEN; i++) {
-                const ziege = ziegeErstellen(i);
-                ziegen.push(ziege);
-
+            ziegen.forEach((ziege, index) => {
                 setTimeout(() => {
-                    ziegeWeiter(ziege);
-                }, i * 1800);
-            }
+                    planeNaechsteBewegung(ziege);
+                }, index * 3000);
+            });
         }
 
         starteZiegenWiese();
 
-        // Bei Änderung der Bildschirmgrösse keine Überläufe verursachen
+        /* Bei Fenstergrössenänderung Pflanzen neu verteilen */
+
         window.addEventListener("resize", () => {
-            ziegen.forEach(ziege => {
-                ziege.x = Math.min(ziege.x, window.innerWidth - 50);
-                ziege.y = Math.min(ziege.y, window.innerHeight - 50);
+            pflanzen.forEach(pflanze => {
+                pflanze.x = Math.random() * (window.innerWidth - 40);
+                pflanze.y = Math.random() * (window.innerHeight - 40);
+
+                pflanze.element.style.left = pflanze.x + "px";
+                pflanze.element.style.top = pflanze.y + "px";
             });
-        });
-
-        /* =====================================
-           🔐 LEHRPERSONEN-LOGIN
-        ===================================== */
-
-        function oeffneLehrerLogin() {
-            document.getElementById("lehrerModal").style.display = "flex";
-            document.getElementById("lehrerPasswort").focus();
-        }
-
-        function schliesseLehrerLogin() {
-            document.getElementById("lehrerModal").style.display = "none";
-            document.getElementById("lehrerPasswort").value = "";
-            document.getElementById("fehler").textContent = "";
-        }
-
-        function pruefePasswort() {
-            const passwort =
-                document.getElementById("lehrerPasswort").value;
-
-            if (passwort === "fedpol") {
-                window.location.href = "index_lp.html";
-            } else {
-                document.getElementById("fehler").textContent =
-                    "❌ Falsches Passwort. Bitte nochmals versuchen!";
-            }
-        }
-
-        // Login-Fenster schliessen, wenn ausserhalb geklickt wird
-        document.getElementById("lehrerModal").addEventListener("click", function(event) {
-            if (event.target === this) {
-                schliesseLehrerLogin();
-            }
         });
     </script>
 
