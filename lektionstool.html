@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lektionstool</title>
 <style>
-:root{--bg:#e6d5c3;--card:#fff;--tx:#3b2f26;--mut:#7a6858;--bd:#d0bba3;--ac:#8a5a2b;--g:#6fb585;--y:#e3b04b;--r:#d9776e;
+:root{--bg:#e9dccd;--card:#fff;--tx:#3b2f26;--mut:#7a6858;--bd:#cdb79d;--ac:#7a4e2d;--g:#7fae8a;--y:#e0b35a;--r:#cf7f6c;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -15,7 +15,7 @@ header{display:grid;grid-template-columns:200px 1fr auto;gap:14px;padding:14px;a
 h2{margin:0 0 8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:600}
 input[type=date],input[type=text]{width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
 .goal{display:flex;gap:8px;align-items:center;margin-bottom:6px}.goal b{color:var(--ac);width:18px}
-.right{display:flex;flex-direction:column;gap:10px;min-width:220px}
+.right{display:flex;flex-direction:column;gap:10px;min-width:300px}
 .lv{display:flex;gap:6px}
 .lv button{flex:1;padding:10px 0;font:600 18px inherit;border:2px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:10px;cursor:pointer}
 .lv button.on[data-l="0"]{background:var(--g);border-color:var(--g);color:#fff}
@@ -39,11 +39,13 @@ main{padding:0 14px 28px}
 .it a{color:var(--ac)}.x{position:absolute;top:4px;right:6px;border:0;background:none;color:var(--mut);cursor:pointer;font-size:18px}
 .it .x{background:var(--card);border-radius:6px}
 .note{font-size:12px;color:var(--mut);margin-top:10px}
-header>.card:nth-child(1){background:#fad9c1}
-header>.card:nth-child(2){background:#fbefc2}
-.right .card:nth-child(1){background:#d4ebd0}
-.right .card:nth-child(2){background:#d3e4f1}
-main>.card{background:#f1dcea}
+header>.card:nth-child(1){background:#f1dcc6}
+header>.card:nth-child(2){background:#efe3c3}
+.right .card:nth-child(1){background:#dbe4cb}
+.right .card:nth-child(2){background:#d3dfdc}
+main>.card{background:#f6eee3}
+.right .lv button{padding:14px 0;font:700 38px system-ui,sans-serif;border-radius:14px;border-width:3px}
+.right .lvt{font-size:16px;font-weight:600;color:var(--tx);margin-top:10px}
 .card input,.card .lv button,.card button.b,.bar,.it,.card select{background:rgba(255,255,255,.6);color:var(--tx)}
 #bird{display:block;margin:10px auto 0;font-size:42px;line-height:1;border:0;background:none;cursor:pointer;padding:0}
 #bird.sing{animation:wig .25s 5}
@@ -57,7 +59,8 @@ main>.card{background:#f1dcea}
 <body>
 <header>
  <section class="card"><h2>Datum</h2><input type="date" id="date"><button id="bird" title="Los geht’s!" aria-label="Startsignal">🦜</button></section>
- <section class="card"><h2>Lernziele</h2>
+ <section class="card"><h2>Fach / Thema &amp; Lernziele</h2>
+  <input type="text" id="subj" placeholder="Fach / Thema" style="font-weight:600;margin-bottom:10px">
   <div class="goal"><b>1</b><input type="text" data-g="0" placeholder="Ich kann …"></div>
   <div class="goal"><b>2</b><input type="text" data-g="1" placeholder="Ich kann …"></div>
   <div class="goal"><b>3</b><input type="text" data-g="2" placeholder="Ich kann …"></div>
@@ -75,7 +78,7 @@ main>.card{background:#f1dcea}
 </header>
 <main><section class="card"><h2>Was steht an?</h2>
  <div class="tools">
-  <button class="b" id="bImg">Bild</button><button class="b" id="bFile">Datei</button><button class="b" id="bLink">Link</button>
+  <button class="b" id="bImg">Bild</button><button class="b" id="bFile">Datei</button><button class="b" id="bLink">Link</button><button class="b" id="bSave" style="margin-left:auto;background:var(--ac);color:#fff;border-color:var(--ac)">💾 Vorbereitung speichern</button>
  </div>
  <div class="fmt">
   <select id="ff1" title="Schriftart"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="Trebuchet MS">Trebuchet</option><option value="Comic Sans MS">Comic Sans</option><option value="Courier New">Courier</option></select>
@@ -87,12 +90,16 @@ main>.card{background:#f1dcea}
  <div class="note">Daten werden im Browser gespeichert. Grosse Dateien können das Speicherlimit überschreiten.</div>
 </section></main>
 <input type="file" id="fi" accept="image/*" hidden multiple><input type="file" id="ff" hidden multiple>
-<script>
+<script id="init" type="application/json"></script>
+<script id="app">
 const $=s=>document.querySelector(s);
-let S={date:new Date().toISOString().slice(0,10),goals:['','',''],level:0,notes:'',items:[]};
-try{const r=localStorage.getItem('lektionstool');if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+let S={date:new Date().toISOString().slice(0,10),subject:'',goals:['','',''],level:0,notes:'',items:[]};
+let init=null;try{const t=document.getElementById('init').textContent.trim();if(t)init=JSON.parse(t)}catch(e){}
+const KEY=init?'lt:'+(init.savedAt||''):'lektionstool';
+if(init)S=Object.assign(S,init);
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
 let warned=false;
-function save(){S.notes=$('#notes').innerHTML;try{localStorage.setItem('lektionstool',JSON.stringify(S))}catch(e){if(!warned){warned=true;alert('Speicher voll: Anhänge bleiben nur bis zum Schliessen erhalten.')}}}
+function save(){S.notes=$('#notes').innerHTML;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(!warned){warned=true;alert('Speicher voll: Anhänge bleiben nur bis zum Schliessen erhalten.')}}}
 const LT=['Ruhe – Einzelarbeit','Flüstern – Partnerarbeit','Normal – Gruppenarbeit'];
 function setLevel(l){S.level=l;document.querySelectorAll('.lv button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l));$('#lvt').textContent=LT[l];save()}
 function render(){
@@ -107,6 +114,7 @@ function render(){
 function read(files,t){[...files].forEach(f=>{const r=new FileReader();r.onload=()=>{S.items.push({t:t==='img'&&f.type.startsWith('image/')?'img':'file',n:f.name,d:r.result});render();save()};r.readAsDataURL(f)})}
 $('#date').value=S.date;$('#date').oninput=e=>{S.date=e.target.value;save()};
 document.querySelectorAll('[data-g]').forEach(i=>{i.value=S.goals[+i.dataset.g]||'';i.oninput=()=>{S.goals[+i.dataset.g]=i.value;save()}});
+$('#subj').value=S.subject||'';$('#subj').oninput=e=>{S.subject=e.target.value;save()};
 document.querySelectorAll('.lv button').forEach(b=>b.onclick=()=>setLevel(+b.dataset.l));
 $('#notes').innerHTML=S.notes;$('#notes').oninput=save;
 $('#notes').addEventListener('paste',e=>{const fs=[...(e.clipboardData?.files||[])].filter(f=>f.type.startsWith('image/'));if(fs.length){e.preventDefault();read(fs,'img')}});
@@ -119,6 +127,20 @@ let rng;document.addEventListener('selectionchange',()=>{const s=getSelection();
 function fmt(c,v){$('#notes').focus();if(rng){const s=getSelection();s.removeAllRanges();s.addRange(rng)}document.execCommand('styleWithCSS',false,true);document.execCommand(c,false,v);save()}
 document.querySelectorAll('.fmt .b').forEach(b=>{b.onmousedown=e=>e.preventDefault();b.onclick=()=>fmt(b.dataset.c)});
 $('#ff1').onchange=e=>fmt('fontName',e.target.value);$('#fs1').onchange=e=>fmt('fontSize',e.target.value);
+// Speichern als Datei (Datum + Fach im Namen)
+$('#bSave').onclick=async()=>{
+ save();
+ const doc=document.documentElement.cloneNode(true);
+ doc.querySelectorAll('script').forEach(s=>{if(s.id!=='app'&&s.id!=='init')s.remove()});
+ doc.querySelector('#init').textContent=JSON.stringify(Object.assign({},S,{savedAt:Date.now()})).replace(/</g,'\u003c');
+ doc.querySelector('#items').innerHTML='';doc.querySelector('#notes').innerHTML='';doc.querySelector('#mic').textContent='Mikrofon starten';
+ const html='<!DOCTYPE html>\n'+doc.outerHTML;
+ const nm=(S.subject||'Lektion').trim().replace(/[^\p{L}\p{N}]+/gu,'_').replace(/^_|_$/g,'')||'Lektion';
+ const fn='Lektion_'+(S.date||'ohne-Datum')+'_'+nm+'.html';
+ let dl=null;try{dl=window.claude&&await window.claude.use('downloads')}catch(e){}
+ if(dl){try{await dl.save({filename:fn,data:html})}catch(e){if(e&&e.code!=='declined')alert('Speichern nicht möglich ('+(e.code||'Fehler')+')')}}
+ else{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download=fn;a.click()}
+};
 // Vogel
 let bctx;
 function tweet(ac,t){[[2600,3800],[3400,2800],[2800,4200]].forEach((p,i)=>{const o=ac.createOscillator(),g=ac.createGain(),s=t+i*.11;o.type='sine';o.frequency.setValueAtTime(p[0],s);o.frequency.exponentialRampToValueAtTime(p[1],s+.08);g.gain.setValueAtTime(0.0001,s);g.gain.linearRampToValueAtTime(.25,s+.01);g.gain.exponentialRampToValueAtTime(.001,s+.09);o.connect(g);g.connect(ac.destination);o.start(s);o.stop(s+.1)})}
