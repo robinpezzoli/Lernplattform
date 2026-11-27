@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -17,9 +17,7 @@
             --text: #354f52;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -80,9 +78,7 @@
             z-index: 2;
         }
 
-        .bereich {
-            margin-bottom: 26px;
-        }
+        .bereich { margin-bottom: 26px; }
 
         .bereich h2 {
             margin: 0 0 12px;
@@ -150,9 +146,7 @@
             z-index: 2;
         }
 
-        /* =====================================
-           🐐 ZIEGEN UND PFLANZEN IM HINTERGRUND
-        ===================================== */
+        /* ZIEGEN UND PFLANZEN */
 
         #ziegenWiese {
             position: fixed;
@@ -166,42 +160,24 @@
             position: absolute;
             font-size: 2.5rem;
             line-height: 1;
-            transition:
-                left 3s ease-in-out,
-                top 3s ease-in-out;
+            transition: left 3s ease-in-out, top 3s ease-in-out;
             transform-origin: center;
             will-change: left, top;
             filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.12));
         }
 
-        .ziege.geht {
-            animation: laufen 0.35s infinite alternate;
-        }
-
-        .ziege.frisst {
-            animation: kauen 0.5s infinite alternate;
-        }
-
-        .ziege.umgedreht {
-            transform: scaleX(-1);
-        }
+        .ziege.geht { animation: laufen 0.35s infinite alternate; }
+        .ziege.frisst { animation: kauen 0.5s infinite alternate; }
+        .ziege.umgedreht { transform: scaleX(-1); }
 
         @keyframes laufen {
-            from {
-                margin-top: -2px;
-            }
-            to {
-                margin-top: 3px;
-            }
+            from { margin-top: -2px; }
+            to { margin-top: 3px; }
         }
 
         @keyframes kauen {
-            from {
-                transform: scale(1) rotate(-3deg);
-            }
-            to {
-                transform: scale(1.12) rotate(3deg);
-            }
+            from { transform: scale(1) rotate(-3deg); }
+            to { transform: scale(1.12) rotate(3deg); }
         }
 
         .pflanze {
@@ -218,27 +194,15 @@
         }
 
         @keyframes pflanzenWachsen {
-            from {
-                transform: scale(0.9) rotate(-5deg);
-            }
-            to {
-                transform: scale(1.08) rotate(5deg);
-            }
+            from { transform: scale(0.9) rotate(-5deg); }
+            to { transform: scale(1.08) rotate(5deg); }
         }
 
-        .pflanze-neu {
-            animation: neuWachsen 2s ease-out;
-        }
+        .pflanze-neu { animation: neuWachsen 2s ease-out; }
 
         @keyframes neuWachsen {
-            from {
-                opacity: 0;
-                transform: scale(0);
-            }
-            to {
-                opacity: 0.85;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0); }
+            to { opacity: 0.85; transform: scale(1); }
         }
 
         .fress-text {
@@ -248,50 +212,28 @@
         }
 
         @keyframes fressBlase {
-            0% {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-            30% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
+            0% { opacity: 0; transform: translateY(5px); }
+            30% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-20px); }
         }
 
         @media (max-width: 1100px) {
-            .app-grid {
-                grid-template-columns: repeat(5, minmax(0, 1fr));
-            }
+            .app-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
         }
 
         @media (max-width: 650px) {
-            body {
-                padding: 12px;
-            }
-
-            .app-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-
-            .ziege {
-                font-size: 2rem;
-            }
-
-            .pflanze {
-                font-size: 1.4rem;
-            }
+            body { padding: 12px; }
+            .app-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .ziege { font-size: 2rem; }
+            .pflanze { font-size: 1.4rem; }
         }
 
         @media (max-width: 380px) {
-            .app-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
+            .app-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
 
-        /* Login-Fenster */
+        /* LOGIN-FENSTER */
+
         .modal {
             display: none;
             position: fixed;
@@ -320,9 +262,7 @@
             font-size: 1.3rem;
         }
 
-        .modal-inhalt p {
-            font-size: 0.9rem;
-        }
+        .modal-inhalt p { font-size: 0.9rem; }
 
         .modal-inhalt input {
             width: 100%;
@@ -334,9 +274,7 @@
             font-size: 1rem;
         }
 
-        .modal-inhalt input:focus {
-            outline: 2px solid var(--sage);
-        }
+        .modal-inhalt input:focus { outline: 2px solid var(--sage); }
 
         .modal-inhalt button {
             margin: 5px;
@@ -349,9 +287,7 @@
             cursor: pointer;
         }
 
-        .modal-inhalt button:hover {
-            background: var(--deep);
-        }
+        .modal-inhalt button:hover { background: var(--deep); }
 
         #fehler {
             min-height: 20px;
@@ -360,401 +296,382 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .ziege, .pflanze {
-                animation: none !important;
-            }
+            .ziege, .pflanze { animation: none !important; }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Ziegenwiese -->
-    <div id="ziegenWiese" aria-hidden="true"></div>
+<div id="ziegenWiese" aria-hidden="true"></div>
 
-    <header>
-        <h1>💡 Hirntraining 🧠</h1>
-        <p>Denken, entdecken, üben und wachsen! 🌱</p>
+<header>
+    <h1>💡 Hirntraining 🧠</h1>
+    <p>Denken, entdecken, üben und wachsen! 🌱</p>
 
-        <button class="lehrer-button" onclick="oeffneLehrerLogin()">
-            🔐 Für Lehrpersonen
-        </button>
-    </header>
+    <button class="lehrer-button" onclick="oeffneLehrerLogin()">
+        🔐 Für Lehrpersonen
+    </button>
+</header>
 
-    <main>
+<main>
 
-        <!-- MATHE -->
-        <section class="bereich">
-            <h2>➗ Mathe</h2>
+    <!-- MATHE -->
+    <section class="bereich">
+        <h2>➗ Mathe</h2>
 
-            <div class="app-grid">
+        <div class="app-grid">
 
-                <a class="app-card" href="Mathe-Master-Challenge-3.html">
-                    <div class="app-icon">🧠</div>
-                    <h3>Mathe Master</h3>
-                    <span>Knifflige Aufgaben</span>
-                </a>
+            <a class="app-card" href="Mathe-Master-Challenge-3.html">
+                <div class="app-icon">🧠</div>
+                <h3>Mathe Master</h3>
+                <span>Knifflige Aufgaben</span>
+            </a>
 
-                <a class="app-card" href="alpenlift-pythagoras.html">
-                    <div class="app-icon">🏔️</div>
-                    <h3>Alpenlift</h3>
-                    <span>Pythagoras</span>
-                </a>
+            <a class="app-card" href="alpenlift-pythagoras.html">
+                <div class="app-icon">🏔️</div>
+                <h3>Alpenlift</h3>
+                <span>Pythagoras</span>
+            </a>
 
-                <a class="app-card" href="multiplikations_duell.html">
-                    <div class="app-icon">✖️</div>
-                    <h3>Multiplikations-Duell</h3>
-                    <span>Einmaleins trainieren</span>
-                </a>
+            <a class="app-card" href="multiplikations_duell.html">
+                <div class="app-icon">✖️</div>
+                <h3>Multiplikations-Duell</h3>
+                <span>Einmaleins trainieren</span>
+            </a>
 
-                <a class="app-card" href="Detailhandel_Kassentrainer_Schweiz.html">
-                    <div class="app-icon">🛒</div>
-                    <h3>Kassentrainer</h3>
-                    <span>Rechnen mit Geld</span>
-                </a>
+            <a class="app-card" href="Detailhandel_Kassentrainer_Schweiz.html">
+                <div class="app-icon">🛒</div>
+                <h3>Kassentrainer</h3>
+                <span>Rechnen mit Geld</span>
+            </a>
 
-                <!-- NEU: UFO ESCAPE -->
-                <a class="app-card" href="ufo-escape.html">
-                    <div class="app-icon">🛸</div>
-                    <h3>UFO Escape</h3>
-                    <span>Mathe-Abenteuer</span>
-                </a>
+            <!-- UFO ESCAPE -->
+            <a class="app-card" href="ufo-escape.html">
+                <div class="app-icon">🛸</div>
+                <h3>UFO Escape</h3>
+                <span>Mathe-Abenteuer</span>
+            </a>
 
-            </div>
-        </section>
-
-        <!-- RZG -->
-        <section class="bereich">
-            <h2>🌍 RZG</h2>
-
-            <div class="app-grid">
-
-                <a class="app-card" href="Mondphasen-Atlas.html">
-                    <div class="app-icon">🌙</div>
-                    <h3>Mondphasen-Atlas</h3>
-                    <span>Den Mond entdecken</span>
-                </a>
-
-                <a class="app-card" href="Jahreszeiten_in_der_Schweiz.html">
-                    <div class="app-icon">🍂</div>
-                    <h3>Jahreszeiten</h3>
-                    <span>Die Schweiz im Wandel</span>
-                </a>
-
-            </div>
-        </section>
-
-        <!-- MEDIEN & INFORMATIK -->
-        <section class="bereich">
-            <h2>💻 Medien &amp; Informatik</h2>
-
-            <div class="app-grid">
-
-                <a class="app-card" href="netiquette.html">
-                    <div class="app-icon">💬</div>
-                    <h3>Netiquette</h3>
-                    <span>Respektvoll kommunizieren im Internet</span>
-                </a>
-
-                <a class="app-card" href="urheberrecht.html">
-                    <div class="app-icon">©️</div>
-                    <h3>Urheberrecht</h3>
-                    <span>Bilder, Texte und Musik richtig verwenden</span>
-                </a>
-
-                <!-- NEU: INTERNET GAME -->
-                <a class="app-card" href="internet_game.html">
-                    <div class="app-icon">🌐</div>
-                    <h3>Internet Game</h3>
-                    <span>Spielerisch das Internet entdecken</span>
-                </a>
-
-            </div>
-        </section>
-
-    </main>
-
-    <footer>
-        🌱 Denken. Üben. Lernen. Wachsen. 🌱
-    </footer>
-
-    <!-- Login-Fenster für Lehrpersonen -->
-    <div class="modal" id="lehrerModal">
-        <div class="modal-inhalt">
-            <h2>🔐 Lehrpersonenbereich</h2>
-            <p>Bitte Passwort eingeben:</p>
-
-            <input
-                type="password"
-                id="lehrerPasswort"
-                placeholder="Passwort"
-                autocomplete="off"
-                onkeydown="if(event.key === 'Enter') pruefePasswort()"
-            >
-
-            <p id="fehler"></p>
-
-            <button onclick="pruefePasswort()">
-                Anmelden →
-            </button>
-
-            <button onclick="schliesseLehrerLogin()">
-                Abbrechen
-            </button>
         </div>
+    </section>
+
+    <!-- RZG -->
+    <section class="bereich">
+        <h2>🌍 RZG</h2>
+
+        <div class="app-grid">
+
+            <a class="app-card" href="Mondphasen-Atlas.html">
+                <div class="app-icon">🌙</div>
+                <h3>Mondphasen-Atlas</h3>
+                <span>Den Mond entdecken</span>
+            </a>
+
+            <a class="app-card" href="Jahreszeiten_in_der_Schweiz.html">
+                <div class="app-icon">🍂</div>
+                <h3>Jahreszeiten</h3>
+                <span>Die Schweiz im Wandel</span>
+            </a>
+
+            <!-- NEU: KOSMOS-LABOR -->
+            <a class="app-card" href="kosmos-labor.html">
+                <div class="app-icon">🔭</div>
+                <h3>Kosmos-Labor</h3>
+                <span>Das Weltall erforschen</span>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- MEDIEN & INFORMATIK -->
+    <section class="bereich">
+        <h2>💻 Medien &amp; Informatik</h2>
+
+        <div class="app-grid">
+
+            <a class="app-card" href="netiquette.html">
+                <div class="app-icon">💬</div>
+                <h3>Netiquette</h3>
+                <span>Respektvoll kommunizieren im Internet</span>
+            </a>
+
+            <a class="app-card" href="urheberrecht.html">
+                <div class="app-icon">©️</div>
+                <h3>Urheberrecht</h3>
+                <span>Bilder, Texte und Musik richtig verwenden</span>
+            </a>
+
+            <a class="app-card" href="internet_game.html">
+                <div class="app-icon">🌐</div>
+                <h3>Internet Game</h3>
+                <span>Spielerisch das Internet entdecken</span>
+            </a>
+
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    🌱 Denken. Üben. Lernen. Wachsen. 🌱
+</footer>
+
+<!-- LOGIN-FENSTER -->
+<div class="modal" id="lehrerModal">
+    <div class="modal-inhalt">
+        <h2>🔐 Lehrpersonenbereich</h2>
+        <p>Bitte Passwort eingeben:</p>
+
+        <input
+            type="password"
+            id="lehrerPasswort"
+            placeholder="Passwort"
+            autocomplete="off"
+            onkeydown="if(event.key === 'Enter') pruefePasswort()"
+        >
+
+        <p id="fehler"></p>
+
+        <button onclick="pruefePasswort()">Anmelden →</button>
+        <button onclick="schliesseLehrerLogin()">Abbrechen</button>
     </div>
+</div>
 
-    <script>
-        /* =====================================
-           🐐 ZIEGEN UND PFLANZEN
-        ===================================== */
+<script>
+    /* ZIEGEN UND PFLANZEN */
 
-        const wiese = document.getElementById("ziegenWiese");
+    const wiese = document.getElementById("ziegenWiese");
+    const pflanzenArten = ["🍀", "☘️", "🌿", "🌱"];
 
-        const pflanzenArten = ["🍀", "☘️", "🌿", "🌱"];
+    const ziegen = [];
+    const pflanzen = [];
 
-        const ziegen = [];
-        const pflanzen = [];
+    const ANZAHL_ZIEGEN = 2;
+    const ANZAHL_PFLANZEN = 12;
 
-        const ANZAHL_ZIEGEN = 2;
-        const ANZAHL_PFLANZEN = 12;
+    function zufall(min, max) {
+        return Math.random() * (max - min) + min;
+    }
 
-        function zufall(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+    function neuePosition() {
+        const rand = 45;
 
-        function neuePosition() {
-            const rand = 45;
+        return {
+            x: zufall(rand, Math.max(rand + 1, window.innerWidth - rand)),
+            y: zufall(100, Math.max(110, window.innerHeight - 70))
+        };
+    }
 
-            return {
-                x: zufall(rand, Math.max(rand + 1, window.innerWidth - rand)),
-                y: zufall(100, Math.max(110, window.innerHeight - 70))
-            };
-        }
+    function pflanzeErstellen() {
+        const pflanze = document.createElement("div");
 
-        // Pflanzen anlegen
-        function pflanzeErstellen() {
-            const pflanze = document.createElement("div");
+        pflanze.className = "pflanze";
+        pflanze.textContent =
+            pflanzenArten[Math.floor(Math.random() * pflanzenArten.length)];
 
-            pflanze.className = "pflanze";
-            pflanze.textContent =
-                pflanzenArten[Math.floor(Math.random() * pflanzenArten.length)];
+        const pos = neuePosition();
 
-            const pos = neuePosition();
+        pflanze.style.left = pos.x + "px";
+        pflanze.style.top = pos.y + "px";
 
-            pflanze.style.left = pos.x + "px";
-            pflanze.style.top = pos.y + "px";
+        wiese.appendChild(pflanze);
 
-            wiese.appendChild(pflanze);
+        const daten = {
+            element: pflanze,
+            x: pos.x,
+            y: pos.y,
+            verfuegbar: true
+        };
 
-            const daten = {
-                element: pflanze,
-                x: pos.x,
-                y: pos.y,
-                verfuegbar: true
-            };
+        pflanzen.push(daten);
+        return daten;
+    }
 
-            pflanzen.push(daten);
+    function ziegeErstellen(index) {
+        const ziege = document.createElement("div");
 
-            return daten;
-        }
+        ziege.className = "ziege geht";
+        ziege.textContent = "🐐";
 
-        // Ziegen erstellen
-        function ziegeErstellen(index) {
-            const ziege = document.createElement("div");
+        const pos = neuePosition();
 
-            ziege.className = "ziege geht";
-            ziege.textContent = "🐐";
+        ziege.style.left = pos.x + "px";
+        ziege.style.top = pos.y + "px";
 
-            const pos = neuePosition();
+        wiese.appendChild(ziege);
 
-            ziege.style.left = pos.x + "px";
-            ziege.style.top = pos.y + "px";
+        return {
+            element: ziege,
+            x: pos.x,
+            y: pos.y,
+            beschaeftigt: false,
+            index: index
+        };
+    }
 
-            wiese.appendChild(ziege);
+    function findePflanze(ziege) {
+        const verfuegbare = pflanzen.filter(p => p.verfuegbar);
 
-            return {
-                element: ziege,
-                x: pos.x,
-                y: pos.y,
-                beschaeftigt: false,
-                index: index
-            };
-        }
+        if (verfuegbare.length === 0) return null;
 
-        // Passende Pflanze suchen
-        function findePflanze(ziege) {
-            const verfuegbare = pflanzen.filter(p => p.verfuegbar);
+        verfuegbare.sort((a, b) => {
+            const da = Math.hypot(a.x - ziege.x, a.y - ziege.y);
+            const db = Math.hypot(b.x - ziege.x, b.y - ziege.y);
+            return da - db;
+        });
 
-            if (verfuegbare.length === 0) {
-                return null;
+        return verfuegbare[0];
+    }
+
+    function bewegeZiege(ziege, x, y) {
+        const element = ziege.element;
+
+        element.classList.remove("frisst");
+        element.classList.add("geht");
+
+        const blickNachRechts = x >= ziege.x;
+
+        element.style.transform = blickNachRechts
+            ? "scaleX(1)"
+            : "scaleX(-1)";
+
+        element.style.left = x + "px";
+        element.style.top = y + "px";
+
+        const entfernung = Math.hypot(x - ziege.x, y - ziege.y);
+        const dauer = Math.max(1500, entfernung * 7);
+
+        ziege.x = x;
+        ziege.y = y;
+
+        return dauer;
+    }
+
+    function frisstZiege(ziege, pflanze) {
+        ziege.element.classList.remove("geht");
+        ziege.element.classList.add("frisst");
+
+        pflanze.verfuegbar = false;
+        pflanze.element.classList.add("verschwindet");
+
+        const blase = document.createElement("div");
+        blase.className = "fress-text";
+        blase.textContent = "😋";
+        blase.style.left = ziege.x + "px";
+        blase.style.top = (ziege.y - 25) + "px";
+
+        wiese.appendChild(blase);
+
+        setTimeout(() => blase.remove(), 1600);
+
+        const wartezeit = zufall(120000, 240000);
+
+        setTimeout(() => {
+            pflanze.element.remove();
+
+            const index = pflanzen.indexOf(pflanze);
+            if (index !== -1) {
+                pflanzen.splice(index, 1);
             }
 
-            verfuegbare.sort((a, b) => {
-                const da = Math.hypot(a.x - ziege.x, a.y - ziege.y);
-                const db = Math.hypot(b.x - ziege.x, b.y - ziege.y);
-                return da - db;
-            });
+            pflanzeErstellen();
+        }, wartezeit);
 
-            return verfuegbare[0];
-        }
+        setTimeout(() => {
+            ziege.element.classList.remove("frisst");
+            ziege.element.classList.add("geht");
+            ziege.beschaeftigt = false;
+            ziegeWeiter(ziege);
+        }, zufall(2500, 4500));
+    }
 
-        // Ziegen zu einer Pflanze bewegen
-        function bewegeZiege(ziege, x, y) {
-            const element = ziege.element;
+    function ziegeWeiter(ziege) {
+        if (ziege.beschaeftigt) return;
 
-            element.classList.remove("frisst");
-            element.classList.add("geht");
+        ziege.beschaeftigt = true;
 
-            const blickNachRechts = x >= ziege.x;
+        const pflanze = findePflanze(ziege);
 
-            element.style.transform = blickNachRechts
-                ? "scaleX(1)"
-                : "scaleX(-1)";
-
-            element.style.left = x + "px";
-            element.style.top = y + "px";
-
-            const entfernung = Math.hypot(x - ziege.x, y - ziege.y);
-            const dauer = Math.max(1500, entfernung * 7);
-
-            ziege.x = x;
-            ziege.y = y;
-
-            return dauer;
-        }
-
-        // Fressanimation
-        function frisstZiege(ziege, pflanze) {
-            ziege.element.classList.remove("geht");
-            ziege.element.classList.add("frisst");
-
+        if (pflanze) {
             pflanze.verfuegbar = false;
-            pflanze.element.classList.add("verschwindet");
 
-            const blase = document.createElement("div");
-            blase.className = "fress-text";
-            blase.textContent = "😋";
-            blase.style.left = ziege.x + "px";
-            blase.style.top = (ziege.y - 25) + "px";
+            const zielX = pflanze.x;
+            const zielY = pflanze.y;
 
-            wiese.appendChild(blase);
-
-            setTimeout(() => blase.remove(), 1600);
-
-            // Pflanze nach 2 bis 4 Minuten nachwachsen lassen
-            const wartezeit = zufall(120000, 240000);
+            const dauer = bewegeZiege(ziege, zielX, zielY);
 
             setTimeout(() => {
-                pflanze.element.remove();
+                frisstZiege(ziege, pflanze);
+            }, dauer + 300);
 
-                const index = pflanzen.indexOf(pflanze);
-                if (index !== -1) {
-                    pflanzen.splice(index, 1);
-                }
-
-                pflanzeErstellen();
-            }, wartezeit);
+        } else {
+            const pos = neuePosition();
+            const dauer = bewegeZiege(ziege, pos.x, pos.y);
 
             setTimeout(() => {
-                ziege.element.classList.remove("frisst");
-                ziege.element.classList.add("geht");
                 ziege.beschaeftigt = false;
                 ziegeWeiter(ziege);
-            }, zufall(2500, 4500));
+            }, dauer + 1000);
+        }
+    }
+
+    function starteZiegenWiese() {
+        for (let i = 0; i < ANZAHL_PFLANZEN; i++) {
+            pflanzeErstellen();
         }
 
-        // Ziegen bewegen sich selbstständig
-        function ziegeWeiter(ziege) {
-            if (ziege.beschaeftigt) return;
+        for (let i = 0; i < ANZAHL_ZIEGEN; i++) {
+            const ziege = ziegeErstellen(i);
+            ziegen.push(ziege);
 
-            ziege.beschaeftigt = true;
-
-            const pflanze = findePflanze(ziege);
-
-            if (pflanze) {
-                pflanze.verfuegbar = false;
-
-                const zielX = pflanze.x;
-                const zielY = pflanze.y;
-
-                const dauer = bewegeZiege(ziege, zielX, zielY);
-
-                setTimeout(() => {
-                    frisstZiege(ziege, pflanze);
-                }, dauer + 300);
-
-            } else {
-                const pos = neuePosition();
-                const dauer = bewegeZiege(ziege, pos.x, pos.y);
-
-                setTimeout(() => {
-                    ziege.beschaeftigt = false;
-                    ziegeWeiter(ziege);
-                }, dauer + 1000);
-            }
+            setTimeout(() => {
+                ziegeWeiter(ziege);
+            }, i * 1800);
         }
+    }
 
-        // Wiese starten
-        function starteZiegenWiese() {
-            for (let i = 0; i < ANZAHL_PFLANZEN; i++) {
-                pflanzeErstellen();
-            }
+    starteZiegenWiese();
 
-            for (let i = 0; i < ANZAHL_ZIEGEN; i++) {
-                const ziege = ziegeErstellen(i);
-                ziegen.push(ziege);
-
-                setTimeout(() => {
-                    ziegeWeiter(ziege);
-                }, i * 1800);
-            }
-        }
-
-        starteZiegenWiese();
-
-        // Bei Änderung der Bildschirmgrösse keine Überläufe verursachen
-        window.addEventListener("resize", () => {
-            ziegen.forEach(ziege => {
-                ziege.x = Math.min(ziege.x, window.innerWidth - 50);
-                ziege.y = Math.min(ziege.y, window.innerHeight - 50);
-            });
+    window.addEventListener("resize", () => {
+        ziegen.forEach(ziege => {
+            ziege.x = Math.min(ziege.x, window.innerWidth - 50);
+            ziege.y = Math.min(ziege.y, window.innerHeight - 50);
         });
+    });
 
-        /* =====================================
-           🔐 LEHRPERSONEN-LOGIN
-        ===================================== */
+    /* LEHRPERSONEN-LOGIN */
 
-        function oeffneLehrerLogin() {
-            document.getElementById("lehrerModal").style.display = "flex";
-            document.getElementById("lehrerPasswort").focus();
+    function oeffneLehrerLogin() {
+        document.getElementById("lehrerModal").style.display = "flex";
+        document.getElementById("lehrerPasswort").focus();
+    }
+
+    function schliesseLehrerLogin() {
+        document.getElementById("lehrerModal").style.display = "none";
+        document.getElementById("lehrerPasswort").value = "";
+        document.getElementById("fehler").textContent = "";
+    }
+
+    function pruefePasswort() {
+        const passwort =
+            document.getElementById("lehrerPasswort").value;
+
+        if (passwort === "fedpol") {
+            window.location.href = "index_lp.html";
+        } else {
+            document.getElementById("fehler").textContent =
+                "❌ Falsches Passwort. Bitte nochmals versuchen!";
         }
+    }
 
-        function schliesseLehrerLogin() {
-            document.getElementById("lehrerModal").style.display = "none";
-            document.getElementById("lehrerPasswort").value = "";
-            document.getElementById("fehler").textContent = "";
+    document.getElementById("lehrerModal").addEventListener("click", function(event) {
+        if (event.target === this) {
+            schliesseLehrerLogin();
         }
-
-        function pruefePasswort() {
-            const passwort =
-                document.getElementById("lehrerPasswort").value;
-
-            if (passwort === "fedpol") {
-                window.location.href = "index_lp.html";
-            } else {
-                document.getElementById("fehler").textContent =
-                    "❌ Falsches Passwort. Bitte nochmals versuchen!";
-            }
-        }
-
-        // Login-Fenster schliessen, wenn ausserhalb geklickt wird
-        document.getElementById("lehrerModal").addEventListener("click", function(event) {
-            if (event.target === this) {
-                schliesseLehrerLogin();
-            }
-        });
-    </script>
+    });
+</script>
 
 </body>
 </html>
+```
